@@ -1,0 +1,45 @@
+.bg {
+  background-image: url("./public/images/admin-bg.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.d-flex {
+  padding-right: 10px;
+}
+
+.btn-color {
+  background-image: linear-gradient(to right, #1976d2, #2196f3);
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-color:hover {
+  background-image: linear-gradient(to right, #2196f3, #64b5f6);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.profile-image-pic {
+  height: 150px;
+  width: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.cardbody-color {
+  background-color: #f9f9f9;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+a {
+  text-decoration: none;
+  color: #1976d2;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}

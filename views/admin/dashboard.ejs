@@ -1,0 +1,61 @@
+<%- include('../layouts/header.ejs') %>
+
+<div class="container">
+  <div class="row justify-content-between align-items-center mt-5">
+    <div class="col-md-6">
+      <h1>Welcome, <%= admin.name %></h1>
+    </div>
+    <div class="col-md-6">
+      <div class="d-flex justify-content-end">
+        <a href="/admin/new-user" class="btn btn-primary" style="margin-right: 20px;">Add New User</a>
+        <a href="/admin/logout" class="btn btn-primary ">Log Out</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="input-group">
+        <form class="input-group-append">
+          <input type="text" class="form-group " id="search" name="search" placeholder="Search User's name, email, phone">
+          <button class="btn btn-primary " type="submit" value="searchValue">Search</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <table class="table mt-4">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Verified</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(user=> { %>
+      <tr>
+        <td><%= user.name %></td>
+        <td><%= user.phone %></td>
+        <td><%= user.email %></td>
+        <td>
+          <% if(user.is_verified == 0) { %>
+          <p>Not Verified</p>
+          <% } else { %>
+          <p>Verified</p>
+          <% } %>
+        </td>
+        <td><a href="/admin/edit-user?id=<%= user._id %>" class="btn btn-primary">Edit</a></td>
+        <td><a href="/admin/delete-user?id=<%= user._id %>" class="btn btn-danger">Delete</a></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+  
+
+<%- include('../layouts/footer.ejs') %>
