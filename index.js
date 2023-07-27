@@ -4,6 +4,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/swoz_online')
 .catch((err)=> console.log(err.message))
 const session = require('express-session')
 const config = require('./config/config')
+const localSession = require('./middleware/userAuth');
+
 
 
 const express = require('express');
@@ -17,6 +19,8 @@ app.use(session({
     saveUninitialized : true
 }))
 app.use(express.static('public'));
+
+app.use(localSession.commonSection);
 
 const userRoute = require('./routes/userRoute')
 app.use('/',userRoute)
