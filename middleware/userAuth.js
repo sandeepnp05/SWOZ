@@ -29,6 +29,7 @@ const commonSection = async (req,res,next) => {
     try {
         res.locals.session = req.session
         res.locals.session.user_id = req.session.user_id;
+        res.locals.session.firstname = req.session.firstname;
         next()
     } catch (error) {
         console.log(error.message);

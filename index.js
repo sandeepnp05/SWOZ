@@ -5,9 +5,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/swoz_online')
 const session = require('express-session')
 const config = require('./config/config')
 const localSession = require('./middleware/userAuth');
-
-
-
 const express = require('express');
 const app = express()
 
@@ -18,7 +15,9 @@ app.use(session({
     resave : false,
     saveUninitialized : true
 }))
-app.use(express.static('public'));
+app.use(express.static(__dirname + "/public/user"));
+app.use(express.static(__dirname + "/public/admin"));
+app.use(express.static(__dirname + "/public"));
 
 app.use(localSession.commonSection);
 

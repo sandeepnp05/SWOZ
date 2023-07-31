@@ -1,192 +1,140 @@
+const dotenv = require("dotenv");
 const User = require("../models/userModel");
+const Category = require("../models/categoryModel");
 const bcrypt = require("bcrypt");
 const randomstring = require("randomstring");
+dotenv.config()
 
-const securePassword = async (password) => {
+const dashboardLoad = async(req,res)=>{
   try {
-    const passwordHash = await bcrypt.hash(password, 10);
-    return passwordHash;
-  } catch (err) {
-    console.log(err.message);
-    throw err;
+    res.render('dashboard')
+  } catch (error) {
+    console.log(error);
   }
 };
 
-const loadLogin = async (req, res) => {
+const adminLoad = async(req,res)=>{
   try {
-    res.render("login");
-  } catch (err) {
-    console.log(err.message);
+    res.render('adminLogin')
+  } catch (error) {
+    console.log(error);
   }
 };
-
-const verifyLogin = async (req, res) => {
+const adminVerifyLogin = async (req, res) => {
   try {
-    const email = req.body.email;
-    const password = req.body.password;
-
-    const userData = await User.findOne({ email: email });
-
-    if (userData) {
-      const passMatch = await bcrypt.compare(password, userData.password);
-
-      if (passMatch) {
-        if (userData.is_admin === 0) {
-          res.render("login", { message: "Username or Password Incorrect" });
-        } else {
-          req.session.user_id = userData._id;
-
-          res.redirect("/admin/dashboard");
-        }
+    let { email, password } = req.body;
+    if (process.env.admin_email === email) {
+      if (process.env.admin_password === password) {
+        req.session.admin = email;
+        res.redirect("/admin/dashboard");
       } else {
-        res.render("login", { message: "Username or Password Incorrect" });
+        res.render("adminLogin", { errMessage: "Password is incorrect" });
       }
     } else {
-      res.render("login", { message: "Username or Password Incorrect" });
+      res.render("adminLogin", { errMessage: "Email is incorrect" });
     }
-  } catch (err) {
-    console.log(err.message);
+  } catch (error) {
+    console.log(error);
   }
 };
-
-const loadDashboard = async (req, res) => {
-  
+const logout = async(req,res)=>{
   try {
-    var search = "";
-    if (req.query.search) {
-      search = req.query.search;
-    }
-    const admin = await User.findById({ _id: req.session.user_id });
-    const regex = new RegExp(`^${search}`, "i");
+    req.session.destroy()
+    res.render('adminLogin')
+  } catch (error) {
+    console.log();
+  }
+};
+const userList = async (req, res) => {
+  try {
+    const search = req.query.search || ""; 
+    const regex = new RegExp(search, "i");
+    
     const usersData = await User.find({
-      $or: [
-        { name: { $regex: regex } },
-        { email: { $regex: regex } },
-        { mobile: { $regex: regex } },
-      ],
+      $or: [{ name: { $regex: regex } }, { email: { $regex: regex } }],
     });
-    res.render("dashboard", {
-      admin: admin,
-      users: usersData,
-      searchValue: search,
-    });
+    
+    res.render('userList', { users: usersData, search });
+  } catch (error) {
+    console.log("Error in userList:", error);
+    res.status(500).send("An error occurred.");
+  }
+};
+const blockUser = async (req, res) => {
+  try {
+    const { id } = req.query; // Access the id parameter from req.query
+    const user = await User.findById(id); // Pass id directly to User.findById
+    if (!user) {
+      // Handle the case when the user is not found
+      return res.status(404).send("User not found");
+    }
+
+    // Toggle the is_blocked value
+    user.is_blocked = !user.is_blocked;
+    await user.save();
+
+    res.redirect("/admin/userList");
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("An error occurred.");
+  }
+};
+const categories = async(req,res)=>{
+  try {
+    const { message } = req.session; 
+    req.session.message = ""; 
+    const categoryDetails = await Category.find();
+    res.render('categories',{message,category:categoryDetails})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+const addCategories = async (req, res) => {
+  try {
+    const { category_name, category_description } = req.body;
+      const existingCategory = await Category.findOne({
+          name: { $regex: new RegExp(`^${category_name}$`, "i") },
+      });
+
+      if (!existingCategory) {
+          const newCategory = new Category({
+              name: category_name,
+              description: category_description,  
+          });
+          await newCategory.save();
+          req.session.message = 'Category added successfully';
+      } else {
+          req.session.message = 'This category is already defined';
+      }
+
+      res.redirect('/admin/categories');
+  } catch (error) {
+      console.log(error.message);
+      req.session.message = 'An error occurred while adding the category';
+      res.redirect('/admin/categories');
+  }
+};
+const editCategories = async (req, res)=>{
+  try {
+    res.render('editCategory')
   } catch (error) {
     console.log(error.message);
   }
 };
 
-const logout = async (req, res) => {
-  try {
-    req.session.destroy();
-    res.redirect("/admin");
-  } catch (err) {
-    console.log(err.message);
-  }
-};
 
-const newUserLoad = async (req, res) => {
-  try {
-    res.render("new-user");
-  } catch (err) {
-    console.log(err.message);
-  }
-};
 
-const addUser = async (req, res) => {
-  const existMail = await User.findOne({ email: req.body.email });
-  if (existMail) {
-    res.render("new-user", { message: "Email already exists" });
-  } else {
-    try {
-      const name = req.body.name;
-      const email = req.body.email;
-      const phone = req.body.phone;
-      const password = randomstring.generate(10);
 
-      const spassword = await securePassword(password);
 
-      const user = new User({
-        name: name,
-        email: email,
-        phone: phone,
-        password: spassword,
-      });
-
-      const userData = await user.save();
-
-      if (userData) {
-        res.redirect("/admin/dashboard");
-      } else {
-        res.render("new-user", { message: "Something went wrong" });
-      }
-    } catch (err) {
-      console.log(err.nessage);
-    }
-  }
-};
-
-const editUserLoad = async (req, res) => {
-  try {
-    const id = req.query.id;
-    const userData = await User.findById({ _id: id });
-    if (userData) {
-      res.render("edit-user", { user: userData });
-    } else {
-      res.redirect("/admin/dashboard");
-    }
-  } catch (err) {
-    console.log(err.message);
-  }
-};
-
-const updateUser = async (req, res) => {
-  try {
-    const userData = await User.findByIdAndUpdate(
-      { _id: req.body.id },
-      {
-        $set: {
-          name: req.body.name,
-          email: req.body.email,
-          phone: req.body.phone,
-          is_verified: req.body.verify,
-        },
-      }
-    );
-
-    res.redirect("/admin/dashboard");
-  } catch (err) {
-    console.log(err.message);
-  }
-};
-
-const deleteUser = async (req, res) => {
-  try {
-    const id = req.query.id;
-    await User.deleteOne({ _id: id });
-    res.redirect("/admin/dashboard");
-  } catch (err) {
-    console.log(err.message);
-  }
-};
-
-const logOut = async (req, res) => {
-  try {
-    req.session.destroy();
-    res.redirect("/admin/login");
-  } catch (err) {
-    console.log(err.message);
-  }
-};
 
 module.exports = {
-  loadLogin,
-  verifyLogin,
-  loadDashboard,
+  dashboardLoad,
+  adminLoad,
+  adminVerifyLogin,
   logout,
-  newUserLoad,
-  addUser,
-  editUserLoad,
-  updateUser,
-  deleteUser,
-  logOut,
+  userList,
+  blockUser,
+  categories,
+  addCategories,
+  editCategories,
 };

@@ -1,6 +1,6 @@
 
 const mongoose = require('mongoose')
-
+const ObjectId = mongoose.Types.ObjectId;
 const userSchema = new mongoose.Schema({
      
     firstname : {
@@ -26,13 +26,21 @@ const userSchema = new mongoose.Schema({
         required : true
     },
     is_admin : {
-        type : Number,
-        default : 0 
+        type : Boolean,
+        default : false
     },
     is_verified : {
-        type : Number,
-        default : 1
+        type : Boolean,
+        default : false
+    },
+    is_blocked:{
+        type: Boolean,
+        default:false
+    },
+    token:{
+        type: String,
+        default: ''
     }
 })
 
-module.exports = mongoose.model('User' , userSchema)
+module.exports = mongoose.model('User', userSchema)
