@@ -1,0 +1,64 @@
+<%- include('../layouts/adminHead.ejs') %>
+<section class="content-main">
+  <div class="content-header">
+    <h2 class="content-title card-title">Products List</h2>
+  </div>
+  <div class="row gx-3">
+    <div class="col-md-12">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table id="myTable" class="table table-hover text-center">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Quantity/Stock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Table rows for products here -->
+              <tr>
+                <td width="25%">
+                  <div class="left">
+                    <img
+                      src="/images"
+                      class="img-sm img-thumbnail"
+                      alt="Item"
+                    />
+                  </div>
+                  <div class="info pl-3">
+                    <h6 class="mb-0 title">Product Name</h6>
+                  </div>
+                </td>
+                <td>
+                  <span>Product Price</span>
+                </td>
+                <td>
+                  <span>Product Category</span>
+                </td>
+                <td>
+                  <span>Product Description</span>
+                </td>
+                <td>
+                  <span class="badge rounded-pill alert-success">Stock Quantity</span>
+                </td>
+                <td>
+                  <button id="block-1" onclick="blockProduct(1)" class="btn btn-sm btn-danger rounded font-sm mt-1">Block</button>
+                </td>
+              </tr>
+              <!-- End of table rows for products -->
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+          <a href="/admin/productAddPage" class="btn btn-primary btn-sm rounded me-2">Create new</a>
+          <a href="/admin/productEditPage" class="btn btn-danger btn-sm rounded me-2">Edit Product</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<%- include('../layouts/adminFooter.ejs') %>

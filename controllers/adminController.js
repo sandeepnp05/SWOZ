@@ -1,7 +1,10 @@
 const dotenv = require("dotenv");
 const User = require("../models/userModel");
 const Category = require("../models/categoryModel");
+const Products = require("../models/productModel")
 const bcrypt = require("bcrypt");
+const mongoose = require('mongoose');
+
 const randomstring = require("randomstring");
 dotenv.config()
 
@@ -116,11 +119,63 @@ const addCategories = async (req, res) => {
 };
 const editCategories = async (req, res)=>{
   try {
-    res.render('editCategory')
+    const {id} = req.query;
+    const category = await Category.findById({_id:id})
+    res.render('editCategory',{category})
   } catch (error) {
     console.log(error.message);
   }
 };
+const updatedCategory = async (req, res) => {
+  try {
+    const { id, category_name, category_description } = req.body;
+    const updatedCategory = await Category.findByIdAndUpdate(
+      { _id: id },
+      { $set: { name: category_name, description: category_description } }
+    );
+    await updatedCategory.save();
+    res.redirect("/admin/categories");
+  } catch (error) {
+    consol.log(error)
+  }
+};
+const listCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.body;
+    console.log(categoryId);
+    const category = await Category.findById({ _id: categoryId });
+    if (category.status === true) {
+      await Category.updateOne({ _id: categoryId }, { $set: { status: false } });
+      res.status(201).json({ message: true });
+    } else {
+      await Category.updateOne({ _id: categoryId }, { $set: { status: true } });
+      res.status(201).json({ message: false });
+    }
+  } catch (error) {
+    res.redirect("/error500");
+  }
+};
+const productAddPage = async(req,res)=>{
+  try {
+    res.render('productAddPage')
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+const productEditPage = async(req,res)=>{
+  try {
+    res.render('productEditPage')
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+const productListPage = async(req,res)=>{
+  try {
+    res.render('productListPage')
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 
 
@@ -137,4 +192,9 @@ module.exports = {
   categories,
   addCategories,
   editCategories,
+  updatedCategory,
+  listCategory,
+  productAddPage,
+  productEditPage,
+  productListPage,
 };

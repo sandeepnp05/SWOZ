@@ -20,7 +20,7 @@
           <div class="col-md-4"></div>
           <div class="col-md-4">
             <form action="/admin/editCategory" method="post">
-              <input type="hidden" name="id" value="<%= category._id %>" />
+              <input type="hidden" name="id" value="<%= category.id %>" />
               <div class="mb-4">
                 <label for="category_name" class="form-label">Name</label>
                 <input
@@ -28,7 +28,7 @@
                   id="category_name"
                   placeholder="Category Name"
                   class="form-control"
-                  value="<%=category.name  %>"
+                    value="<%= category.name %>"
                   name="category_name"
                 />
               </div>
@@ -39,8 +39,10 @@
                   class="form-control"
                   name="category_description"
                 >
-<%=category.description %></textarea
-                >
+                <%= category.description %>
+              
+            </textarea>
+                
               </div>
               <div class="d-grid">
                 <button type="submit" class="btn btn-primary">

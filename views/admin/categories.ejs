@@ -20,7 +20,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3">
-                                <form action="/admin/categories" method="post">
+                                <form action="/admin/categories" method="patch">
                                     <div class="mb-4">
                                         <label for="category_name" class="form-label">Name</label>
                                         <!-- Updated name attribute to "category_name" -->
@@ -41,6 +41,7 @@
                                         <label class="form-label">Description</label>
                                         <textarea placeholder="Type here" class="form-control" name="category_description"></textarea>
                                     </div>
+                                    
                                     <div class="d-grid">
                                         <button class="btn btn-primary">Create category</button>
                                     </div>
@@ -50,52 +51,38 @@
                                 <div class="table-responsive">
                                     <table class="table table-hover">
                                         <thead>
-                                            <tr>
-                                                <th class="text-center">
-                                                    <!-- <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="" />
-                                                    </div> -->
-                                                </th>
-                                                <th>ID</th>
+                                            <tr>                      
                                                 <th>Name</th>
                                                 <th>Description</th>
-                                                <!-- <th>Slug</th>
-                                                <th>Order</th> -->
-                                                <th class="text-end">Action</th>
+                                                <th>Action</th> <!-- Add the Action header here -->
+                                                <th>Edit</th> <!-- Add the Edit header here -->
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <% if (category && category.length)  {for (let i = 0; i < category.length; i++) {%>
-                                               
-
-                                            
+                                            <% if (category && category.length > 0) { for (let i = 0; i < category.length; i++) { %>
                                             <tr>
-                                                <td class="text-center">
-                                                    <!-- <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="" />
-                                                    </div> -->
+                                                <td><b><%= category[i].name %></b></td>
+                                                <td><%= category[i].description %></td>
+                                                <td>
+                                                    <% if (category[i].status === true) { %>
+                                                        <button id="categId<%= category[i]._id %>" onclick="listCategory('<%= category[i]._id %>')" class="btn btn-sm btn-danger rounded font-sm mt-2" title="action">unlist</button>
+                                                    <% } else { %>
+                                                        <button id="categId<%= category[i]._id %>" onclick="listCategory('<%= category[i]._id %>')" class="btn btn-sm btn-success rounded font-sm mt-2" title="action">List</button>
+                                                    <% } %>
+                                                    
                                                 </td>
-                                                <td><%=category[i].id %></td>
-                                                <td><b> <%= category[i].name%> </b></td>
-                                                <td><%=category[i].description %></td>
-                                                <!-- <td>/cake</td>
-                                                <td>1</td> -->
-                                                <td class="text-end">
-                                                    <div class="dropdown">
-                                                        <a href="/admin/editCategory?id=<%= category[i]._id %>" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">View detail</a>
-                                                            <a class="dropdown-item" href="#">Edit info</a>
-                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                        </div>
-                                                    </div>
-                                                   
+                                                <td>
+                                                    <a href="/admin/editCategory?id=<%= category[i]._id %>" class="btn btn-sm btn-success rounded font-sm text-white mt-2">Edit</a>
+                                                </td>
                                             </tr>
-                                        <%}} %>
-                                            
+                                            <% } } else { %>
+                                            <h5>Categories not found</h5>
+                                            <% } %>      
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+                            
                             </div>
                             <!-- .col// -->
                         </div>
@@ -121,3 +108,26 @@
             </footer>
         </main>
         <%- include("../layouts/adminFooter.ejs") %>
+        <script>
+            const listCategory  = async (categoryId) => {
+                try {
+                    console.log(categoryId);
+                    const listCategory  = await axios.patch('/admin/listCategory ',{categoryId})
+                    if (listCategory .data.message === true) {
+                document.getElementById(`categId${categoryId}`).innerText = 'List'
+                document.getElementById(`categId${categoryId}`).style.backgroundColor='#3A833A'
+              } else if (listCategory .data.message === false) {
+                document.getElementById(`categId${categoryId}`).innerText = 'Unlist'
+                document.getElementById(`categId${categoryId}`).style.backgroundColor='#dc3545'
+                
+              }
+            } catch{
+                console.log(console.message);
+            }
+               
+            }
+          $(document).ready(function () {
+            $("#myTable").DataTable();
+          });
+        </script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

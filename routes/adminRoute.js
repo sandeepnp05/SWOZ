@@ -20,7 +20,12 @@ admin_route.get('/blockUser',adminController.blockUser)
 
 admin_route.get('/categories', auth.isLogin, adminController.categories);
 admin_route.post('/categories', auth.isLogin, adminController.addCategories);
-admin_route.post('/editCategory',auth.isLogin, adminController.editCategories)
+admin_route.get('/editCategory',auth.isLogin, adminController.editCategories)
+admin_route.post('/editCategory',auth.isLogin, adminController.updatedCategory)
+admin_route.patch('/listCategory', auth.isLogin, adminController.listCategory);
+admin_route.get('/productAddPage',auth.isLogin,adminController.productAddPage)
+admin_route.get('/productEditPage',auth.isLogin,adminController.productEditPage)
+admin_route.get('/productListPage',auth.isLogin,adminController.productListPage)
 
 
 
