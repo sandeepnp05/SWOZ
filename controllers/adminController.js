@@ -1,24 +1,27 @@
-const dotenv = require("dotenv");
-const User = require("../models/userModel");
 const Category = require("../models/categoryModel");
-const Products = require("../models/productModel")
-const bcrypt = require("bcrypt");
-const mongoose = require('mongoose');
+const Products = require("../models/productModel");
+const User = require("../models/userModel");
 
 const randomstring = require("randomstring");
-dotenv.config()
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const bcrypt = require("bcrypt");
+const sharp = require("sharp");
+const path = require("path");
 
-const dashboardLoad = async(req,res)=>{
+dotenv.config();
+
+const dashboardLoad = async (req, res) => {
   try {
-    res.render('dashboard')
+    res.render("dashboard");
   } catch (error) {
     console.log(error);
   }
 };
 
-const adminLoad = async(req,res)=>{
+const adminLoad = async (req, res) => {
   try {
-    res.render('adminLogin')
+    res.render("adminLogin");
   } catch (error) {
     console.log(error);
   }
@@ -40,24 +43,24 @@ const adminVerifyLogin = async (req, res) => {
     console.log(error);
   }
 };
-const logout = async(req,res)=>{
+const logout = async (req, res) => {
   try {
-    req.session.destroy()
-    res.render('adminLogin')
+    req.session.destroy();
+    res.render("adminLogin");
   } catch (error) {
     console.log();
   }
 };
 const userList = async (req, res) => {
   try {
-    const search = req.query.search || ""; 
+    const search = req.query.search || "";
     const regex = new RegExp(search, "i");
-    
+
     const usersData = await User.find({
       $or: [{ name: { $regex: regex } }, { email: { $regex: regex } }],
     });
-    
-    res.render('userList', { users: usersData, search });
+
+    res.render("userList", { users: usersData, search });
   } catch (error) {
     console.log("Error in userList:", error);
     res.status(500).send("An error occurred.");
@@ -82,46 +85,46 @@ const blockUser = async (req, res) => {
     res.status(500).send("An error occurred.");
   }
 };
-const categories = async(req,res)=>{
+const categories = async (req, res) => {
   try {
-    const { message } = req.session; 
-    req.session.message = ""; 
+    const { message } = req.session;
+    req.session.message = "";
     const categoryDetails = await Category.find();
-    res.render('categories',{message,category:categoryDetails})
+    res.render("categories", { message, category: categoryDetails });
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 const addCategories = async (req, res) => {
   try {
     const { category_name, category_description } = req.body;
-      const existingCategory = await Category.findOne({
-          name: { $regex: new RegExp(`^${category_name}$`, "i") },
+    const existingCategory = await Category.findOne({
+      name: { $regex: new RegExp(`^${category_name}$`, "i") },
+    });
+
+    if (!existingCategory) {
+      const newCategory = new Category({
+        name: category_name,
+        description: category_description,
       });
+      await newCategory.save();
+      req.session.message = "Category added successfully";
+    } else {
+      req.session.message = "This category is already defined";
+    }
 
-      if (!existingCategory) {
-          const newCategory = new Category({
-              name: category_name,
-              description: category_description,  
-          });
-          await newCategory.save();
-          req.session.message = 'Category added successfully';
-      } else {
-          req.session.message = 'This category is already defined';
-      }
-
-      res.redirect('/admin/categories');
+    res.redirect("/admin/categories");
   } catch (error) {
-      console.log(error.message);
-      req.session.message = 'An error occurred while adding the category';
-      res.redirect('/admin/categories');
+    console.log(error.message);
+    req.session.message = "An error occurred while adding the category";
+    res.redirect("/admin/categories");
   }
 };
-const editCategories = async (req, res)=>{
+const editCategories = async (req, res) => {
   try {
-    const {id} = req.query;
-    const category = await Category.findById({_id:id})
-    res.render('editCategory',{category})
+    const { id } = req.query;
+    const category = await Category.findById({ _id: id });
+    res.render("editCategory", { category });
   } catch (error) {
     console.log(error.message);
   }
@@ -136,7 +139,7 @@ const updatedCategory = async (req, res) => {
     await updatedCategory.save();
     res.redirect("/admin/categories");
   } catch (error) {
-    consol.log(error)
+    consol.log(error);
   }
 };
 const listCategory = async (req, res) => {
@@ -145,7 +148,10 @@ const listCategory = async (req, res) => {
     console.log(categoryId);
     const category = await Category.findById({ _id: categoryId });
     if (category.status === true) {
-      await Category.updateOne({ _id: categoryId }, { $set: { status: false } });
+      await Category.updateOne(
+        { _id: categoryId },
+        { $set: { status: false } }
+      );
       res.status(201).json({ message: true });
     } else {
       await Category.updateOne({ _id: categoryId }, { $set: { status: true } });
@@ -155,32 +161,72 @@ const listCategory = async (req, res) => {
     res.redirect("/error500");
   }
 };
-const productAddPage = async(req,res)=>{
+const productAddPage = async (req, res) => {
   try {
-    res.render('productAddPage')
+    const categories = await Category.find();
+    res.render("productAddPage", { categories });
   } catch (error) {
     console.log(error.message);
   }
 };
-const productEditPage = async(req,res)=>{
+const productEditPage = async (req, res) => {
   try {
-    res.render('productEditPage')
+    res.render("productEditPage");
   } catch (error) {
     console.log(error.message);
   }
 };
-const productListPage = async(req,res)=>{
+const productListPage = async (req, res) => {
   try {
-    res.render('productListPage')
+    const product = await Products.find().populate("category");
+    res.render("productListPage", { product });
   } catch (error) {
     console.log(error.message);
   }
-}
-
-
-
-
-
+};
+const productAdd = async (req, res) => {
+  try {
+    const {
+      product_name,
+      product_description,
+      product_price,
+      product_quantity,
+      product_category,
+      product_brand,
+    } = req.body;
+    const imageArr = [];
+    if (req.files && req.files.length > 0) {
+      for (let i = 0; i < req.files.length; i++) {
+        const filePath = path.join(
+          __dirname,
+          "../public/images",
+          req.files[i].filename
+        );
+        console.log("FilePath:", filePath);
+        // await sharp(req.files[i].path)
+        //     .resize({ width: 250, height: 250 })
+        //     .toFile(filePath);
+        imageArr.push(req.files[i].filename);
+        console.log(req.files);
+      }
+    }
+    const product = new Products({
+      name: product_name,
+      description: product_description,
+      price: product_price,
+      quantity: product_quantity,
+      category: product_category,
+      image: imageArr,
+      brand: product_brand,
+      stock: true,
+    });
+    await product.save();
+    console.log(product);
+    res.redirect("/admin/productListPage");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 module.exports = {
   dashboardLoad,
@@ -197,4 +243,5 @@ module.exports = {
   productAddPage,
   productEditPage,
   productListPage,
+  productAdd,
 };
