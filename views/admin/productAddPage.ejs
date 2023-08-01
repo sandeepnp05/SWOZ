@@ -53,9 +53,10 @@
                                     <div class="col-sm-6 mb-3">
                                         <label class="form-label">Category</label>
                                         <select class="form-select" name="product_category" required>
+                                            <% for(let category of categories) { %>
                                         
-                                           
-                                                <option value=""> </option>
+                                                <option value="<%= category._id %>"> <%= category.name %></option>
+                                                <%}%>
                                             
                                            
                                         </select>

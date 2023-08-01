@@ -20,42 +20,62 @@
             </thead>
             <tbody>
               <!-- Table rows for products here -->
+              <% if (product && product.length > 0) { for (let i = 0; i <
+              product.length; i++) { %>
               <tr>
                 <td width="25%">
                   <div class="left">
                     <img
-                      src="/images"
+                      src="/uncroppedImages/<%= product[i].image[0] %>"
                       class="img-sm img-thumbnail"
                       alt="Item"
                     />
                   </div>
                   <div class="info pl-3">
-                    <h6 class="mb-0 title">Product Name</h6>
+                    <h6 class="mb-0 title"><%= product[i].name %></h6>
                   </div>
                 </td>
                 <td>
-                  <span>Product Price</span>
+                  <span>₹<%= product[i].price %></span>
                 </td>
                 <td>
-                  <span>Product Category</span>
+                  <span><%= product[i].category %></span>
                 </td>
                 <td>
-                  <span>Product Description</span>
+                  <span><%= product[i].description %></span>
                 </td>
                 <td>
-                  <span class="badge rounded-pill alert-success">Stock Quantity</span>
+                  <span class="badge rounded-pill alert-success"
+                    ><%= product[i].quantity %></span
+                  >
                 </td>
                 <td>
-                  <button id="block-1" onclick="blockProduct(1)" class="btn btn-sm btn-danger rounded font-sm mt-1">Block</button>
+                  <button
+                    id="block-<%= product[i]._id %>"
+                    onclick="blockProduct('<%= product[i]._id %>')"
+                    class="btn btn-sm btn-danger rounded font-sm mt-1"
+                  >
+                    List
+                  </button>
                 </td>
               </tr>
+              <% } } %>
+
               <!-- End of table rows for products -->
             </tbody>
           </table>
         </div>
         <div class="d-flex justify-content-end mt-3">
-          <a href="/admin/productAddPage" class="btn btn-primary btn-sm rounded me-2">Create new</a>
-          <a href="/admin/productEditPage" class="btn btn-danger btn-sm rounded me-2">Edit Product</a>
+          <a
+            href="/admin/productAddPage"
+            class="btn btn-primary btn-sm rounded me-2"
+            >Create new</a
+          >
+          <a
+            href="/admin/productEditPage"
+            class="btn btn-danger btn-sm rounded me-2"
+            >Edit Product</a
+          >
         </div>
       </div>
     </div>
