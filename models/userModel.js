@@ -31,15 +31,11 @@ const userSchema = new mongoose.Schema({
     },
     is_verified : {
         type : Boolean,
-        default : false
+        default : false 
     },
     is_blocked:{
         type: Boolean,
         default:false
-    },
-    token:{
-        type: String,
-        default: ''
     }
 })
 

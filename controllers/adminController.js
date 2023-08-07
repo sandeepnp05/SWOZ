@@ -159,7 +159,7 @@ const listCategory = async (req, res) => {
     }
   } catch (error) {
     res.redirect("/error500");
-  }
+  } 
 };
 const productAddPage = async (req, res) => {
   try {
@@ -171,7 +171,11 @@ const productAddPage = async (req, res) => {
 };
 const productEditPage = async (req, res) => {
   try {
-    res.render("productEditPage");
+    const {id} = req.query
+    const categories = await Category.find();
+    const product = await Products.findById({_id:id});
+    console.log(product);
+    res.render("productEditPage",{categories,product});
   } catch (error) {
     console.log(error.message);
   }
@@ -185,7 +189,7 @@ const productListPage = async (req, res) => {
   }
 };
 const productAdd = async (req, res) => {
-  try {
+  try { 
     const {
       product_name,
       product_description,
@@ -227,6 +231,90 @@ const productAdd = async (req, res) => {
     console.log(error.message);
   }
 };
+const productUpdated = async (req, res) => {
+  try {
+  
+    const {
+      product_id,
+      product_name,
+      product_description,
+      product_price,
+      product_quantity,
+      product_category,
+      product_brand,
+    } = req.body;
+    console.log(product_id);
+    console.log('hai');
+    const imageArr = [];
+    console.log(req.files );
+    if (req.files && req.files.length > 0) {
+      for (let i = 0; i < req.files.length; i++) {
+        const filePath = path.join(
+          __dirname,
+          "../public/uncroppedImages",
+          req.files[i].filename
+        );
+        imageArr.push(req.files[i].filename);
+      }
+      }
+      if (req.files.length) {
+        const updated = await Products.updateOne(
+          { _id: product_id },
+          
+          {
+            $set: {
+              name: product_name,
+              price: product_price,
+              quantity: product_quantity,
+              category: product_category,
+              description: product_description,
+              brand: product_brand,
+              image: imageArr,
+            },
+          }
+        );
+        console.log(updated,'1');
+        res.redirect("/admin/productListPage");
+      } else {
+       const updated = await Products.updateOne(
+          { _id: product_id },
+          {
+            $set: {
+              name: product_name,
+              quantity: product_quantity,
+              price: product_price,
+              description: product_description,
+              category: product_category,
+            },
+          }
+        );
+        console.log(updated,'2');
+
+        res.redirect("/admin/productListPage");
+      }
+    
+  } catch (error) {
+    console.log(error.message);
+   
+    res.status(500).send("An error occurred.");
+  }
+};
+const unlistProduct = async(req,res)=>{
+  try {
+    const {productId} =req.body
+    const product = await Products.findById({_id:productId})
+    if(product.list === true){
+      await Products.updateOne({_id:productId},{$set:{list:false}})
+      res.status(201).json({listSucces:true});
+    }else{
+      await Products.updateOne({_id:productId},{$set:{list:true}})
+      res.status(201).json({listSucces:false});
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 
 module.exports = {
   dashboardLoad,
@@ -244,4 +332,6 @@ module.exports = {
   productEditPage,
   productListPage,
   productAdd,
+  productUpdated,
+  unlistProduct,
 };

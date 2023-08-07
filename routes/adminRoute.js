@@ -39,7 +39,7 @@ admin_route.get(
   adminController.productEditPage
 );
 admin_route.get(
-  "/productListPage",
+  "/productListPage", 
   auth.isLogin,
   adminController.productListPage
 );
@@ -50,5 +50,13 @@ admin_route.post(
   upload.array("product_img", 4),
   adminController.productAdd
 );
-
+admin_route.post(
+    "/productEditPage",
+    auth.isLogin,
+    upload.array("product_img", 4),
+    adminController.productUpdated, 
+  );
+  admin_route.patch("/productUnlist",
+   auth.isLogin, adminController.unlistProduct);
 module.exports = admin_route;
+  

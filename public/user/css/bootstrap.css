@@ -578,13 +578,42 @@ mark {
 
 .img-fluid {
     max-width: 100%;
-    height: auto
+    height: auto;
+  
 }
+.img-zoom {
+    position: relative;
+    max-width: 100%;
+    height: auto;
+    -o-object-fit: cover;
+    object-fit: cover;
+    transform: scale(var(--zoom, 1));
+    transform-origin: var(--x) var(--y);
+    transition: transform 0.3s ease;
+}
+/*Image Zoom*/
+.img-zoom:hover{
+    --zoom : 2.5;
+    cursor: zoom-in;
+    
+}
+.preview-box {
+    position: absolute;
+    border: 2px solid #322121;
+    background-color: rgba(48, 37, 37, 0.7);
+    pointer-events: none;
+    z-index: 9999;
+    transform-origin: top left;
+    width: 200px; /* Adjust width as needed */
+    height: 150px; /* Adjust height as needed */
+    display: none;
+}
+
 
 .img-thumbnail {
     padding: .25rem;
-    background-color: #fff;
-    border: 1px solid #dee2e6;
+    background-color: #3b3737;
+    border: 1px solid #262f38;
     border-radius: .25rem;
     max-width: 100%;
     height: auto

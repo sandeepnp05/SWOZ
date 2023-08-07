@@ -18,7 +18,8 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     category:{
-        type: String,
+        type:  mongoose.Schema.Types.ObjectId,
+        ref : 'Category',
         required: true
     },
     image:{
@@ -37,4 +38,4 @@ const productSchema = new mongoose.Schema({
 
 })
 
-module.exports = mongoose.model('Products',productSchema)
+module.exports = mongoose.model('Products',productSchema) 

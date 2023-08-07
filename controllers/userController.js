@@ -1,4 +1,6 @@
 const User = require("../models/userModel");
+const Products = require("../models/productModel");
+const Category = require("../models/categoryModel")
 const bcrypt = require("bcrypt");
 
 const nodemailer = require("nodemailer");
@@ -17,6 +19,8 @@ const securePassword = async (password) => {
   }
 };
 
+// Render the register page.
+
 const loadRegister = async (req, res) => {
   try {
     res.render("register", { message: "" });
@@ -24,8 +28,10 @@ const loadRegister = async (req, res) => {
     console.log(err.message);
   }
 };
-//email otp
-const sendEmail = async (firstname, email) => {
+
+// Send an email with an OTP for email verification.
+
+const sendEmail = async (email) => {
   try {
     otp = `${Math.floor(1000 + Math.random() * 9000)}`;
     const transporter = nodemailer.createTransport({
@@ -43,7 +49,27 @@ const sendEmail = async (firstname, email) => {
       from: process.env.email_user,
       to: email,
       subject: "for email verification",
-      html: `<p>Hi ${firstname} ,Please enter ${otp} for verification </p>`,
+      html: `
+        <div style='font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2'>
+          <div style='margin:50px auto;width:70%;padding:20px 0'>
+            <div style='border-bottom:1px solid #eee'>
+              <a href='' style='font-size:1.4em;color: #F6511D;text-decoration:none;font-weight:600'>SWOZ.ONLINE
+            </div>
+            <p style="font-size: 1.1em">Hi,</p>
+            <p>Thank you for choosing SOWZ. Use the following OTP to complete your Sign Up procedures. OTP is valid for few minutes</p>
+            <h2 style='background: #F6511D;margin: 0 auto;width: max-content;padding: 0 10px;color: white;border-radius: 4px;'>
+              ${otp}
+            </h2>
+            <p style='font-size:0.9em;'>Regards,<br />SWOZ.ONLINE</p>
+            <hr style='border:none;border-top:1px solid #eee' />
+            <div style='float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300'>
+              <p>swoz online Eco</p>
+              <p>1600 Ocean Of Heaven</p>
+              <p>Pacific</p>
+            </div>
+          </div>
+        </div>
+      `
     };
     transporter.sendMail(options, (error, info) => {
       if (error) {
@@ -58,56 +84,8 @@ const sendEmail = async (firstname, email) => {
     console.log(error.message);
   }
 };
-const generateOTP = () => {
-  return Math.floor(100000 + Math.random() * 900000);
-};
-//for reset password send mail
-const sendResetPasswordEmail = async (firstname, email) => {
-  try {
-    const token = generateOTP();
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      requireTLS: true,
-      auth: {
-        user: process.env.email_user,
-        pass: process.env.email_password,
-      },
-    });
-
-    const options = {
-      from: process.env.email_user,
-      to: email,
-      subject: "Reset Password",
-      html: `<p>Hi ${firstname}, Please enter this token ${token} to reset your password</p>`,
-    };
-
-    transporter.sendMail(options, (error, info) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log(token);
-        console.log("Email has been sent to:-", info.response);
-      }
-    });
-
-    // Update the user document in the database with the new token
-    const updatedData = await User.findOneAndUpdate(
-      { email: email },
-      { $set: { token: token } },
-      { new: true }
-    );
-
-    return { email: email, token: token };
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
-
-//otp verification
+// Verify the OTP entered by the user for email verification.
 
 const verifyOtp = async (req, res) => {
   try {
@@ -137,10 +115,11 @@ const verifyOtp = async (req, res) => {
     console.log(error.message);
     res.render("otpLogin", {
       errMessage: "An error occurred. Please try again later.",
-    });
+    });le.log
   }
 };
 
+// Insert a new user into the database after registration.
 
 const insertUser = async (req, res) => {
   try {
@@ -168,7 +147,7 @@ const insertUser = async (req, res) => {
 
       const userData = await user.save();
       if (userData) {
-        const otp = await sendEmail(firstname, email);
+        const otp = await sendEmail(email);
 
         req.session.tempEmail = email;
         req.session.otp = otp;
@@ -182,6 +161,8 @@ const insertUser = async (req, res) => {
   }
 };
 
+// Render the login page.
+
 const loginLoad = async (req, res) => {
   try {
     res.render("login", {
@@ -194,13 +175,14 @@ const loginLoad = async (req, res) => {
   }
 };
 
-//login
+// Verify user login credentials.
+
 const verifyLogin = async (req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
 
-    const userData = await User.findOne({ email: email });
+    const userData = await User.findOne({ email: email }); 
 
     if (userData) {
       const passMatch = await bcrypt.compare(password, userData.password);
@@ -223,31 +205,24 @@ const verifyLogin = async (req, res) => {
   }
 };
 
-// const loadHome = async (req, res) => {
-//   try {
-//     const userData = await User.findById(req.session.user_id);
-//     const user = req.session.user_id
-//     console.log(user);
-//     res.render("index", { user: userData, userSession: user, firstname: userData.firstname });
+// Load the home page with products data.
 
-//   } catch (err) {
-//     console.log(err.message);
-//   }
-// };
-const loadHome = async (req, res) => {
+const loadHome = async (req, res) => { 
   try {
-    const userData = await User.findById(req.session.user_id);
     const userSession = req.session.user_id ? req.session.user_id : "";
-    res.render("index", {
-      user: userData,
-      userSession: userSession,
-      firstname: userData.firstname,
-    });
+    const products = await Products.find({ list: true }).populate("category")
+
+      res.render("index", {
+        products
+      });
     
   } catch (err) {
-    console.log(err.message);
+    console.log("Error:", err.message);
+    res.status(500).send("Error fetching products"); 
   }
 };
+
+// Logout the user and destroy the session.
 
 const logout = async (req, res) => {
   try {
@@ -258,6 +233,9 @@ const logout = async (req, res) => {
   }
 };
 
+
+// Redirect the user to the login page.
+
 const redirectUser = async (req, res) => {
   try {
     res.render("login");
@@ -265,13 +243,9 @@ const redirectUser = async (req, res) => {
     console.log(err.message);
   }
 };
-const loadIndex = async (req, res) => {
-  try {
-    res.render("index");
-  } catch (err) {
-    console.log(err.message);
-  }
-};
+
+// Render the contact page.
+
 const loadContact = async (req, res) => {
   try {
     res.render("contact");
@@ -279,6 +253,9 @@ const loadContact = async (req, res) => {
     console.log(err.message);
   }
 };
+
+// Render the category page.
+
 const loadCategory = async (req, res) => {
   try {
     res.render("category");
@@ -286,6 +263,9 @@ const loadCategory = async (req, res) => {
     console.log(err.message);
   }
 };
+
+// Render the OTP verification page.
+
 const loadOtp = async (req, res) => {
   try {
     res.render("otpLogin", { message: `Email has been sent to your mail` });
@@ -293,6 +273,8 @@ const loadOtp = async (req, res) => {
     console.log(err.message);
   }
 };
+
+// Render the single product page.
 
 const loadProduct = async (req, res) => {
   try {
@@ -302,6 +284,8 @@ const loadProduct = async (req, res) => {
   }
 };
 
+// Render the checkout page.
+
 const loadCheckout = async (req, res) => {
   try {
     res.render("checkout");
@@ -309,6 +293,8 @@ const loadCheckout = async (req, res) => {
     console.log(err.message);
   }
 };
+
+// Render the cart page.
 
 const loadCart = async (req, res) => {
   try {
@@ -318,6 +304,9 @@ const loadCart = async (req, res) => {
   }
 };
 
+// Render the order confirmation page.
+
+
 const loadConfirmation = async (req, res) => {
   try {
     res.render("confirmation");
@@ -325,6 +314,9 @@ const loadConfirmation = async (req, res) => {
     console.log(err.message);
   }
 };
+
+// Render the wishlist page.
+
 const loadWishlist = async (req, res) => {
   try {
     res.render("wishlist");
@@ -332,6 +324,9 @@ const loadWishlist = async (req, res) => {
     console.log(err.message);
   }
 };
+
+// Render the forget password page.
+
 const loadForget = async (req, res) => {
   try {
     res.render("forget");
@@ -340,44 +335,71 @@ const loadForget = async (req, res) => {
   }
 };
 
-const forgetVerify = async (req, res) => {
+// Render the OTP verification for forget password page
+
+const loadVerifyForget = async (req,res)=>{
   try {
-    const email = req.body.email;
-    const userData = await User.findOne({ email: email });
-    if (userData) {
-      if (userData.is_verified === false) {
-        res.render("forget", { message: "Please verify your mail." });
-      } else {
-        const token = randomString.generate(); 
-        const updatedData = await User.updateOne(
-          { email: email },
-          { $set: { token: token } } 
-        );
+    res.render('otpForget')
+  } catch (err) {
+    console.log(err.message);
+  }
+}
 
-        await sendResetPasswordEmail(userData.firstname, userData.email, token); 
+// Verify the user's email for forget password.
 
-        res.render("forget", {
-          message: "Please check your mail to reset your password",
-        });
+const verifyForgetEmail = async(req,res)=>{
+  try {
+    const {email} = req.body;
+    const userData =  await User.findOne({email:email});
+    if (userData){
+      if(userData.is_verified){
+        if(userData.is_blocked === false){
+          const otp = await sendEmail(email)
+            req.session.forOtp = otp;
+            res.render("otpForget", {
+              succMessage: "Enter otp to verify your email",
+              formessage: "true",
+              email,
+            });
+        }else{
+          res.render('forget',{message:"User is blodked!."})
+        }
+      }else{
+        res.render('forget',{message:'User email is not verified!..'})
       }
-    } else {
-      res.render("forget", { message: "User email is incorrect" });
+    }else{
+      req.session.formessage = 'User not found'
+      res.redirect('/forget')
     }
   } catch (error) {
     console.log(error.message);
   }
-};
-const resetLoad = async (req, res) => {
+}
+const resetPassword = async (req,res)=>{
   try {
-    res.render("resetPassword");
-  } catch (err) {
+    res.render('resetPassword')
+  } catch (error) {
     console.log(err.message);
   }
-};
-const userProfile = async (req, res) => {
+}
+const postResetPassword = async (req,res)=>{
+  try {
+    
+    res.redirect('/resetPassword')
+  } catch (error) {
+    console.log(err.message);
+  }
+}
+const loadForgetResetSuccess = async (req,res)=>{
+  try {
+    res.render('forgetResetSuccess')
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+const userProfile = async (req, res) => { 
   try {
     const userData = await User.findById(req.session.user_id)
-    console.log(userData);
     if (!userData) {
      
       return res.status(404).render('error', { message: 'User data not found' });
@@ -387,9 +409,20 @@ const userProfile = async (req, res) => {
   } catch (err) {
     console.log(err.message);
     
-    res.status(500).render('error', { message: 'Internal server error' });
+    res.status(500).render('error', { message: 'Internal server error' }); 
   }
 };
+
+const loadSingleProduct = async(req,res)=>{
+  try {
+    const {id} = req.query;
+    const {user} = req.session;
+    const singleProduct = await Products.findById({_id:id}).populate("category");
+    res.render('singleProduct',{singleProduct,user})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 
 module.exports = {
@@ -400,7 +433,7 @@ module.exports = {
   loadHome,
   logout,
   redirectUser,
-  loadIndex,
+  loadVerifyForget,
   loadContact,
   loadCategory,
   loadOtp,
@@ -410,10 +443,12 @@ module.exports = {
   loadCart,
   loadConfirmation,
   verifyOtp,
-  sendResetPasswordEmail,
   loadWishlist,
   loadForget,
-  forgetVerify,
-  resetLoad,
   userProfile,
+  resetPassword,
+  loadForgetResetSuccess,
+  postResetPassword,
+  verifyForgetEmail,
+  loadSingleProduct,
 };

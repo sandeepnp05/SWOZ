@@ -16,6 +16,7 @@
                 <th>Description</th>
                 <th>Quantity/Stock</th>
                 <th>Actions</th>
+                <th>Edit</th>
               </tr>
             </thead>
             <tbody>
@@ -39,7 +40,7 @@
                   <span>₹<%= product[i].price %></span>
                 </td>
                 <td>
-                  <span><%= product[i].category %></span>
+                  <span><%= product[i].name %></span>
                 </td>
                 <td>
                   <span><%= product[i].description %></span>
@@ -52,11 +53,20 @@
                 <td>
                   <button
                     id="block-<%= product[i]._id %>"
-                    onclick="blockProduct('<%= product[i]._id %>')"
-                    class="btn btn-sm btn-danger rounded font-sm mt-1"
+                    onclick="unlistProduct('<%= product[i]._id %>')"
+                    class="btn btn-sm btn-danger rounded font-sm mt-1"style="
+                    <% if (product[i].list) { %>background-color: green; color: white;<% } %>"
                   >
-                    List
+                    <% if (product[i].list === true) { %> Unlist <% } else { %>
+                    List <% } %>
                   </button>
+                </td>
+                <td>
+                  <a
+                    href="/admin/productEditPage?id=<%= product[i]._id %>"
+                    class="btn btn-sm btn-danger rounded font-sm mt-15"
+                    >Edit</a
+                  >
                 </td>
               </tr>
               <% } } %>
@@ -69,16 +79,37 @@
           <a
             href="/admin/productAddPage"
             class="btn btn-primary btn-sm rounded me-2"
-            >Create new</a
-          >
-          <a
-            href="/admin/productEditPage"
-            class="btn btn-danger btn-sm rounded me-2"
-            >Edit Product</a
-          >
+            >Create new
+          </a>
         </div>
       </div>
     </div>
   </div>
 </section>
 <%- include('../layouts/adminFooter.ejs') %>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  const unlistProduct = async (productId) => {
+    try {
+      const button = document.getElementById(`block-${productId}`);
+      if (button.textContent.trim() === "List") {
+        button.textContent = "Unlist";
+      } else {
+        button.textContent = "List";
+      }
+
+      const responses = await axios.patch("/admin/productUnlist", {
+        productId,
+      });
+
+      $("#myTable").DataTable().draw(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  $(document).ready(function () {
+    $("#myTable").DataTable();
+  });
+</script>
