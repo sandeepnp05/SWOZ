@@ -1,0 +1,89 @@
+<%- include("../layouts/header.ejs") %>
+<%- include("../layouts/userNav.ejs") %>
+<div class="AddressContainer">
+
+
+    <!--Section: Design Block-->
+    <section >
+
+        <div class="col-md-8 mb-4">
+          <div class="card mb-4">
+            <div class="card-header py-3">
+              <h5 class="mb-0 text-font text-uppercase">Delivery address</h5>
+            </div>
+            <div class="card-body">
+              <form action="/addAddress" method="post">
+  
+                <div class="row mb-4">
+                  <div class="col">
+                    <div class="form-outline">
+                      <input type="text" id="form11Example1" name="firstname" class="form-control" />
+                      <label class="form-label" for="form11Example1">First name</label>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="form-outline">
+                      <input type="text" id="form11Example2"  name="lastname" class="form-control" />
+                      <label class="form-label" for="form11Example2">Last name</label>
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- Text input -->
+                <div class="form-outline mb-4">
+                  <input type="text" id="form11Example3" name="housename" class="form-control" />
+                  <label class="form-label" for="form11Example3">House Name</label>
+                </div>
+  
+                <!-- Text input -->
+                <div class="form-outline mb-4">
+                  <input type="text" id="form11Example4" name="city" class="form-control" />
+                  <label class="form-label" for="form11Example4">City</label>
+                </div>
+  
+                <!-- Email input -->
+                <div class="form-outline mb-4">
+                  <input type="text" id="form11Example5" name="district" class="form-control" />
+                  <label class="form-label" for="form11Example5">District</label>
+                </div>
+  
+                <!-- Number input -->
+                <div class="form-outline mb-4">
+                  <input type="text" id="form11Example6" name="state" class="form-control" />
+                  <label class="form-label" for="form11Example6">State</label>
+                </div>
+                 <!-- Number input -->
+                 <div class="form-outline mb-4">
+                    <input type="number" id="form11Example6" name="mobile" class="form-control" />
+                    <label class="form-label" for="form11Example6">Mobile</label>
+                  </div>
+                   <!-- Number input -->
+                <div class="form-outline mb-4">
+                    <input type="number" id="form11Example6" name="pincode" class="form-control" />
+                    <label class="form-label" for="form11Example6">Pincode</label>
+                  </div>
+  
+              
+            </div>
+  
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn button-order col-md-10">Add Address</button>
+          </div>
+        </form>
+        </div>
+  
+  
+  
+  
+  
+  
+      </div>
+  
+    </section>
+    <!--Section: Design Block-->
+  
+  </div>
+  
+	<%- include("../layouts/footer.ejs") %>
+	<%- include("../layouts/userFooter.ejs") %>

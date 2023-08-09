@@ -1,6 +1,9 @@
 const express = require("express");
 const admin_route = express();
 const adminController = require("../controllers/adminController");
+const categoryController = require("../controllers/categoryController")
+const productController = require("../controllers/productController")
+
 const nocache = require("nocache");
 const auth = require("../middleware/adminAuth");
 const Products = require("../models/productModel");
@@ -18,45 +21,45 @@ admin_route.get("/logout", adminController.logout);
 admin_route.get("/userList", auth.isLogin, adminController.userList);
 admin_route.get("/blockUser", adminController.blockUser);
 
-admin_route.get("/categories", auth.isLogin, adminController.categories);
-admin_route.post("/categories", auth.isLogin, adminController.addCategories);
-admin_route.get("/editCategory", auth.isLogin, adminController.editCategories);
+admin_route.get("/categories", auth.isLogin, categoryController.categories);
+admin_route.post("/categories", auth.isLogin, categoryController.addCategories);
+admin_route.get("/editCategory", auth.isLogin, categoryController.editCategories);
 admin_route.post(
   "/editCategory",
   auth.isLogin,
-  adminController.updatedCategory
+  categoryController.updatedCategory
 );
-admin_route.patch("/listCategory", auth.isLogin, adminController.listCategory);
+admin_route.patch("/listCategory", auth.isLogin, categoryController.listCategory);
 
 admin_route.get(
   "/productAddPage",
   auth.isLogin,
-  adminController.productAddPage
+  productController.productAddPage
 );
 admin_route.get(
   "/productEditPage",
   auth.isLogin,
-  adminController.productEditPage
+  productController.productEditPage
 );
 admin_route.get(
   "/productListPage", 
   auth.isLogin,
-  adminController.productListPage
+  productController.productListPage
 );
 
 admin_route.post(
   "/productAddPage",
   auth.isLogin,
   upload.array("product_img", 4),
-  adminController.productAdd
+  productController.productAdd
 );
 admin_route.post(
     "/productEditPage",
     auth.isLogin,
     upload.array("product_img", 4),
-    adminController.productUpdated, 
+    productController.productUpdated, 
   );
   admin_route.patch("/productUnlist",
-   auth.isLogin, adminController.unlistProduct);
+   auth.isLogin, productController.unlistProduct);
 module.exports = admin_route;
   

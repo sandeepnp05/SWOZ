@@ -1,5 +1,6 @@
 <%- include('../layouts/adminHead.ejs') %>
-<section class="content-main">
+<%- include("../layouts/adminSidebar.ejs") %>
+<section class="content-main"sty>
   <div class="content-header">
     <h2 class="content-title card-title">Products List</h2>
   </div>
@@ -86,7 +87,7 @@
     </div>
   </div>
 </section>
-<%- include('../layouts/adminFooter.ejs') %>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -113,3 +114,4 @@
     $("#myTable").DataTable();
   });
 </script>
+<%- include('../layouts/adminFooter.ejs') %>

@@ -20,23 +20,13 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3">
-                                <form action="/admin/categories" method="patch">
+                                <form action="/admin/categories" method="post">
                                     <div class="mb-4">
                                         <label for="category_name" class="form-label">Name</label>
                                         <!-- Updated name attribute to "category_name" -->
                                         <input type="text" placeholder="Type here" class="form-control" id="category_name" name="category_name" />
                                     </div>
-                                    <!-- <div class="mb-4">
-                                        <label for="category_slug" class="form-label">Slug</label>
-                                        <input type="text" placeholder="Type here" class="form-control" id="category_slug" name="category_slug" />
-                                    </div> -->
-                                    <!-- <div class="mb-4">
-                                        <label class="form-label">Parent</label>
-                                        <select class="form-select">
-                                            <option>Fruit</option>
-                                            <option>Snack</option>
-                                        </select>
-                                    </div> -->
+                                   
                                     <div class="mb-4">
                                         <label class="form-label">Description</label>
                                         <textarea placeholder="Type here" class="form-control" name="category_description"></textarea>
@@ -46,8 +36,10 @@
                                         <button class="btn btn-primary">Create category</button>
                                     </div>
                                 </form>
+                                <a href="#" style="color: rgb(23, 177, 69); margin-top: 13px;"><%= message %></a>
+
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-9">  
                                 <div class="table-responsive">
                                     <table class="table table-hover">
                                         <thead>

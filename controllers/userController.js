@@ -90,7 +90,6 @@ const sendEmail = async (email) => {
 const verifyOtp = async (req, res) => {
   try {
     const receivedOtp = req.body.otp;
-    console.log(receivedOtp, "    " + req.session.otp);
 
     if (receivedOtp === req.session.otp) {
       const findUserAndUpdate = await User.findOneAndUpdate(
@@ -135,7 +134,6 @@ const insertUser = async (req, res) => {
         return;
       }
 
-      console.log(lastname, firstname, email, mobile);
       const spassword = await securePassword(password);
       const user = new User({
         firstname: firstname,
@@ -190,6 +188,7 @@ const verifyLogin = async (req, res) => {
         if (userData.is_verified === false) {
           res.render("login", { message: "Please verify your mail" });
         } else {
+          req.session.user = email;
           req.session.user_id = userData._id;
           req.session.firstname = userData.firstname;
           res.redirect("/index");
@@ -315,7 +314,7 @@ const loadConfirmation = async (req, res) => {
   }
 };
 
-// Render the wishlist page.
+// Render the wishlist page.verif
 
 const loadWishlist = async (req, res) => {
   try {
@@ -339,6 +338,7 @@ const loadForget = async (req, res) => {
 
 const loadVerifyForget = async (req,res)=>{
   try {
+
     res.render('otpForget')
   } catch (err) {
     console.log(err.message);
@@ -350,6 +350,9 @@ const loadVerifyForget = async (req,res)=>{
 const verifyForgetEmail = async(req,res)=>{
   try {
     const {email} = req.body;
+   req.session.forEmail= req.body.email
+   console.log(req.session.forEmail);
+   
     const userData =  await User.findOne({email:email});
     if (userData){
       if(userData.is_verified){
@@ -375,21 +378,48 @@ const verifyForgetEmail = async(req,res)=>{
     console.log(error.message);
   }
 }
-const resetPassword = async (req,res)=>{
+// Verify otp of forget mail
+const verifyForgetOtp = async(req,res)=>{
   try {
-    res.render('resetPassword')
+    const recievedOtp = req.body.otp;
+    let {forget} = req.body;
+    const { email } = req.body;
+    if (req.session.forOtp == recievedOtp) {
+      res.redirect("/resetPassword?email=" + encodeURIComponent(email))
+    } else {
+      res.render("otpForget", {
+        errMessage: "Invalid otp. Please check your otp",
+      });
+    }
   } catch (error) {
-    console.log(err.message);
+    console.log(error.message);
+    res.render("otpForget", {
+      errMessage: "An error occurred. Please try again later.",
+    });le.log
   }
 }
-const postResetPassword = async (req,res)=>{
+const resetPassword = async (req, res) => {
   try {
-    
-    res.redirect('/resetPassword')
+    const { email } = req.query;
+    res.render('resetPassword', { email }); 
   } catch (error) {
-    console.log(err.message);
+    console.log(error.message);
   }
 }
+
+const newPassword = async(req,res)=>{
+  try {
+    const {password} = req.body;
+    const passwordHash = await bcrypt.hash(password, 10);
+    await User.updateOne(
+      { email: req.session.forEmail },
+      { $set: { password: passwordHash } }
+    );
+    res.redirect("/forgetResetSuccess");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 const loadForgetResetSuccess = async (req,res)=>{
   try {
     res.render('forgetResetSuccess')
@@ -397,6 +427,18 @@ const loadForgetResetSuccess = async (req,res)=>{
     console.log(error.message);
   }
 }
+
+const loadSingleProduct = async(req,res)=>{
+  try {
+    const {id} = req.query;
+    const {user} = req.session;
+    const singleProduct = await Products.findById({_id:id}).populate("category");
+    res.render('singleProduct',{singleProduct,user})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 const userProfile = async (req, res) => { 
   try {
     const userData = await User.findById(req.session.user_id)
@@ -412,13 +454,49 @@ const userProfile = async (req, res) => {
     res.status(500).render('error', { message: 'Internal server error' }); 
   }
 };
-
-const loadSingleProduct = async(req,res)=>{
+const updateProfile = async(req,res)=>{
   try {
-    const {id} = req.query;
-    const {user} = req.session;
-    const singleProduct = await Products.findById({_id:id}).populate("category");
-    res.render('singleProduct',{singleProduct,user})
+    const {firstname,lastname,phone} = req.body
+    await User.updateOne({_id:req.session.user_id},
+      {$set:{firstname:firstname,lastname:lastname,phone:phone}});
+      res.redirect('/userProfile')
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const addressForm = async(req,res)=>{
+  try {
+    const {userId,addressId,check} = req.query
+    const addAddressDetails = await User.findOne({
+      _id:userId,'address._id':addressId},{address:1}
+    );
+    res.render('addressForm',{addAddressDetails,check})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const addAddress = async(req,res) => {
+  try {
+    const email = req.session.user;
+    const {firstname,lastname,city,district,state,mobile,pincode,housename} = req.body;
+    await User.updateOne(
+      {email:email},{
+        $push:{address:{
+          firstname:firstname,
+          lastname: lastname,
+          housename:housename,
+          city:city,
+          district:district,
+          state: state,
+          mobile:mobile,
+          pincode:pincode
+        },
+       },
+      }
+    );
+    res.redirect('/userProfile')
   } catch (error) {
     console.log(error.message);
   }
@@ -433,7 +511,6 @@ module.exports = {
   loadHome,
   logout,
   redirectUser,
-  loadVerifyForget,
   loadContact,
   loadCategory,
   loadOtp,
@@ -446,9 +523,14 @@ module.exports = {
   loadWishlist,
   loadForget,
   userProfile,
+  loadVerifyForget,
   resetPassword,
+  newPassword,
   loadForgetResetSuccess,
-  postResetPassword,
   verifyForgetEmail,
+  verifyForgetOtp,
   loadSingleProduct,
+  updateProfile,
+  addAddress,
+  addressForm
 };

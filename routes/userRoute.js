@@ -31,11 +31,13 @@ user_route.get('/forget',auth.isLogout,userController.loadForget)
 user_route.get('/otpForget',auth.isLogout,userController.loadVerifyForget)
 user_route.post('/otpForget',auth.isLogout,userController.verifyForgetEmail)
 user_route.get('/resetPassword',auth.isLogout,userController.resetPassword)
-user_route.post('/resetPassword',auth.isLogout,userController.postResetPassword)
-user_route.post('/forgetResetSuccess',auth.isLogout,userController.loadForgetResetSuccess)
-
+user_route.post('/resetPassword',auth.isLogout,userController.verifyForgetOtp)
+user_route.post('/forgetResetSuccess',auth.isLogout,userController.newPassword)
+user_route.get('/forgetResetSuccess',auth.isLogout,userController.loadForgetResetSuccess)
 user_route.get('/userProfile',auth.isLogin, userController.userProfile) 
-user_route.get('/singleProduct',userController.loadSingleProduct)
-
+user_route.get('/singleProduct',userController.loadSingleProduct) 
+user_route.get('/addressForm',auth.isLogin,userController.addressForm)
+user_route.post('/addAddress',auth.isLogin,userController.addAddress)
+user_route.post('/updateProfile',auth.isLogin,userController.updateProfile)
 
 module.exports =  user_route

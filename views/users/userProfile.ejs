@@ -1,195 +1,237 @@
- <%- include("../layouts/header.ejs") %> 
-<%- include("../layouts/userNav.ejs") %> 
-
-
-
+<%- include("../layouts/header.ejs") %> <%- include("../layouts/userNav.ejs") %>
 
 <section style="background-color: #eee">
-    <div class="container py-6" style="padding-top: 8rem;padding-bottom: 3rem;">
-      <div class="row">
-        <div class="col-lg-4">
-          <div class="card mb-4">
-            <div class="card-body text-center">
-              <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                alt="avatar"
-                class="rounded-circle img-fluid"
-                style="width: 150px"
-              />
-              <h5 class="my-3"><%=userData.firstname%> <%=userData.lastname%></h5>
-              <!-- <h6>Wallet amount: User Wallet Amount</h6> -->
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                  <a href="#" class="text-decoration-none" onclick="toggleProfileForm()">Edit Profile</a>
-                </li>
-                <li class="list-group-item">
-                  <a href="/orderedList" class="text-decoration-none">Orders</a>
-                </li>
-                <li class="list-group-item">
-                  <a href="#" class="text-decoration-none" onclick="toggleAddress()">Manage Address</a>
-                </li>
-                <li class="list-group-item">
-                  <a href="/logout" class="btn btn-primary ml-3">Logout</a>
-                </li>
-              </ul>
-            </div>
+  <div class="container py-6" style="padding-top: 8rem; padding-bottom: 3rem">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            <img
+              src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+              alt="avatar"
+              class="rounded-circle img-fluid"
+              style="width: 150px"
+            />
+            <h5 class="my-3"><%=userData.firstname%> <%=userData.lastname%></h5>
+            <!-- <h6>Wallet amount: User Wallet Amount</h6> -->
           </div>
         </div>
-  
-        <div class="col-lg-8">
-          <div class="card mb-4" id="userDetails">
-            <div class="card-body">
-              <h5 class="card-title">User Profile</h5>
-              <hr />
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Full Name</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="text-muted mb-0"><%=userData.firstname%> <%=userData.lastname%></p>
-                </div>
-              </div>
-              <hr />
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Email</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="text-muted mb-0"><%=userData.email%></p>
-                </div>
-              </div>
-              <hr />
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Mobile</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="text-muted mb-0"><%= userData.phone %></p>
-                </div>
-              </div>
-              <hr />
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Actions</p>
-                </div>
-                <div class="col-sm-9">
-                  <a href="/resetPassword?token=User_ID" class="btn btn-primary mr-2">Change Password</a>
-                  <a href="/address" class="btn btn-primary">Add Address</a>
-                </div>
-              </div>
-              <hr />
-            </div>
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  class="text-decoration-none"
+                  onclick="toggleProfileForm()"
+                  >Edit Profile</a
+                >
+              </li>
+              <li class="list-group-item">
+                <a href="/orderedList" class="text-decoration-none">Orders</a>
+              </li>
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  class="text-decoration-none"
+                  onclick="toggleAddress()"
+                  >Manage Address</a
+                >
+              </li>
+              <li class="list-group-item">
+                <a href="/logout" class="btn btn-primary ml-3">Logout</a>
+              </li>
+            </ul>
           </div>
-  
-          <div class="card mb-4" id="profileForm" style="display: none">
-            <div class="d-flex align-items-center justify-content-between">
-              <h3></h3>
-              <a href="/userProfile" class="btn btn-md btn-success mt-3">Back</a>
+        </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="card mb-4" id="userDetails">
+          <div class="card-body">
+            <h5 class="card-title">User Profile</h5>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Full Name</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0">
+                  <%=userData.firstname%> <%=userData.lastname%>
+                </p>
+              </div>
             </div>
-            <div class="card-body">
-              <h5 class="card-title">Update Profile</h5>
-              <hr />
-              <form action="/updateProfile" method="post">
-                <div class="form-group">
-                  <label for="firstName">First Name</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="fname"
-                    id="firstName"
-                    value="User First Name"
-                    placeholder="Enter your first name"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="lastName">Last Name</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="lastName"
-                    name="lname"
-                    value="User Last Name"
-                    placeholder="Enter your last name"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    name="email"
-                    readonly
-                    value="user@example.com"
-                    placeholder="Enter your email"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="mobile">Mobile</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="mobile"
-                    name="mobile"
-                    value="User Mobile Number"
-                    placeholder="Enter your mobile number"
-                    required
-                  />
-                </div>
-                <button type="submit" class="btn btn-primary">
-                  Save Changes
-                </button>
-              </form>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Email</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0"><%=userData.email%></p>
+              </div>
             </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Mobile</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0"><%= userData.phone %></p>
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Actions</p>
+              </div>
+              <div class="col-sm-9">
+                <!-- <a
+                  href="/resetPassword?token=User_ID"
+                  class="btn btn-primary mr-2"
+                  >Change Password</a
+                > -->
+                <a href="/addressForm" class="btn btn-primary">Add Address</a>
+              </div>
+            </div>
+            <hr />
           </div>
-  
-          <div class="card mb-4" id="addressDetails" style="display: none">
-            <div class="d-flex align-items-center justify-content-between">
-              <h3></h3>
-              <a href="/userProfile" class="btn btn-md btn-success mt-3">Back</a>
-            </div>
-            <div class="card-body">
-              <h5 class="card-title">Address Details</h5>
-              <hr />
-              <div id="addrId">
-                <div class="row">
-                  <div class="col-sm-3">
-                    <p class="mb-0">Address Line :</p>
-                  </div>
-                  <div class="col-sm-9">
-                    <p class="text-muted mb-0">User House Name, User City, User District, User State User Pincode</p>
-                  </div>
+        </div>
+
+        <div class="card mb-4" id="profileForm" style="display: none">
+          <div class="d-flex align-items-center justify-content-between">
+            <h3></h3>
+            
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Update Profile</h5>
+            <hr />
+            <form action="/updateProfile" method="post">
+              <div class="form-group">
+                <label for="firstname">First Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="firstname"
+                  id="firstName"
+                  value="<%= userData.firstname %>"
+                  placeholder="Enter your first name"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lastName"
+                  name="lastname"
+                  value="<%=userData.lastname %>"
+                  placeholder="Enter your last name"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  readonly
+                  value="<%=userData.email %>"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="mobile">Mobile</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="mobile"
+                  name="mobile"
+                  value="<%=userData.phone%>"
+                  placeholder="Enter your mobile number"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Save Changes
+              </button>
+              <a href="/userProfile" class="btn btn-primary">Back</a>
+            </form>
+          </div>
+        </div>
+
+        <div class="card mb-4" id="addressDetails" style="display: none">
+          <div class="d-flex align-items-center justify-content-between">
+            <h3></h3>
+          
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Address Details</h5>
+            <hr />
+            <div id="addrId">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Address Line :</p>
                 </div>
-                <div class="row mt-3">
-                  <div class="col-sm-9 offset-sm-3">
-                    <a href="/address?userId=User_ID&addressId=Address_ID" class="btn btn-primary btn-sm mr-2">Edit</a>
-                    <a href="" onclick="handleDeleteAddress('Address_ID')" class="btn btn-danger btn-sm">Remove</a>
-                  </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">
+                    User House Name, User City, User District, User State User
+                    Pincode
+                  </p>
                 </div>
               </div>
-              <hr />
+              <div class="row mt-3">
+                <div class="col-sm-9 offset-sm-3">
+                  <a
+                    href="/address?userId=User_ID&addressId=Address_ID"
+                    class="btn btn-primary btn-sm mr-2"
+                    >Edit</a
+                  >
+                  <a
+                    href=""
+                    onclick="handleDeleteAddress('Address_ID')"
+                    class="btn btn-danger btn-sm"
+                    >Remove</a
+                  >
+                </div>
+              </div>
             </div>
-            <div class="card-body">
-              <a href="/address" class="btn btn-primary btn-sm">Add New Address</a>
-            </div>
+            <hr />
+          </div>
+          <div class="card-body">
+            <a href="/address" class="btn btn-primary btn-sm"
+              >Add New Address</a
+            >
           </div>
         </div>
       </div>
     </div>
-  </section>
-  
-  <!-- Include Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
- 
-  
+  </div>
+</section>
 
-  <%- include("../layouts/footer.ejs") %>
-  <%- include("../layouts/userFooter.ejs") %>
+<!-- Include Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+  function toggleProfileForm() {
+    var profileForm = document.getElementById('profileForm')
+    var userDetails = document.getElementById('userDetails')
+    var addressDetails = document.getElementById('addressDetails')
+    if (profileForm.style.display === "none") {
+      profileForm.style.display = "block";
+      userDetails.style.display = "none";
+      addressDetails.style.display = "none";
+    }
+    else{
+      profileForm.style.display = "none";
+      userDetails.style.display = "block";
+    }
+  }
+</script>
+
+<%- include("../layouts/footer.ejs") %> 
+<%- include("../layouts/userFooter.ejs")%>
+
