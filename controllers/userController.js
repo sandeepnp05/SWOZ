@@ -441,13 +441,18 @@ const loadSingleProduct = async(req,res)=>{
 
 const userProfile = async (req, res) => { 
   try {
-    const userData = await User.findById(req.session.user_id)
+    const userData = await User.findById(req.session.user_id) 
+    const email = req.session.user;
+    const addAddressDetails = await User.findOne(
+      { email: email },
+      { address: 1 }
+    );
     if (!userData) {
      
       return res.status(404).render('error', { message: 'User data not found' });
     }
 
-    res.render("userProfile", { userData });
+    res.render("userProfile", { userData,addAddressDetails });
   } catch (err) {
     console.log(err.message);
     
@@ -467,16 +472,52 @@ const updateProfile = async(req,res)=>{
 
 const addressForm = async(req,res)=>{
   try {
-    const {userId,addressId,check} = req.query
-    const addAddressDetails = await User.findOne({
-      _id:userId,'address._id':addressId},{address:1}
-    );
-    res.render('addressForm',{addAddressDetails,check})
+    const {userId,addressId} = req.query
+  //  const userid= req.session.user_id
+   
+    const addAddressDetails = await User.findOne({_id:userId});
+    console.log(addAddressDetails);
+    res.render('addressForm',{addAddressDetails})
   } catch (error) {
     console.log(error.message);
   }
 }
-
+const updateAddress = async (req, res) => {
+  try {
+    const {
+      userId,
+      addressId,
+      firstname,
+      lastname,
+      housename,
+      city,
+      district,
+      state,
+      mobile,
+      pincode,
+    } = req.body;
+    const updAddress = await User.updateOne(
+      { _id: userId, "address._id": addressId },
+      {
+        $set: {
+          "address.$.firstname": firstname,
+          "address.$.lastname": lastname,
+          "address.$.housename": housename,
+          "address.$.city": city,
+          "address.$.district": district,
+          "address.$.state": state,
+          "address.$.mobile": mobile,
+          "address.$.pincode": pincode,
+        },
+      }
+    );
+    
+      res.redirect("/userprofile");
+    
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 const addAddress = async(req,res) => {
   try {
     const email = req.session.user;
@@ -486,7 +527,7 @@ const addAddress = async(req,res) => {
         $push:{address:{
           firstname:firstname,
           lastname: lastname,
-          housename:housename,
+          housename:housename, 
           city:city,
           district:district,
           state: state,
@@ -501,6 +542,23 @@ const addAddress = async(req,res) => {
     console.log(error.message);
   }
 }
+const deleteAddress = async (req, res) => {
+  try {
+    const user = req.session.user_id;
+    console.log(user);
+    const { addressId } = req.body;
+    console.log(addressId);
+    const deleted = await User.updateOne(
+      { _id: user },
+      { $pull: { address: { _id: addressId } } }
+    );
+    console.log(deleted);
+    res.json({ success: true }); // Send a response indicating successful deletion
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, error: error.message }); // Send an error response if deletion fails
+  }
+};
 
 
 module.exports = {
@@ -532,5 +590,7 @@ module.exports = {
   loadSingleProduct,
   updateProfile,
   addAddress,
-  addressForm
+  addressForm,
+  deleteAddress,
+  updateAddress
 };

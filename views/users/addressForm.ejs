@@ -5,7 +5,77 @@
 
     <!--Section: Design Block-->
     <section >
-
+      <% if(addAddressDetails){ %>
+        <div class="col-md-8 mb-4">
+          <div class="card mb-4">
+            <div class="card-header py-3">
+              <h5 class="mb-0 text-font text-uppercase">Delivery address</h5>
+            </div>
+            <div class="card-body">
+              <form action="/updateAddress" method="post">
+  
+                <div class="row mb-4">
+                  <div class="col">
+                    <div class="form-outline">
+                      <input type="text" id="firstname" value="<%= addAddressDetails.address[0].firstname %>" name="firstname" class="form-control" />
+                      
+                      <label class="form-label" for="form11Example1">First name</label>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="form-outline">
+                      <input type="text" id="form11Example2" value="<%= addAddressDetails.address[0].lastname %>" name="lastname" class="form-control" />
+                      <label class="form-label" for="form11Example2">Last name</label>
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- Text input -->
+                <div class="form-outline mb-4">
+                  <input type="text" id="form11Example3" value=" <%= addAddressDetails.address[0].housename %>" name="housename" class="form-control" />
+                  <label class="form-label" for="form11Example3">House Name</label>
+                </div>
+  
+                <!-- Text input -->
+                <div class="form-outline mb-4">
+                  <input type="text" id="form11Example4" value="<%= addAddressDetails.address[0].city %>" name="city" class="form-control" />
+                  <label class="form-label" for="form11Example4">City</label>
+                </div>
+  
+                <!-- District input -->
+                <div class="form-outline mb-4">
+                  <input type="text" id="form11Example5" value="<%= addAddressDetails.address[0].district %>" name="district" class="form-control" />
+                  <label class="form-label" for="form11Example5">District</label>
+                </div>
+  
+                <!-- State input -->
+                <div class="form-outline mb-4">
+                  <input type="text" id="form11Example6" value="<%= addAddressDetails.address[0].state %>" name="state" class="form-control" />
+                  <label class="form-label" for="form11Example6">State</label>
+                </div>
+                 <!-- Mobile input -->
+                 <div class="form-outline mb-4">
+                    <input type="number" id="form11Example6" value="<%= addAddressDetails.address[0].mobile %>" name="mobile" class="form-control" />
+                    <label class="form-label" for="form11Example6">Mobile</label>
+                  </div>
+                   <!-- Pincode input -->
+                <div class="form-outline mb-4">
+                    <input type="number" id="form11Example6" value="<%= addAddressDetails.address[0].pincode %>" name="pincode" class="form-control" />
+                    <label class="form-label" for="form11Example6">Pincode</label>
+                  </div>
+                 <input type="hidden" name="addressId" value="<%=addAddressDetails.address[0]._id %>">
+                 <input type="hidden" name="userId" value="<%=addAddressDetails._id %>">
+              
+            </div>
+  
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn button-order col-md-10">Update Address</button>
+          </div>
+        </form>
+        </div>
+      </div>
+      <%}else{%>
         <div class="col-md-8 mb-4">
           <div class="card mb-4">
             <div class="card-header py-3">
@@ -17,13 +87,14 @@
                 <div class="row mb-4">
                   <div class="col">
                     <div class="form-outline">
-                      <input type="text" id="form11Example1" name="firstname" class="form-control" />
+                      <input type="text" id="firstname" placeholder="First name" name="firstname" class="form-control" />
+                      
                       <label class="form-label" for="form11Example1">First name</label>
                     </div>
                   </div>
                   <div class="col">
                     <div class="form-outline">
-                      <input type="text" id="form11Example2"  name="lastname" class="form-control" />
+                      <input type="text" id="form11Example2" placeholder="Last name" name="lastname" class="form-control" />
                       <label class="form-label" for="form11Example2">Last name</label>
                     </div>
                   </div>
@@ -31,38 +102,38 @@
   
                 <!-- Text input -->
                 <div class="form-outline mb-4">
-                  <input type="text" id="form11Example3" name="housename" class="form-control" />
+                  <input type="text" id="form11Example3" placeholder="House name" name="housename" class="form-control" />
                   <label class="form-label" for="form11Example3">House Name</label>
                 </div>
   
                 <!-- Text input -->
                 <div class="form-outline mb-4">
-                  <input type="text" id="form11Example4" name="city" class="form-control" />
+                  <input type="text" id="form11Example4" placeholder="City" class="form-control" />
                   <label class="form-label" for="form11Example4">City</label>
                 </div>
   
-                <!-- Email input -->
+                <!-- District input -->
                 <div class="form-outline mb-4">
-                  <input type="text" id="form11Example5" name="district" class="form-control" />
+                  <input type="text" id="form11Example5" placeholder="District" name="district" class="form-control" />
                   <label class="form-label" for="form11Example5">District</label>
                 </div>
   
-                <!-- Number input -->
+                <!-- State input -->
                 <div class="form-outline mb-4">
-                  <input type="text" id="form11Example6" name="state" class="form-control" />
+                  <input type="text" id="form11Example6" placeholder="State" name="state" class="form-control" />
                   <label class="form-label" for="form11Example6">State</label>
                 </div>
-                 <!-- Number input -->
+                 <!-- Mobile input -->
                  <div class="form-outline mb-4">
-                    <input type="number" id="form11Example6" name="mobile" class="form-control" />
+                    <input type="number" id="form11Example6" placeholder="Mobile" name="mobile" class="form-control" />
                     <label class="form-label" for="form11Example6">Mobile</label>
                   </div>
-                   <!-- Number input -->
+                   <!-- Pincode input -->
                 <div class="form-outline mb-4">
-                    <input type="number" id="form11Example6" name="pincode" class="form-control" />
+                    <input type="number" id="form11Example6" placeholder="Pincode" name="pincode" class="form-control" />
                     <label class="form-label" for="form11Example6">Pincode</label>
                   </div>
-  
+                 
               
             </div>
   
@@ -72,14 +143,8 @@
           </div>
         </form>
         </div>
-  
-  
-  
-  
-  
-  
       </div>
-  
+      <% } %>
     </section>
     <!--Section: Design Block-->
   
