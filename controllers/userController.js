@@ -44,7 +44,7 @@ const sendEmail = async (email) => {
         pass: process.env.email_password,
       },
     });
-
+ 
     const options = {
       from: process.env.email_user,
       to: email,
@@ -205,14 +205,15 @@ const verifyLogin = async (req, res) => {
 };
 
 // Load the home page with products data.
-
+ 
 const loadHome = async (req, res) => { 
   try {
+    const {user_id} = req.session;
     const userSession = req.session.user_id ? req.session.user_id : "";
     const products = await Products.find({ list: true }).populate("category")
 
       res.render("index", {
-        products
+        products,user_id
       });
     
   } catch (err) {
@@ -283,25 +284,9 @@ const loadProduct = async (req, res) => {
   }
 };
 
-// Render the checkout page.
 
-const loadCheckout = async (req, res) => {
-  try {
-    res.render("checkout");
-  } catch (err) {
-    console.log(err.message);
-  }
-};
 
-// Render the cart page.
 
-const loadCart = async (req, res) => {
-  try {
-    res.render("cart");
-  } catch (err) {
-    console.log(err.message);
-  }
-};
 
 // Render the order confirmation page.
 
@@ -431,9 +416,9 @@ const loadForgetResetSuccess = async (req,res)=>{
 const loadSingleProduct = async(req,res)=>{
   try {
     const {id} = req.query;
-    const {user} = req.session;
+    const user_id = req.session.user_id;
     const singleProduct = await Products.findById({_id:id}).populate("category");
-    res.render('singleProduct',{singleProduct,user})
+    res.render('singleProduct',{singleProduct,user_id}) 
   } catch (error) {
     console.log(error.message);
   }
@@ -452,7 +437,7 @@ const userProfile = async (req, res) => {
       return res.status(404).render('error', { message: 'User data not found' });
     }
 
-    res.render("userProfile", { userData,addAddressDetails });
+    res.render("userProfile", { userData:userData,addAddressDetails:addAddressDetails });
   } catch (err) {
     console.log(err.message);
     
@@ -476,7 +461,7 @@ const addressForm = async(req,res)=>{
   //  const userid= req.session.user_id
    
     const addAddressDetails = await User.findOne({_id:userId});
-    console.log(addAddressDetails);
+    
     res.render('addressForm',{addAddressDetails})
   } catch (error) {
     console.log(error.message);
@@ -545,14 +530,11 @@ const addAddress = async(req,res) => {
 const deleteAddress = async (req, res) => {
   try {
     const user = req.session.user_id;
-    console.log(user);
     const { addressId } = req.body;
-    console.log(addressId);
     const deleted = await User.updateOne(
       { _id: user },
       { $pull: { address: { _id: addressId } } }
     );
-    console.log(deleted);
     res.json({ success: true }); // Send a response indicating successful deletion
   } catch (error) {
     console.log(error.message);
@@ -569,28 +551,27 @@ module.exports = {
   loadHome,
   logout,
   redirectUser,
-  loadContact,
-  loadCategory,
+  loadContact, 
+  loadCategory, 
   loadOtp,
   loadProduct,
-  sendEmail,
-  loadCheckout,
-  loadCart,
+  sendEmail, 
   loadConfirmation,
   verifyOtp,
   loadWishlist,
   loadForget,
   userProfile,
-  loadVerifyForget,
+  loadVerifyForget,   
   resetPassword,
   newPassword,
   loadForgetResetSuccess,
   verifyForgetEmail,
   verifyForgetOtp,
-  loadSingleProduct,
+  loadSingleProduct, 
   updateProfile,
   addAddress,
   addressForm,
   deleteAddress,
-  updateAddress
+  updateAddress,
+
 };

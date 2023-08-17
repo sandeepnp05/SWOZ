@@ -501,6 +501,7 @@
 .s_product_text{
 	margin-left: -15px;
 	margin-top: 65px;
+	margin-bottom: 65px;
 	@media (max-width: 575px) {
 		margin-left: 0px;
 	}
@@ -593,47 +594,50 @@
 		}
 	}
 }
-.product_count{
-	display: inline-block;
-	position: relative;
-	margin-bottom: 24px;
-	label{
-		font-size: 14px;
-		color: $text-color;
-		font-family: $primary-font;
-		font-weight: normal;
-		padding-right: 10px;
-	}
-	input{
-		width: 76px;
-		border: 1px solid #eeeeee;
-		border-radius: 3px;
-		padding-left: 10px;
-	}
-	button{
-		display: block;
-		border: none;
-		background: transparent;
-		box-shadow: none;
-		cursor: pointer;
-		position: absolute;
-		right: 0px;
-		font-size: 14px;
-		color: #cccccc;
-		@include transition;
-		&:hover{
-			color: $title-color;
-		}
-	}
-	.increase{
-		top: -4px;
-	}
-	.reduced{
-		bottom: -8px;
-	}
-	
-}
-
+.product_count {
+	display: flex;
+	align-items: center;
+	margin: 10px 0;
+  }
+  
+  .input-text.qty {
+	width: 40px;
+	text-align: center;
+	font-size: 16px;
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+  }
+  
+  .items-count {
+	background-color: #3498db;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	font-size: 24px;
+	padding: 5px 10px;
+	margin: 0;
+	border-radius: 5px;
+	transition: background-color 0.3s ease;
+  }
+  
+  .items-count:hover {
+	background-color: #2980b9;
+  }
+  
+  .items-count i {
+	vertical-align: middle;
+  }
+  
+  .increase {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 5px;
+  }
+  
+  .reduced {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 5px;
+  }
 
 
 .product_description_area{
@@ -824,6 +828,9 @@
 	&.reply{
 		padding-left: 28px;
 	}
+}
+.ion-ios-close {
+    color: black; /* or your desired color */
 }
 
 .review_box{
@@ -1252,7 +1259,7 @@
 	margin-bottom: 40px;
 	input{
 		margin-left: 30px;
-		max-width: 730px;
+		max-width: 185px;
 		width: 100%;
 		display: block;
 		height: 40px;

@@ -255,6 +255,20 @@ img[src="img/logo.png"] {
     padding: 8px;
     border-bottom: 1px solid #ddd;
 }
+.empty-cart {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 30vh; /* Adjust the height to make the content centered on the viewport */
+    text-align: center; /* Center the text inside */
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.empty-cart-content {
+    max-width: 400px; /* Adjust as needed */
+}
+
 
 /* Styling for the remove button */
 button {
@@ -271,7 +285,37 @@ button:hover {
     background-color: #d32f2f;
 }
 
+
+.product-remove {
+    text-align: center;
+}
+
+.remove-link {
+    display: inline-block;
+    padding: 10px; /* Adjust padding to increase the clickable area */
+    color: #1b100f; /* Change to your desired color */
+    transition: color 0.3s ease;
+}
+
+.remove-link .bi-trash {
+    font-size: 25px; /* Increase the font size for a larger icon */
+}
+.remove-link{
+    color: black;
+}
+.remove-link:hover {
+    color: #f51616; /* Change to your desired hover color */
+}
+.cupon_area{
+    margin-left: -35px;
+}
+.your_order{
+    margin-top:-145px ;
+}
 /* Optional: Styling for product images and names */
+.section_gap{
+    margin-bottom: -150px;
+}
 .media img {
     width: 60px;
     height: 60px;
@@ -609,7 +653,9 @@ mark {
     display: none;
 }
 
-
+.icon-container a:hover i {
+    color: red;
+  }
 .img-thumbnail {
     padding: .25rem;
     background-color: #3b3737;
@@ -748,7 +794,9 @@ pre code {
         max-width: 1140px
     }
 }
-
+.quantity{
+    width: 100px;
+}
 .container-fluid {
     width: 100%;
     padding-right: 15px;
@@ -763,7 +811,8 @@ pre code {
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     margin-right: -15px;
-    margin-left: -15px
+    margin-left: -15px;
+    margin-bottom: 115px
 }
 
 .no-gutters {
