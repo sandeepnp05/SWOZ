@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Fresh Pick</title>
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <meta name="description" content="" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta property="og:title" content="" />
+  <meta property="og:type" content="" />
+  <meta property="og:url" content="" />
+  <meta property="og:image" content="" />
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
+  <!-- Template CSS -->
+  <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+<body>
+  <div class="screen-overlay"></div>
+  <main class="main-wrap">
+    <section class="content-main">
+      <div class="content-header">
+        <div class="d-flex align-items-center">
+          <h2 class="content-title card-title">Orders List</h2>
+          <div class="col-search">
+            <form class="searchform ml-15">
+              <div class="input-group">
+                <input
+                  list="search_terms"
+                  type="text"
+                  name="search"
+                  value=""
+                  class="form-control col-lg-6"
+                  style="width: 300px;"
+                  placeholder="Search Orders by Payment method "
+                />
+                <button class="btn btn-light bg" type="submit" >
+                  <i class="material-icons md-search"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>#ID</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Payment Method</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Delivery Date</th>
+                  <th scope="col">view details</th>
+                  <th scope="col" class="text-end">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Table body content here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- Pagination content here -->
+    </section>
+    <footer class="main-footer font-xs">
+      <!-- Footer content here -->
+    </footer>
+  </main>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
+  <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
+  <script src="/assets/js/vendors/select2.min.js"></script>
+  <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
+  <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
+  <!-- Main Script -->
+  <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    // JavaScript code here
+  </script>
+</body>
+</html>

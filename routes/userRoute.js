@@ -48,6 +48,10 @@ user_route.post('/addToCart',cartController.addToCart)
 user_route.patch('/updateCart/:productId',auth.isLogin,cartController.updateCart)
 user_route.put('/deleteCart',auth.isLogin,cartController.deleteCart)
 
-user_route.get('/checkout',orderController.loadCheckout) 
+user_route.get('/checkout',auth.isLogin,orderController.loadCheckout) 
+user_route.post('/orderAddress',auth.isLogin,orderController.orderAddress) 
+user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder) 
+user_route.get('/orderConfirm',auth.isLogin,orderController.orderConfirm) 
+user_route.get('/orderedList',auth.isLogin,orderController.orderedList) 
 
 module.exports =  user_route

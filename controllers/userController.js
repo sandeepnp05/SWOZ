@@ -408,7 +408,7 @@ const newPassword = async(req,res)=>{
 const loadForgetResetSuccess = async (req,res)=>{
   try {
     res.render('forgetResetSuccess')
-  } catch (error) {
+  } catch (error) { 
     console.log(error.message);
   }
 }

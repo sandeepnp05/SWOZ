@@ -23,7 +23,26 @@ const orderSchema = new mongoose.Schema({
   ],
   total:{
     type:Number,
-  }
+    required:true
+  },
+   status:{
+    type:String,
+    required:true,
+   },
+   method:{
+    type:String,
+    enum:["COD"],
+    required:true,
+   },
+   date:{
+    type:String
+   },
+   time:{
+    type:String,
+   },
+   expectedDelivery:{
+    type:Date,
+   }
 },{timestamps:true});
 
 module.exports = mongoose.model("order",orderSchema);

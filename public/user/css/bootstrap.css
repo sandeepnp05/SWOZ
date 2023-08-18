@@ -310,7 +310,7 @@ button:hover {
     margin-left: -35px;
 }
 .your_order{
-    margin-top:-145px ;
+    /* margin-top:65px ; */
 }
 /* Optional: Styling for product images and names */
 .section_gap{
@@ -332,8 +332,54 @@ button:hover {
 p {
     margin: 0;
 }
+/* orderSuccesss */
+.success-con {
+    text-align: center;
+    margin-top: 170px;
+    margin-bottom: 170px;
+  }
 
+  .success-message {
+    color: #32cd32;
+  }
 
+  .success-image {
+    width: 150px;
+    margin-top: 30px;
+  }
+
+  .success-details {
+    font-size: 18px;
+    margin-top: 20px;
+  }
+
+  .order-id {
+    font-weight: bold;
+  }
+
+  .order-total {
+    font-weight: bold;
+    color: #ff4500;
+  }
+
+  .continue-shopping-btn {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 12px 20px;
+    background-color: #ff9317;
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .continue-shopping-btn:hover {
+    background-color: #ce8704;
+    color: white;
+  }
+  
+/* end of ordersuccess */
 svg {
     overflow: hidden;
     vertical-align: middle

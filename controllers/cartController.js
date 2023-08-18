@@ -26,7 +26,7 @@ const loadCart = async (req, res) => {
         if(cartQuantity<totalStock){ 
           const existingProduct = await User.findOneAndUpdate(
             { _id: user_id, "cart.productId": productId },
-            {
+            { 
               $inc: {
                 "cart.$.quantity": parseInt(quantity),
                 "cart.$.total": total,

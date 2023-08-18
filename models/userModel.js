@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
             firstname: {
                 type: String,
             },
-            lastname: {
+            lastname: { 
                 type: String,
             },
             housename: {

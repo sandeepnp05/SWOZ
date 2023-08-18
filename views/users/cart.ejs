@@ -298,7 +298,6 @@
           // User clicked "OK" button, perform the delete action
           const deleteItem = await axios.put("/deleteCart", { cartId });
           const { cart } = deleteItem.data;
-          console.log(cart);
           if (deleteItem.data.success) {
             const elementToRemove = document.getElementById(
               `deleteId-${cartId}`
