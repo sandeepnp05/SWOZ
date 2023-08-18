@@ -238,6 +238,34 @@ img {
 img[src="img/logo.png"] {
     width: 180px;
 }
+/* orderd productsDetails */
+.decorated-link {
+    position: relative;
+    color: #333; /* Set the link text color */
+    text-decoration: none;
+    transition: color 0.3s ease;
+    padding-right: 10px; /* Adjust this value to add spacing between text and decoration */
+  }
+
+  .decorated-link:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px; /* Adjust this value to change the decoration line's height */
+    background-color: #ff8c00; /* Set the decoration line color */
+    transition: width 0.3s ease;
+  }
+
+  .decorated-link:hover {
+    color: #ff8c00; /* Set the link text color on hover */
+  }
+
+  .decorated-link:hover:before {
+    width: 100%;
+  }
+/* orderd productsDetails end */
 
 /* Basic styling for the wishlist table */
 .wishlist_area {
@@ -380,6 +408,48 @@ p {
   }
   
 /* end of ordersuccess */
+
+/* orderdList */
+ /* Decorated links for Home and Shop */
+ .decorated-link {
+    position: relative;
+    color: #333; /* Set the link text color */
+    text-decoration: none;
+    transition: color 0.3s ease;
+    padding-right: 10px; /* Adjust this value to add spacing between text and decoration */
+  }
+
+  .decorated-link:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px; /* Adjust this value to change the decoration line's height */
+    background-color: #ff8c00; /* Set the decoration line color */
+    transition: width 0.3s ease;
+  }
+
+  .decorated-link:hover {
+    color: #ff8c00; /* Set the link text color on hover */
+  }
+
+  .decorated-link:hover:before {
+    width: 100%;
+  }
+
+  .invoice-btn{
+    display: inline-block;
+    margin-top: 30px;
+    padding: 12px 20px;
+    background-color: #ff0000;
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+/* end of orderdList */
 svg {
     overflow: hidden;
     vertical-align: middle

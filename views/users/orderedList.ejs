@@ -1,89 +1,159 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Fresh Pick</title>
-  <meta http-equiv="x-ua-compatible" content="ie=edge" />
-  <meta name="description" content="" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta property="og:title" content="" />
-  <meta property="og:type" content="" />
-  <meta property="og:url" content="" />
-  <meta property="og:image" content="" />
-  <!-- Favicon -->
-  <link rel="shortcut icon" type="image/x-icon" href="/assets/imgs/theme/favicon.svg" />
-  <!-- Template CSS -->
-  <link href="/assets/css/main.css?v=1.1" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-</head>
-<body>
-  <div class="screen-overlay"></div>
-  <main class="main-wrap">
-    <section class="content-main">
-      <div class="content-header">
-        <div class="d-flex align-items-center">
-          <h2 class="content-title card-title">Orders List</h2>
-          <div class="col-search">
-            <form class="searchform ml-15">
-              <div class="input-group">
-                <input
-                  list="search_terms"
-                  type="text"
-                  name="search"
-                  value=""
-                  class="form-control col-lg-6"
-                  style="width: 300px;"
-                  placeholder="Search Orders by Payment method "
-                />
-                <button class="btn btn-light bg" type="submit" >
-                  <i class="material-icons md-search"></i>
-                </button>
-              </div>
-            </form>
+
+
+<%- include("../layouts/header.ejs") %>
+<%- include("../layouts/userNav.ejs") %>
+
+    <div
+      class="container breadcrumb-section"
+      style="background: linear-gradient(to bottom, #93c747, #56a82a)"
+    >
+      <div class="breadcrumb-wrapper">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <h2 class="breadcrumb-title" style="color: white">Your Orders</h2>
+              <h4 class="breadcrumb-subtitle" style="color: white">
+                Track your orders and view details
+              </h4>
+            </div>
           </div>
         </div>
       </div>
-      <div class="card mb-4">
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>#ID</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Payment Method</th>
-                  <th scope="col">Total</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">Delivery Date</th>
-                  <th scope="col">view details</th>
-                  <th scope="col" class="text-end">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Table body content here -->
-              </tbody>
-            </table>
+    </div>
+    <!-- ...:::: End Breadcrumb Section:::... -->
+
+    <div class="container mb-4">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3></h3>
+        <a href="/userProfile" class="btn btn-md btn-success mt-3">Back</a>
+      </div>
+      <div>
+        <% if (orderHistory.length > 0) { orderHistory.forEach(order => { %>
+        <div class="order-box border rounded p-4 mb-5">
+          <h5 class="mb-3" style="color: black;">Order ID: <%=order._id %></h5>
+          <div class="row">
+            <div class="col-md-6">
+              <p style="color: black;">Date: <%= order.date %></p>
+              <p style="color: black;">Order Time: <%= order.time %></p>
+              <% if (order.status !== "Cancelled" && order.status !== "Return Pending") { %>
+              <h5 id="statusChange-<%= order._id %>" class="text-success">
+                Status: <%= order.status %>
+              </h5>
+              <% } else { %>
+              <h5 id="statusChange-<%= order._id %>" class="text-danger">
+                Status: <%= order.status %>
+              </h5>
+              <% } %>
+              <!-- <button onclick="downloadInvoiceHelper('<%= order._id %>')" class="invoice-btn">Download Invoice</button> -->
+              <!-- <a href="/invoice?orderId=<%=order._id  %>"  class="invoice-btn">Download Invoice</a> -->
+        
+            </div>
+            <div class="col-md-6" id="cancelButton-<%= order._id %>">
+              <p style="color: black;">Total: ₹<span id="total"><%= order.total %></span></p>
+              <p style="color: black;">Method : <span id="method"><%= order.method %></span></p>
+              <% if (order.status !== "Delivered" && order.status !==
+              "Cancelled" && order.status !== "Return Pending" && order.status !== "Return Approved") { %>
+              <p style="color: black;">
+                Expected Delivery: <%= order.expectedDelivery ?
+                order.expectedDelivery.toDateString() : '' %>
+              </p>
+              <% } %>
+              <a
+                href="/orderedProduct?id=<%= order._id %>"
+                class="btn btn-md btn-success"
+                >View Details</a
+              >
+              <% if (order.status === "Delivered") { %>
+                
+                <% const orderDate = new Date(order.date) %>
+                <% const returnExpiryDate = new Date(orderDate) %>
+                <%  returnExpiryDate.setDate(returnExpiryDate.getDate() + 10); %>
+                <% const currentDate = new Date() %>
+                <% if(currentDate<=returnExpiryDate){%>
+                  <a
+                href="#"
+                onclick="returnOrderHelper('<%= order._id %>')"
+                class="btn btn-md btn-danger buttonReturn"
+                >Return</a
+              >
+              <p class="text-muted mt-3" id="return-text">Please note that order returns are only possible within 10 days from the delivery date.</p>
+                <%}else{%>
+                  <p class="text-muted mt-3">Return expired</p>
+                  <%}%>
+              <% } else if (order.status !== "Cancelled" && order.status !== "Return Pending" && order.status !== "Return Approved") { %>
+              <a
+                href="#"
+                class="btn btn-md btn-danger buttonCancel"
+                onclick="cancelOrderHelper('<%= order._id %>')"
+                >Cancel</a
+              >
+              <% } %>
+            </div>
           </div>
         </div>
+        <% }) } else { %>
+        <h5>No orders</h5>
+        <% } %>
       </div>
-      <!-- Pagination content here -->
-    </section>
-    <footer class="main-footer font-xs">
-      <!-- Footer content here -->
-    </footer>
-  </main>
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-  <script src="/assets/js/vendors/jquery-3.6.0.min.js"></script>
-  <script src="/assets/js/vendors/bootstrap.bundle.min.js"></script>
-  <script src="/assets/js/vendors/select2.min.js"></script>
-  <script src="/assets/js/vendors/perfect-scrollbar.js"></script>
-  <script src="/assets/js/vendors/jquery.fullscreen.min.js"></script>
-  <!-- Main Script -->
-  <script src="/assets/js/main.js?v=1.1" type="text/javascript"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script>
-    // JavaScript code here
-  </script>
-</body>
-</html>
+    </div>
+
+    <%- include("../layouts/userFooter.ejs") %>
+    <script src="js/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.min.js"></script>
+    <script src="js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.1.3.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/jquery.stellar.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/jquery.animateNumber.min.js"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
+    <script src="js/scrollax.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="js/google-map.js"></script>
+    <script src="js/main.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script>
+
+      const cancelOrderHelper = async (orderId) => {
+  try {
+    event.preventDefault();
+    const total = document.getElementById("total").innerHTML;
+    console.log(total);
+    swal({
+      title: "Cancel Order",
+      text: "Are you sure you want to cancel this order?",
+      icon: "warning",
+      buttons: ["Cancel", "OK"],
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        // User clicked "OK" button, perform the delete action
+        const details = await axios.patch("/cancelOrder", {
+          orderId,
+          total,
+        });
+
+        if (details.data.success) {
+          const statusElement = document.getElementById(`statusChange-${orderId}`);
+          statusElement.textContent = `Status: ${details.data.status}`;
+          statusElement.classList.remove("text-success"); // Remove success class
+          statusElement.classList.add("text-danger"); // Add danger class
+
+          const cancelButtonElement = document.getElementById(`cancelButton-${orderId}`);
+          cancelButtonElement.parentNode.removeChild(cancelButtonElement);
+        }
+      }
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+     
+    </script>

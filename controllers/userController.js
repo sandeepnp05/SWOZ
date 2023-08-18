@@ -335,8 +335,7 @@ const loadVerifyForget = async (req,res)=>{
 const verifyForgetEmail = async(req,res)=>{
   try {
     const {email} = req.body;
-   req.session.forEmail= req.body.email
-   console.log(req.session.forEmail);
+   req.session.forEmail= req.body.email 
    
     const userData =  await User.findOne({email:email});
     if (userData){
@@ -380,7 +379,7 @@ const verifyForgetOtp = async(req,res)=>{
     console.log(error.message);
     res.render("otpForget", {
       errMessage: "An error occurred. Please try again later.",
-    });le.log
+    });
   }
 }
 const resetPassword = async (req, res) => {
@@ -431,7 +430,7 @@ const userProfile = async (req, res) => {
     const addAddressDetails = await User.findOne(
       { email: email },
       { address: 1 }
-    );
+      );
     if (!userData) {
      
       return res.status(404).render('error', { message: 'User data not found' });

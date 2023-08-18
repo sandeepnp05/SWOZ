@@ -43,7 +43,7 @@ user_route.post('/updateProfile',auth.isLogin,userController.updateProfile)
 user_route.put('/deleteAddress',auth.isLogin,userController.deleteAddress)
 user_route.post('/updateAddress',auth.isLogin,userController.updateAddress)
 
-user_route.get('/cart',cartController.loadCart)
+user_route.get('/cart',auth.isLogin,cartController.loadCart)
 user_route.post('/addToCart',cartController.addToCart)
 user_route.patch('/updateCart/:productId',auth.isLogin,cartController.updateCart)
 user_route.put('/deleteCart',auth.isLogin,cartController.deleteCart)
@@ -53,5 +53,7 @@ user_route.post('/orderAddress',auth.isLogin,orderController.orderAddress)
 user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder) 
 user_route.get('/orderConfirm',auth.isLogin,orderController.orderConfirm) 
 user_route.get('/orderedList',auth.isLogin,orderController.orderedList) 
+user_route.get('/orderedProduct',auth.isLogin,orderController.orderedProductDetails) 
+user_route.patch('/cancelOrder',auth.isLogin,orderController.cancelOrder)
 
 module.exports =  user_route

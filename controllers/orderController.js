@@ -118,11 +118,48 @@ const { addressForm } = require("./userController");
      
       .sort({ createdAt: -1 })
       .populate("user")
-      .populate("products.productId");
-      console.log(orderHistory);
+      .populate("products.productId"); 
       res.render("orderedList", { orderHistory }); 
     } catch (error) {
       console.log(error.message);
+    }
+  };
+  const orderedProductDetails = async (req, res) => {
+    try {
+      const { id } = req.query;
+      const order = await Order.findById({ _id: id }).populate(
+        "products.productId"
+        );
+        
+        console.log(order);
+
+      
+      res.render("orderedProducts", { order });
+    } catch (error) {
+      console.log(error.message);
+      res.render("500");
+    }
+  };
+  const cancelOrder = async (req, res) => {
+    try {
+      const { user_id } = req.session;
+      const { orderId } = req.body;
+      console.log(orderId);
+      let status1 = "Cancelled";
+      const order = await Order.findOne({ _id: orderId }).populate(
+        "products.productId"
+      );
+      await Order.updateOne({ _id: orderId }, { $set: { status: status1 } });
+      const products = order.products;
+      for (let product of products) {
+        await Products.updateOne(
+          { _id: product.productId },
+          { $inc: { quantity: product.quantity } }
+        );
+      }
+    } catch (error) {
+      console.log(error.message);
+      res.render("500");
     }
   };
  module.exports = {
@@ -130,5 +167,7 @@ const { addressForm } = require("./userController");
     orderAddress,
     placeOrder,
     orderConfirm,
-    orderedList
+    orderedList,
+    orderedProductDetails,
+    cancelOrder
  }
