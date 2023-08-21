@@ -144,7 +144,6 @@ const { addressForm } = require("./userController");
     try {
       const { user_id } = req.session;
       const { orderId } = req.body;
-      console.log(orderId);
       let status1 = "Cancelled";
       const order = await Order.findOne({ _id: orderId }).populate(
         "products.productId"
@@ -157,11 +156,15 @@ const { addressForm } = require("./userController");
           { $inc: { quantity: product.quantity } }
         );
       }
+      
+      // Respond with a success message
+      res.json({ success: true, status: status1, message: "Order has been cancelled successfully." });
     } catch (error) {
       console.log(error.message);
       res.render("500");
     }
   };
+  
  module.exports = {
     loadCheckout,
     orderAddress,

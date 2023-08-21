@@ -1,3 +1,21 @@
+<style>
+  /* Add border to the product details section */
+.s_Product_carousel {
+  border: 1px solid #eaeaea; /* Border color */
+  border-radius: 8px; /* Rounded corners */
+  padding: 0px;
+  margin-top: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Drop shadow effect */
+  transition: transform 0.3s, box-shadow 0.3s; /* Transition effects for hover */
+}
+
+/* Apply hover effect */
+.s_Product_carousel:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.2);
+}
+
+</style>
 <%- include("../layouts/header.ejs") %> <%- include("../layouts/userNav.ejs") %>
 <!-- Start Banner Area -->
 <section class="banner-area organic-breadcrumb">
@@ -150,12 +168,7 @@
           totalStock,
         });
         //   alert(totalStock);
-        if (productData.data.count) {
-          document.getElementById(
-            "cartCount"
-          ).innerHTML = `<span class="icon-shopping_cart" ></span>${productData.data.count}`;
-          swal("Added to cart", "", "success");
-        }
+      
         if (productData.data.message) {
           swal("Added to cart", "", "success");
         }

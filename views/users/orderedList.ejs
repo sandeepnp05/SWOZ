@@ -120,7 +120,7 @@
 
     <script>
 
-      const cancelOrderHelper = async (orderId) => {
+  const cancelOrderHelper = async (orderId) => {
   try {
     event.preventDefault();
     const total = document.getElementById("total").innerHTML;
@@ -134,19 +134,29 @@
     }).then(async (willDelete) => {
       if (willDelete) {
         // User clicked "OK" button, perform the delete action
-        const details = await axios.patch("/cancelOrder", {
-          orderId,
-          total,
-        });
+        try {
+          const response = await axios.patch("/cancelOrder", {
+            orderId,
+            total,
+          });
+          if (response.data.success) {
+            const statusElement = document.getElementById(`statusChange-${orderId}`);
+            statusElement.textContent = `Status: ${response.data.status}`;
+            statusElement.classList.remove("text-success"); // Remove success class
+            statusElement.classList.add("text-danger"); // Add danger class
 
-        if (details.data.success) {
-          const statusElement = document.getElementById(`statusChange-${orderId}`);
-          statusElement.textContent = `Status: ${details.data.status}`;
-          statusElement.classList.remove("text-success"); // Remove success class
-          statusElement.classList.add("text-danger"); // Add danger class
+            const cancelButtonElement = document.getElementById(`cancelButton-${orderId}`).querySelector(".buttonCancel");;
+            cancelButtonElement.parentNode.removeChild(cancelButtonElement);
 
-          const cancelButtonElement = document.getElementById(`cancelButton-${orderId}`);
-          cancelButtonElement.parentNode.removeChild(cancelButtonElement);
+            // Show success message to the user
+            swal("Order Cancelled", response.data.message, "success");
+          } else {
+            // Show error message to the user
+            swal("Error", "Failed to cancel the order.", "error");
+          }
+        } catch (error) {
+          console.log(error.message);
+          swal("Error", "An error occurred while processing the request.", "error");
         }
       }
     });
@@ -155,5 +165,4 @@
   }
 };
 
-     
     </script>

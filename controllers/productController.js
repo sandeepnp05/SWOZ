@@ -1,6 +1,8 @@
 const Products = require("../models/productModel");
 const Category = require("../models/categoryModel");
 
+const fs = require("fs");
+const path = require("path");
 
 const productAddPage = async (req, res) => {
     try {
@@ -112,7 +114,7 @@ const productAddPage = async (req, res) => {
         } else {
          const updated = await Products.updateOne(
             { _id: product_id },
-            {
+            { 
               $set: {
                 name: product_name,
                 quantity: product_quantity,
@@ -147,6 +149,23 @@ const productAddPage = async (req, res) => {
       console.log(error.message);
     }
   }
+  const deleteImage = async (req, res) => {
+    try {
+      const productId = req.query.productId; // Corrected: Use req.query.productId
+      const imageName = req.body.image;
+      fs.unlink(path.join(__dirname, "../public/uncroppedImages/", imageName), () => {});
+      const productDeleted = await Products.findOneAndUpdate(
+        { _id: productId },
+        { $pull: { image: imageName } }
+      );
+  
+      res.json({ success: true });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ success: false, message: "An error occurred." });
+    }
+  };
+  
 
   module.exports ={
     productAddPage,
@@ -155,4 +174,5 @@ const productAddPage = async (req, res) => {
   productAdd,
   productUpdated,
   unlistProduct,
+  deleteImage
   }

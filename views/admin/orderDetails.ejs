@@ -1,0 +1,161 @@
+<style>
+    /* Add your custom styles here */
+
+/* Add your custom styles here */
+
+.vh-100 {
+  min-height: 100vh;
+}
+
+
+
+.card-stepper {
+  border: none;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+}
+
+.card-body {
+  background-color: #ffffff;
+  border-top: 1px solid #e9ecef;
+}
+
+.font-weight-bold {
+  font-weight: bold;
+}
+
+.text-muted {
+  color: #6c757d;
+}
+
+.text-dark {
+  color: #343a40;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Adjust margins and paddings as needed */
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
+
+.p-4 {
+  padding: 1.5rem;
+}
+
+/* Image styles */
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Placeholder for missing images */
+.placeholder-image {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  padding: 0.5rem;
+}
+
+/* Centering elements within a container */
+.d-flex {
+  display: flex;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 767px) {
+  .col-md-10 {
+    max-width: 100%;
+  }
+  
+  .card {
+    border-radius: 0;
+  }
+  
+  .card-header,
+  .card-body {
+    padding: 1rem;
+  }
+}
+
+
+/* Additional styles as needed */
+
+</style>
+<%- include("../layouts/adminHead") %>
+<%- include("../layouts/adminSidebar.ejs") %>
+<section class="vh-100 gradient-custom-2">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-10 col-lg-8 col-xl-6">
+        <div class="card card-stepper rounded-16 shadow-lg">
+          <div class="card-header p-4 bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <p class="text-muted mb-2">
+                  Order ID:
+                  <span class="fw-bold text-dark"><%= orderData._id %></span>
+                </p>
+                <p class="text-muted mb-0">
+                  Ordered On:
+                  <span class="fw-bold text-dark"><%= orderData.date %></span>
+                </p>
+                <p class="text-muted mb-0">
+                  Order Status:
+                  <span class="fw-bold"><%= orderData.status %></span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <% orderData.products.forEach(element => { %>
+            <div class="card-body p-4">
+              <div class="d-flex flex-row mb-4 pb-2">
+                <div class="flex-fill">
+                  <h5 class="font-weight-bold mb-3">
+                    <%= element.name %>
+                  </h5>
+                  <p class="text-muted mb-2">
+                    Quantity: <span class="fw-bold"><%= element.quantity %></span>
+                  </p>
+                  <h4 class="mb-3">₹<%= element.productId.price %></h4>
+                </div>
+                <div>
+                  <% if (element.productId.image && element.productId.image.length > 0) { %>
+                    <img
+                      class="align-self-center img-fluid"
+                      src="/uncroppedImages/<%=element.productId.image[0]%>"
+                      width="150"
+                      alt="<%=element.productId.image[0]%>"
+                    />
+                  <% } else { %>
+                    <!-- Display a placeholder image or a message -->
+                    <img
+                      class="align-self-center img-fluid"
+                      src="/path/to/placeholder-image.jpg"
+                      width="150"
+                      alt="Placeholder Image"
+                    />
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          <% }) %>

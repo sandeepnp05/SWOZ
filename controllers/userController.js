@@ -163,7 +163,7 @@ const insertUser = async (req, res) => {
 
 const loginLoad = async (req, res) => {
   try {
-    res.render("login", {
+    res.render("login", {activePage:'login',
       userSession: req.session.user_id ? req.session.user_id : "",
       firstname: "",
       message: "",
@@ -212,7 +212,7 @@ const loadHome = async (req, res) => {
     const userSession = req.session.user_id ? req.session.user_id : "";
     const products = await Products.find({ list: true }).populate("category")
 
-      res.render("index", {
+      res.render("index", {activePage:'index',
         products,user_id
       });
     
@@ -248,7 +248,7 @@ const redirectUser = async (req, res) => {
 
 const loadContact = async (req, res) => {
   try {
-    res.render("contact");
+    res.render("contact",{activePage:'contact'});
   } catch (err) {
     console.log(err.message);
   }
@@ -256,11 +256,31 @@ const loadContact = async (req, res) => {
 
 // Render the category page.
 
-const loadCategory = async (req, res) => {
+// const loadShop = async (req, res) => {
+//   try {
+//     res.render("shop",{activePage:'shop'});
+//   } catch (err) {
+//     console.log(err.message);
+//   }
+// };
+const loadShop = async (req, res) => { 
   try {
-    res.render("category");
+    const userData = await User.findById(req.session.user_id) 
+    const email = req.session.user;
+    const addAddressDetails = await User.findOne(
+      { email: email },
+      { address: 1 }
+      );
+    if (!userData) {
+     
+      return res.status(404).render('error', { message: 'User data not found' });
+    }
+
+    res.render("shop", {activePage:'shop', userData:userData,addAddressDetails:addAddressDetails });
   } catch (err) {
     console.log(err.message);
+    
+    res.status(500).render('error', { message: 'Internal server error' }); 
   }
 };
 
@@ -436,13 +456,15 @@ const userProfile = async (req, res) => {
       return res.status(404).render('error', { message: 'User data not found' });
     }
 
-    res.render("userProfile", { userData:userData,addAddressDetails:addAddressDetails });
+    res.render("userProfile", {activePage:'userProfile', userData:userData,addAddressDetails:addAddressDetails });
   } catch (err) {
     console.log(err.message);
     
     res.status(500).render('error', { message: 'Internal server error' }); 
   }
 };
+
+
 const updateProfile = async(req,res)=>{
   try {
     const {firstname,lastname,phone} = req.body
@@ -551,7 +573,7 @@ module.exports = {
   logout,
   redirectUser,
   loadContact, 
-  loadCategory, 
+  loadShop, 
   loadOtp,
   loadProduct,
   sendEmail, 

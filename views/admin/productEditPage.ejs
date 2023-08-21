@@ -1,3 +1,16 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.18.0/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+  /* Increase the size of the product image */
+/* Increase the size of the product image */
+#product_img {
+  max-width: 100%;
+  max-height: 160px;
+  object-fit: contain;
+  margin-top: 10px; /* Add some spacing between the image and the upload input */
+}
+
+
+</style>
 <%- include('../layouts/adminHead.ejs') %>
 <section class="content-main">
   <div class="row">
@@ -126,9 +139,16 @@
           </div>
           <div class="card-body">
             <div class="input-upload">
+              <a href=""><i ></i></a>
               <% product.image.forEach((image) => { %>
-                <img id="product_img" src="/uncroppedImages/<%= image %>" alt="" />
+                <img id="product_img" src="/uncroppedImages/<%= image%>" alt="" />
+                <a onclick="deleteImage('<%= image %>','<%= product._id %>')">
+                  <i style="color: red; position: relative; bottom: 147px; right:35px" class="icon material-icons md-cancel"></i>
+                </a>
               <% }); %>
+              
+                
+                <a ><i style="color: red; position: relative; bottom: 81px; right:33px" class="bi bi-x-circle-fill"></i></a>
               <input
                 name="product_img"
                 class="form-control"
@@ -146,9 +166,47 @@
   </div>
 </section>
 
+
 <%- include('../layouts/adminFooter.ejs') %>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
 <script>
-  function viewImage(event) {
+
+function deleteImage(imageName, productId) {
+  swal({
+    title: "Are you sure?",
+    text: "Once deleted, you will not be able to recover this image!",
+    icon: "warning",
+    buttons: ["Cancel", "Delete"],
+    dangerMode: true,
+  }).then(async (willDelete) => {
+    if (willDelete) {
+      try {
+        console.log("Product ID:", productId);
+        const response = await axios.post("/admin/deleteImage", {
+          image: imageName,
+           productId: productId,
+        });
+
+        if (response.data.success) {
+          // Image deleted successfully, you might want to update the UI accordingly
+          location.reload(); // Reload the page to reflect the changes
+        } else {
+          swal("Error", "Failed to delete the image.", "error");
+        }
+      } catch (error) {
+        console.log(error.message);
+        swal("Error", "An error occurred while processing the request.", "error");
+      }
+    }
+  });
+}
+
+
+
+function viewImage(event) {
     document.getElementById("product_img").src = URL.createObjectURL(
       event.target.files[0]
     );

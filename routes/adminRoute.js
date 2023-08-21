@@ -1,8 +1,8 @@
 const express = require("express");
 const admin_route = express();
 const adminController = require("../controllers/adminController");
-const categoryController = require("../controllers/categoryController")
-const productController = require("../controllers/productController")
+const categoryController = require("../controllers/categoryController");
+const productController = require("../controllers/productController");
 
 const nocache = require("nocache");
 const auth = require("../middleware/adminAuth");
@@ -23,13 +23,22 @@ admin_route.get("/blockUser", adminController.blockUser);
 
 admin_route.get("/categories", auth.isLogin, categoryController.categories);
 admin_route.post("/categories", auth.isLogin, categoryController.addCategories);
-admin_route.get("/editCategory", auth.isLogin, categoryController.editCategories);
+
+admin_route.get(
+  "/editCategory",
+  auth.isLogin,
+  categoryController.editCategories
+);
 admin_route.post(
   "/editCategory",
   auth.isLogin,
   categoryController.updatedCategory
 );
-admin_route.patch("/listCategory", auth.isLogin, categoryController.listCategory);
+admin_route.patch(
+  "/listCategory",
+  auth.isLogin,
+  categoryController.listCategory
+);
 
 admin_route.get(
   "/productAddPage",
@@ -42,7 +51,7 @@ admin_route.get(
   productController.productEditPage
 );
 admin_route.get(
-  "/productListPage", 
+  "/productListPage",
   auth.isLogin,
   productController.productListPage
 );
@@ -54,12 +63,25 @@ admin_route.post(
   productController.productAdd
 );
 admin_route.post(
-    "/productEditPage",
-    auth.isLogin,
-    upload.array("product_img", 4),
-    productController.productUpdated, 
-  );
-  admin_route.patch("/productUnlist",
-   auth.isLogin, productController.unlistProduct);
+  "/productEditPage",
+  auth.isLogin,
+  upload.array("product_img", 4),
+  productController.productUpdated
+);
+admin_route.patch(
+  "/productUnlist",
+  auth.isLogin,
+  productController.unlistProduct
+);
+admin_route.post(
+  "/deleteImage",
+  auth.isLogin,
+  productController.deleteImage
+);
+admin_route.get('/orderList',auth.isLogin,adminController.orderList)
+admin_route.get('/orderDetails',auth.isLogin,adminController.orderDetails)
+admin_route.get('/changeStatus',auth.isLogin,adminController.changeStatus)
+
+
 module.exports = admin_route;
-  
+

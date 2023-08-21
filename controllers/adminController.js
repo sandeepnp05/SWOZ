@@ -1,4 +1,7 @@
 const User = require("../models/userModel");
+const Order = require("../models/orderModel");
+const Product = require("../models/productModel");
+const Category = require("../models/categoryModel");
 const randomstring = require("randomstring");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
@@ -45,7 +48,6 @@ const logout = async (req, res) => {
     req.session.destroy();
     res.render("adminLogin");
   } catch (error) {
-    console.log();
   }
 };
 const userList = async (req, res) => {
@@ -82,6 +84,37 @@ const blockUser = async (req, res) => {
     res.status(500).send("An error occurred.");
   }
 };
+ const orderList = async(req,res)=>{
+  try {
+    const orderData = await Order.find().sort({createdAt:-1})
+    .populate("user")
+    .populate("products.productId").exec();
+    res.render('orderList',{orderData}) 
+  } catch (error) {
+    console.log(error.message);
+  }
+ }
+ const orderDetails = async(req,res)=>{
+  try {
+    const {id} = req.query
+    const orderData = await Order.findById({_id:id}).populate('user.user').populate('products.productId')
+    res.render('orderDetails',{orderData})
+  } catch (error) {
+    console.log(error.message);
+  }
+ }
+ const changeStatus = async(req,res)=>{
+  try {
+    const {user_id} = req.session;
+    const {status,orderId} =req.body;
+    const currentDate = newDate();
+    currentDate.setDate(currentDate.getDate() + 10);
+
+  } catch (error) {
+    console.log(error.message);
+  }
+ }
+
 
 
 module.exports = {
@@ -91,4 +124,7 @@ module.exports = {
   logout,
   userList,
   blockUser,
+  orderList,
+  orderDetails,
+  changeStatus
 };
