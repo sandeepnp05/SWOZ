@@ -26,17 +26,17 @@
           id="navbarSupportedContent"
         >
           <ul class="nav navbar-nav menu_nav ml-auto">
-            <li class="nav-item <%= activePage === 'index' ? 'active' : '' %>">
+            <li class="nav-item">
               <a class="nav-link" href="/index">Home</a>
             </li>
-            <li class="nav-item <%= activePage === 'shop' ? 'active' : '' %>">
+            <li class="nav-item">
               <a class="nav-link" href="/shop">Shop</a>
             </li>
 
           
 
             
-              <li class="nav-item <%= activePage === 'contact' ? 'active' : '' %>">
+              <li class="nav-item">
                 <a class="nav-link" href="/contact">Contact</a>
             </li>
             <li class="nav-item submenu dropdown">
@@ -61,12 +61,12 @@
               <ul class="dropdown-menu">
                 <% if (session.user_id) { %>
 					<li class="nav-item">
-            <li class="nav-item <%= activePage === 'userProfile' ? 'active' : '' %>">
+            <li class="nav-item">
               <a class="nav-link" href="/userProfile">Profile</a>
 					</li>
 				  <% } else { %>
 					<li class="nav-item">
-            <li class="nav-item <%= activePage === 'login' ? 'active' : '' %>">
+            <li class="nav-item">
               <a class="nav-link" href="/login">Login</a>
 					</li>
 				  <% } %>
@@ -92,6 +92,7 @@
             </li>
             <li class="nav-item">
               <a href="/cart" class="cart"><span class="ti-bag"></span></a>
+            </li>
             </li>
             <!-- <li class="nav-item">
 								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>

@@ -163,7 +163,7 @@ const insertUser = async (req, res) => {
 
 const loginLoad = async (req, res) => {
   try {
-    res.render("login", {activePage:'login',
+    res.render("login", {
       userSession: req.session.user_id ? req.session.user_id : "",
       firstname: "",
       message: "",
@@ -212,7 +212,7 @@ const loadHome = async (req, res) => {
     const userSession = req.session.user_id ? req.session.user_id : "";
     const products = await Products.find({ list: true }).populate("category")
 
-      res.render("index", {activePage:'index',
+      res.render("index", {
         products,user_id
       });
     
@@ -248,7 +248,7 @@ const redirectUser = async (req, res) => {
 
 const loadContact = async (req, res) => {
   try {
-    res.render("contact",{activePage:'contact'});
+    res.render("contact");
   } catch (err) {
     console.log(err.message);
   }
@@ -265,22 +265,31 @@ const loadContact = async (req, res) => {
 // };
 const loadShop = async (req, res) => { 
   try {
-    const userData = await User.findById(req.session.user_id) 
-    const email = req.session.user;
-    const addAddressDetails = await User.findOne(
-      { email: email },
-      { address: 1 }
-      );
-    if (!userData) {
-     
-      return res.status(404).render('error', { message: 'User data not found' });
+    const { user_id } = req.session;
+    const { cat, search } = req.query;
+    const userSession = req.session.user_id ? req.session.user_id : "";
+    
+    let productsQuery = { list: true };
+
+    if (cat) {
+      productsQuery.category = cat;
     }
 
-    res.render("shop", {activePage:'shop', userData:userData,addAddressDetails:addAddressDetails });
-  } catch (err) {
-    console.log(err.message);
+    const products = await Products.find(productsQuery).populate("category");
     
-    res.status(500).render('error', { message: 'Internal server error' }); 
+    const condition = { status: true };
+    const category = await Category.find({ status: true });
+    
+    res.render("shop", {
+      cat: cat,
+      products,
+      user_id,
+      category
+    });
+    
+  } catch (err) {
+    console.log("Error:", err.message);
+    res.status(500).send("Error fetching products");
   }
 };
 
@@ -456,7 +465,7 @@ const userProfile = async (req, res) => {
       return res.status(404).render('error', { message: 'User data not found' });
     }
 
-    res.render("userProfile", {activePage:'userProfile', userData:userData,addAddressDetails:addAddressDetails });
+    res.render("userProfile", { userData:userData,addAddressDetails:addAddressDetails });
   } catch (err) {
     console.log(err.message);
     

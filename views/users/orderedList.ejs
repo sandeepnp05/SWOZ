@@ -3,6 +3,8 @@
 <%- include("../layouts/header.ejs") %>
 <%- include("../layouts/userNav.ejs") %>
 
+
+
     <div
       class="container breadcrumb-section"
       style="background: linear-gradient(to bottom, #93c747, #56a82a)"
@@ -23,10 +25,6 @@
     <!-- ...:::: End Breadcrumb Section:::... -->
 
     <div class="container mb-4">
-      <div class="d-flex align-items-center justify-content-between">
-        <h3></h3>
-        <a href="/userProfile" class="btn btn-md btn-success mt-3">Back</a>
-      </div>
       <div>
         <% if (orderHistory.length > 0) { orderHistory.forEach(order => { %>
         <div class="order-box border rounded p-4 mb-5">
