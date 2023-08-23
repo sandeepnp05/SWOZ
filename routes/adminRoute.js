@@ -80,7 +80,7 @@ admin_route.post(
 );
 admin_route.get('/orderList',auth.isLogin,adminController.orderList)
 admin_route.get('/orderDetails',auth.isLogin,adminController.orderDetails)
-admin_route.get('/changeStatus',auth.isLogin,adminController.changeStatus)
+admin_route.patch('/changeStatus',auth.isLogin,adminController.changeStatus)
 
 
 module.exports = admin_route;

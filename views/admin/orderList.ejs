@@ -50,22 +50,22 @@
                                 <tbody>
                                     <% if (orderData.length > 0) {
                                         orderData.forEach(order => { %>
-                                            <tr>
+                                            <tr id="status-<%= order._id %>">
                                                 <td><%= order._id %></td>
                                                 <td><b><%= order.method %></b></td>
                                                 <td><%= order.user.email %></td>
                                                 <td><%= order.total %></td>
                                                 <td><%= order.date %></td>
                                                 <td>
-                                                    <select onchange="orderStatus(this.value,'<%=order._id%>')" name="statusSelector" class="form-select" id="statusSelector<%=order._id%>">
-                                                    <option value="Placed" <% if (order.orderStatus === 'Placed') {%>selected <% }%>>Placed</option>
-                                                    <option value="Cancelled" <% if (order.orderStatus === 'Cancelled') {%>selected <% }%>>Cancelled</option>
-                                                    <option value="Pending" <% if (order.orderStatus === 'Pending') {%>selected <% }%>>Pending</option>
-                                                    <option value="Delivered" <% if (order.orderStatus === 'Delivered') {%>selected <% }%>>Delivered</option>
-                                                    <option value="Returned" <% if (order.orderStatus === 'Returned') {%>selected <% }%>>Returned</option>
+                                                    <select onchange="updateStatus(this.value,'<%=order._id%>')" name="statusSelector" class="form-select" id="statusSelector<%=order._id%>">
+                                                    <option value="Placed" <% if (order.status === 'Placed') {%>selected <% }%>>Placed</option>
+                                                    <option value="Cancelled" <% if (order.status === 'Cancelled') {%>selected <% }%>>Cancelled</option>
+                                                    <option value="Pending" <% if (order.status === 'Pending') {%>selected <% }%>>Pending</option>
+                                                    <option value="Delivered" <% if (order.status === 'Delivered') {%>selected <% }%>>Delivered</option>
+                                                    <option value="Returned" <% if (order.status === 'Returned') {%>selected <% }%>>Returned</option>
                                                 </select>
                                                 </td>
-                                                
+                                               
                                                 <td class="text-end">
                                                     <a href="/admin/orderDetails?id=<%=order._id%>" class="btn btn-md rounded font-sm">Detail</a>
                                                     <div class="dropdown">
@@ -128,21 +128,26 @@
         <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
     </body>
 </html>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 <script>
-    const orderStatus = async(status,orderId)=>{
+    const updateStatus = async (status, orderId) => {
         try {
-            const updatedStatus = await axios.patch('admin/changeStatus',{status,orderId})
-            if (updatedStatus.success) {
+            console.log(status,orderId);
+            const updatedStatus = await axios.patch('/admin/changeStatus', { status, orderId });
+            if (updatedStatus.data.success) {
                 document.getElementById(`statusSelector${orderId}`).value = status;
-                if (status==='Cancelled') {
-                    document.getElementById(`btnhide${orderId}`).style.display = 'none'
-                }else{
-                    document.getElementById(`btnhide${orderId}`).addEventListener('click',updatedStatus)
+
+                // Hide or show elements based on status
+                if (status === 'Cancelled') {
+                    document.getElementById(`btnhide${orderId}`).style.display = 'none';
+                } else {
+                    document.getElementById(`btnhide${orderId}`).style.display = 'block';
                 }
             }
         } catch (error) {
-            
+            console.error('There was an error updating the order status:', error);
         }
-    }
+    };
 </script>
 <%- include('../layouts/adminFooter.ejs') %>

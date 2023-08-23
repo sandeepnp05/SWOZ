@@ -103,18 +103,18 @@ const blockUser = async (req, res) => {
     console.log(error.message);
   }
  }
- const changeStatus = async(req,res)=>{
+ const changeStatus = async (req, res, next) => {
   try {
-    const {user_id} = req.session;
-    const {status,orderId} =req.body;
-    const currentDate = newDate();
-    currentDate.setDate(currentDate.getDate() + 10);
-
-  } catch (error) {
-    console.log(error.message);
+    const { status, orderId } = req.body;
+      await Order.updateOne(
+        { _id: orderId },
+        { $set: { status: status } }
+      );
+    res.status(201).json({ success: true });
+  } catch (err) {
+    next(err);
   }
- }
-
+};
 
 
 module.exports = {

@@ -48,10 +48,6 @@ const productAddPage = async (req, res) => {
             "../public/images",
             req.files[i].filename
           );
-          console.log("FilePath:", filePath);
-          // await sharp(req.files[i].path)
-          //     .resize({ width: 250, height: 250 })
-          //     .toFile(filePath);
           imageArr.push(req.files[i].filename);
         }
       }

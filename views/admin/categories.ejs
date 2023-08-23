@@ -36,7 +36,7 @@
                                         <button class="btn btn-primary">Create category</button>
                                     </div>
                                 </form>
-                                <a href="#" style="color: rgb(23, 177, 69); margin-top: 13px;"><%= message %></a>
+                                <a href="#" style="color: rgb(205, 43, 21); margin-top: 13px;"><%= message %></a>
 
                             </div>
                             <div class="col-md-9">  
@@ -57,9 +57,9 @@
                                                 <td><%= category[i].description %></td>
                                                 <td>
                                                     <% if (category[i].status === true) { %>
-                                                        <button id="categId<%= category[i]._id %>" onclick="listCategory('<%= category[i]._id %>')" class="btn btn-sm btn-danger rounded font-sm mt-2" title="action">unlist</button>
+                                                        <button id="categId<%= category[i]._id %>" onclick="listCategory('<%= category[i]._id %>')" class="btn btn-sm  rounded font-sm mt-2" title="action">unlist</button>
                                                     <% } else { %>
-                                                        <button id="categId<%= category[i]._id %>" onclick="listCategory('<%= category[i]._id %>')" class="btn btn-sm btn-success rounded font-sm mt-2" title="action">List</button>
+                                                        <button id="categId<%= category[i]._id %>" onclick="listCategory('<%= category[i]._id %>')" class="btn btn-sm  rounded font-sm mt-2" title="action">List</button>
                                                     <% } %>
                                                     
                                                 </td>
