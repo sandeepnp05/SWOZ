@@ -9,6 +9,7 @@ const loadCart = async (req, res) => {
         const id = req.query.id 
         const userData = await User.findOne({_id:req.session.user_id}).populate(
           "cart.productId");
+          // const cartCount = userData.cart.length;
         res.render('cart',{userCart:userData.cart,userData}) 
     } catch (err) {
       console.log(err.message); 
@@ -16,12 +17,14 @@ const loadCart = async (req, res) => {
   };
   const addToCart = async (req, res) => {
     try { 
+     
       const { user_id } = req.session;
       const { productId, quantity, singlePrice,totalStock} = req.body;
       const userCart = await User.findOne({_id:user_id,"cart.productId": productId},{ "cart.$": 1 }) 
       const total = quantity * singlePrice;
       
       if (userCart) {
+        
         const cartQuantity = userCart.cart[0].quantity
         if(cartQuantity<totalStock){ 
           const existingProduct = await User.findOneAndUpdate(
@@ -34,12 +37,11 @@ const loadCart = async (req, res) => {
               },
             }
           );
-            res.status(200).json({ message: "Product added to cart" });
+          console.log("Existing product added to cart");
+            res.status(200).json({ message: "Product added to cart"});
         }else{
           res.status(200).json({ cartMessage: "Out of stock" });
         }
-  
-        
         } else {
           let cartUpdate=await User.findOneAndUpdate(
             { _id: user_id },
@@ -49,7 +51,9 @@ const loadCart = async (req, res) => {
             },{new:true}
           );
           const count = cartUpdate.cart.length
-          res.status(200).json({ message: "Product added to cart",count });
+          
+
+          res.status(200).json({ cart_message: "Product added to cart",count});
         }
     } catch (error) {
       console.log(error.message);
@@ -107,11 +111,22 @@ const loadCart = async (req, res) => {
       res.status(500).send({ success: false, error: error.message });
     }
   };
+
+  const wishlistLoad = async(req,res)=>{
+    try {
+      res.render('wishList')
+      
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
     
 module.exports={
 loadCart, 
 addToCart,
 updateCart,
-deleteCart
+deleteCart,
+
+wishlistLoad
 
 };

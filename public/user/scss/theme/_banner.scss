@@ -3,15 +3,18 @@
 .banner-area {
 	background: url(../img/banner/banner-bg.jpg) center no-repeat;
 	background-size: cover;
-	position: relative;
-	.fullscreen {
-		@media (max-width: 768px) {
-			height: 650px !important;
-		}
+	padding-top: 130px;
+	@media (max-width: 991px) {
+		padding-top: 80px;
+	}
+	@media (max-width: 767px) {
+		background: none;
+		@include gradient(90deg, $primary-color 0%, $primary-color2 100%);
+	}
 	}
 	.active-banner-slider {
 		.owl-nav {
-			position: absolute;
+			position: relative;
 			right: 0;
 			bottom: -200px;
 			@media (max-width: 1920px) {
@@ -55,7 +58,7 @@
 		}
 	}
 	.banner-img {
-		@media (max-width: 991px) {
+		@media (max-width: 100%) {
 			display: none;
 		}
 	}

@@ -187,6 +187,8 @@ const verifyLogin = async (req, res) => {
       if (passMatch) {
         if (userData.is_verified === false) {
           res.render("login", { message: "Please verify your mail" });
+        } else if (userData.is_blocked === true) {
+          res.render("login", { message: "User is blocked" });
         } else {
           req.session.user = email;
           req.session.user_id = userData._id;
@@ -199,6 +201,12 @@ const verifyLogin = async (req, res) => {
     } else {
       res.render("login", { message: "Email or Password Incorrect" });
     }
+    
+    
+    
+    
+    
+    
   } catch (err) {
     console.log(err.message);
   }
@@ -211,6 +219,8 @@ const loadHome = async (req, res) => {
     const {user_id} = req.session;
     const userSession = req.session.user_id ? req.session.user_id : "";
     const products = await Products.find({ list: true }).populate("category")
+
+    
 
       res.render("index", {
         products,user_id
@@ -267,6 +277,7 @@ const loadShop = async (req, res) => {
   try {
     const { user_id } = req.session;
     const { cat, search } = req.query;
+    console.log(search);
     const userSession = req.session.user_id ? req.session.user_id : "";
     
     let productsQuery = { list: true };
@@ -274,17 +285,22 @@ const loadShop = async (req, res) => {
     if (cat) {
       productsQuery.category = cat;
     }
+    if (search) {
+      productsQuery.name  = { $regex: search, $options: "i" }
+      
+    }
 
     const products = await Products.find(productsQuery).populate("category");
     
-    const condition = { status: true };
+    
     const category = await Category.find({ status: true });
     
     res.render("shop", {
       cat: cat,
       products,
       user_id,
-      category
+      category,
+      search
     });
     
   } catch (err) {
@@ -302,6 +318,8 @@ const loadOtp = async (req, res) => {
     console.log(err.message);
   }
 };
+
+
 
 // Render the single product page.
 
@@ -342,7 +360,7 @@ const loadWishlist = async (req, res) => {
 
 const loadForget = async (req, res) => {
   try {
-    res.render("forget");
+    res.render("forget",{message:''});
   } catch (error) {
     console.log(error.message);
   }
@@ -353,7 +371,7 @@ const loadForget = async (req, res) => {
 const loadVerifyForget = async (req,res)=>{
   try {
 
-    res.render('otpForget')
+    res.render('otpForget',{message:''})
   } catch (err) {
     console.log(err.message);
   }
@@ -384,8 +402,8 @@ const verifyForgetEmail = async(req,res)=>{
         res.render('forget',{message:'User email is not verified!..'})
       }
     }else{
-      req.session.formessage = 'User not found'
-      res.redirect('/forget')
+      // message = 'User not found'
+      res.render('forget',{message:'User is not found'})
     }
   } catch (error) {
     console.log(error.message);
@@ -446,6 +464,7 @@ const loadSingleProduct = async(req,res)=>{
     const {id} = req.query;
     const user_id = req.session.user_id;
     const singleProduct = await Products.findById({_id:id}).populate("category");
+    console.log(singleProduct);
     res.render('singleProduct',{singleProduct,user_id}) 
   } catch (error) {
     console.log(error.message);

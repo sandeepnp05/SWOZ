@@ -1,42 +1,115 @@
-<%- include("../layouts/header.ejs") %>
-<%- include("../layouts/userNav.ejs") %>
+<%- include("../layouts/header.ejs") %> <%- include("../layouts/userNav.ejs") %>
+<section class="banner-area organic-breadcrumb">
+  <div class="container">
+    <div
+      class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end"
+    >
+      <div class="col-first">
+        <h1>Cart</h1>
+        <nav class="d-flex align-items-center">
+          <a href="/index">Home<span class="lnr lnr-arrow-right"></span></a>
+          <a href="/category">Wishlist</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Banner Area -->
 
-    <!-- Start Banner Area -->
-    <section class="banner-area organic-breadcrumb">
-        <div class="container">
-            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-                <div class="col-first">
-                    <h1>Wishl ist</h1>
-                    <nav class="d-flex align-items-center">
-                        <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-                        <a href="category.html">Cart</a>
-                    </nav>
+<!--================Cart Area =================-->
+<section class="cart_area">
+  <div class="container">
+    <div class="cart_inner">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Product</th>
+              <th scope="col">Price</th>
+              <th scope="col">Stock</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Loop through userCart array -->
+            <tr class="text-center">
+              <td class="product-remove">
+                <a
+                  href=""
+                  onclick="deleteHandleCart('product_id')"
+                  class="product-remove"
+                >
+                  <span class="fas fa-trash"></span>
+                </a>
+              </td>
+              <td>
+                <div class="media">
+                  <div class="d-flex">
+                    <img
+                      src="/uncroppedImages/product_image"
+                      alt="Product Image"
+                    />
+                  </div>
+                  <div class="media-body">
+                    <p class="product-name" style="color: black">
+                      Product Name
+                    </p>
+                  </div>
                 </div>
-            </div>
-        </div>
-    </section>
-    <!-- End Banner Area -->
-    
-    <section class="wishlist_area">
-        <div class="container">
-            <div class="wishlist_inner">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Product</th>
-                                <th scope="col">Price</th>
-                                <th scope="col">Remove</th>
-                            </tr>
-                        </thead>
-                        <tbody id="wishlist">
-                            <!-- Wishlist items will be dynamically added here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </section>
+              </td>
+              <td class="product-price">
+                <h5>Product Price</h5>
+              </td>
 
-    <%- include("../layouts/footer.ejs") %>
-	<%- include("../layouts/userFooter.ejs") %>
+              <td class="quantity">
+                <div class="form-control text-center quantity-input" data-product="product_id" data-price="product_price" data-stock-quantity="product_stock_quantity">
+                    
+                </div>
+            </td>
+            
+
+              <td class="total">
+                <button class="btn btn-primary">
+                  <a
+                    href="/addTocart"
+                    style="color: white; text-decoration: none"
+                    >Add To cart</a
+                  >
+                </button>
+              </td>
+            </tr>
+            <!-- End loop -->
+
+            <!-- Empty cart message -->
+            <div class="empty-cart" id="empty-cart">
+              <div class="empty-cart-content">
+                <h3>Your Wishlist is Empty</h3>
+                <p mt-30 style="color: black">
+                  Start exploring our products and add items to your Cart!
+                </p>
+                <a href="/index" class="btn btn-primary">Browse Products</a>
+              </div>
+            </div>
+
+            <!-- Grand total and checkout -->
+
+            <tr class="out_button_area">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>
+                <div class="checkout_btn_inner d-flex align-items-center">
+                  <a class="gray_btn" href="/index">Continue Shopping</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+<!--================End Cart Area =================-->
+<%- include("../layouts/footer.ejs") %> <%-
+include("../layouts/userFooter.ejs")%>

@@ -10,6 +10,7 @@
           <div class="col-first">
             <h1>Shop</h1>
             <nav class="d-flex align-items-center">
+              
               <a href="/index">Home<span class="lnr lnr-arrow-right"></span></a>
               <a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>
               <a href="/shop">Fashion</a>
@@ -75,7 +76,7 @@
 }
 
 .product-category li a.active {
-  background-color: #ff5733; /* Change this to your desired active background color */
+  background-color: #ff5833c5; /* Change this to your desired active background color */
   color: #ffffff;
 }
 
@@ -89,32 +90,86 @@
   height: 3px;
   background-color: #ffffff;
 }
+.search{
+       position: relative;
+       box-shadow: 0 0 40px rgba(51, 51, 51, .1);
+         
+       }
+
+       .search input{
+
+        height: 60px;
+        text-indent: 25px;
+        border: 2px solid #d6d4d4;
 
 
+       }
+
+
+       .search input:focus{
+
+        box-shadow: none;
+        border: 2px solid black;
+
+
+       }
+
+       .search .fa-search{
+
+        position: absolute;
+        top: 20px;
+        left: 16px;
+
+       }
+
+       .search button{
+
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        height: 50px;
+        width: 110px;
+        background: #ff5833c5;
+
+       }
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:weight@100;200;300;400;500;600;700;800&display=swap");
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+V5ZA0gHQf5v4+Qz+Idm/PDHeCeIbbVYUew+OrCXaRkfj" crossorigin="anonymous">
 
   
 
 <!-- start product Area -->
 <section class="owl-carousel active-product-area section_gap">
-  <div class="single-product-slider">
-    <div class="container">
+	<div class="single-product-slider">
+	  <div class="container">
 		<div class="row justify-content-center">
-			<div class="col-md-10 mb-5 text-center">
-			  <ul class="product-category">
-				<li><a <% if (!cat) { %>class="active"<% } %> href="/shop">All</a></li>
-
-				<% category.forEach((item)=>{%>
-					<script>console.log("cat:", cat);
-						console.log("item._id:", item._id);</script>
-				<li><a <% if ( item._id.equals(cat) ){%> class="active"<%}%>  href="/shop?cat=<%=item._id%>"><%=item.name%></a></li>
-
-				</li>
-				<%}) %>
-				<!-- Add more categories as needed -->
-			  </ul>
-			</div>
+		  <div class="col-md-10 mb-5 text-center">
+			<ul class="product-category">
+			  <li><a <% if (!cat) { %>class="active"<% } %> href="/shop">All</a></li>
+			  <% category.forEach((item)=>{%>
+				<li><a <% if (item._id.equals(cat)) {%>class="active"<%}%> href="/shop?cat=<%=item._id%>"><%=item.name%></a></li>
+			  <% }) %>
+			</ul>
 		  </div>
+		</div>
+  
+		<!-- Add the search field below the filter field -->
+		<form action="/shop"> <!-- Replace with your actual submit route -->
+      <div class="row height d-flex justify-content-center">
+        <div class="col-md-8">
+          <div class="search">
+            <i class="fa fa-search"></i>
+            <input type="text" class="form-control" name="search" value="<%=search%>" placeholder="Find items...">
+            <input type="hidden" name="cat" value="<%= cat %>" id="cat"/>
+            <button type="submit" class="btn btn-primary">Search</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    
+	  </div>
+		 
 		  
       <div class="row">
         <% for (let product of products) { %> <% if
@@ -148,7 +203,9 @@
                   <p class="hover-text">Cart</p>
                 </a>
 
-                <a href="" class="social-info">
+                <a href="" 
+                  onclick="addToWishList('<%=product._id%>')"
+                  class="social-info">
                   <span class="lnr lnr-heart"></span>
                   <p class="hover-text">Wishlist</p>
                 </a>
@@ -176,9 +233,7 @@
 
   const addToCart = async (productId, quantity, singlePrice, totalStock) => {
     try {
-      //   event.stopPropagation();
       event.preventDefault();
-      //   const totalStock = document.getElementById(`product-${productId}`).value
       if (user) {
         const productData = await axios.post("/addToCart", {
           productId,
@@ -186,14 +241,16 @@
           singlePrice,
           totalStock,
         });
-        if (productData.data.message) {
-          swal("Added to cart", "", "success");
+        if (productData.data.count) {
+			document.getElementById("cartCount").innerHTML=productData.data.count
+
         }
 
-        if (productData.data.cartMessage) {
-          swal("Cart quantity reaches the limit");
+        if (productData.data.message === "Product added to cart") {
+          swal("Added to cart", "", "success");
+        } else if (productData.data.cart_message) {
+          swal("Added to cart", "", "success");
         }
-        return productData;
       } else {
         swal({
           title: "Please Login And Explore Our Products",
@@ -205,6 +262,9 @@
       console.log(error.message);
     }
   };
+
+
+  const addToWishList = async(productId)
 </script>
 <%- include("../layouts/footer.ejs") %>
 <%- include("../layouts/userFooter.ejs")%>

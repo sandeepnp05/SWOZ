@@ -143,7 +143,7 @@ const productAddPage = async (req, res) => {
       }
     } catch (error) {
       console.log(error.message);
-    }
+    } 
   }
   const deleteImage = async (req, res) => {
     try {

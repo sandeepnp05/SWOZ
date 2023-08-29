@@ -29,8 +29,8 @@ const categories = async (req, res) => {
       }
   
       res.redirect("/admin/categories");
-    } catch (error) {error
-      console.log(message);
+    } catch (error) {
+      console.log(error.message);
       req.session.message = "An error occurred while adding the category";
       res.redirect("/admin/categories");
     }

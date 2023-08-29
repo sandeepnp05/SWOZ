@@ -12,8 +12,57 @@ const path = require("path");
 dotenv.config();
 
 const dashboardLoad = async (req, res) => {
+  const totalOrder = await Order.countDocuments({
+    status: { $nin: ["Pending", "Returned", "Placed"] },
+  });
+  const pendingCount = await Order.countDocuments({ status: "Pending" });
+  const placedCount = await Order.countDocuments({ status: "Placed" });
+  const deliveredCount = await Order.countDocuments({ status: "Delivered" });
+  const cancelledCount = await Order.countDocuments({
+    status: "Cancelled",
+  });
+
+  const countProduct = await Product.countDocuments();
+  const countCategory = await Category.countDocuments();
+
+  const orderData = await Order.find()
+    .sort({ createdAt: -1 })
+    .populate("user")
+    .populate("products.productId")
+    .exec();
+
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+
+  const monthlyEarning = await Order.aggregate([
+    {
+      $match: {
+        status: "Delivered",
+        $expr: { $eq: [{ $month: "$createdAt" }, currentMonth] },
+      },
+    },
+    { $group: { _id: null, earning: { $sum: "$total" } } },
+  ]);
+
+  const revenue = await Order.aggregate([
+    { $match: { status: { $ne: ["Pending", "Returned"] } } },
+    { $group: { _id: null, revenue: { $sum: "$total" } } },
+  ]);
+  const totalRevenue = revenue[0].revenue;
+
   try {
-    res.render("dashboard");
+    res.render("dashboard", {
+      orderData,
+      placedCount,
+      deliveredCount,
+      cancelledCount,
+      pendingCount,
+      totalRevenue,
+      totalOrder,
+      countProduct,
+      countCategory,
+      monthlyEarning
+    });
   } catch (error) {
     console.log(error);
   }
@@ -47,8 +96,7 @@ const logout = async (req, res) => {
   try {
     req.session.destroy();
     res.render("adminLogin");
-  } catch (error) {
-  }
+  } catch (error) {}
 };
 const userList = async (req, res) => {
   try {
@@ -84,38 +132,38 @@ const blockUser = async (req, res) => {
     res.status(500).send("An error occurred.");
   }
 };
- const orderList = async(req,res)=>{
+const orderList = async (req, res) => {
   try {
-    const orderData = await Order.find().sort({createdAt:-1})
-    .populate("user")
-    .populate("products.productId").exec();
-    res.render('orderList',{orderData}) 
+    const orderData = await Order.find()
+      .sort({ createdAt: -1 })
+      .populate("user")
+      .populate("products.productId")
+      .exec();
+    res.render("orderList", { orderData });
   } catch (error) {
     console.log(error.message);
   }
- }
- const orderDetails = async(req,res)=>{
+};
+const orderDetails = async (req, res) => {
   try {
-    const {id} = req.query
-    const orderData = await Order.findById({_id:id}).populate('user.user').populate('products.productId')
-    res.render('orderDetails',{orderData})
+    const { id } = req.query;
+    const orderData = await Order.findById({ _id: id })
+      .populate("user.user")
+      .populate("products.productId");
+    res.render("orderDetails", { orderData });
   } catch (error) {
     console.log(error.message);
   }
- }
- const changeStatus = async (req, res, next) => {
+};
+const changeStatus = async (req, res, next) => {
   try {
     const { status, orderId } = req.body;
-      await Order.updateOne(
-        { _id: orderId },
-        { $set: { status: status } }
-      );
+    await Order.updateOne({ _id: orderId }, { $set: { status: status } });
     res.status(201).json({ success: true });
   } catch (err) {
     next(err);
   }
 };
-
 
 module.exports = {
   dashboardLoad,
@@ -126,5 +174,5 @@ module.exports = {
   blockUser,
   orderList,
   orderDetails,
-  changeStatus
+  changeStatus,
 };

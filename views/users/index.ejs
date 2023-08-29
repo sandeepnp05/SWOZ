@@ -1,110 +1,108 @@
-	<style>
-		/* Add border to single product */
-		.single-product {
-  border: 1px solid #eaeaea; /* Border color */
-  border-radius: 8px; /* Rounded corners */
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Drop shadow effect */
-  transition: transform 0.3s, box-shadow 0.3s; /* Transition effects for hover */
-}
+<style>
+  /* Add border to single product */
+  .single-product {
+    border: 1px solid #eaeaea; /* Border color */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Drop shadow effect */
+    transition: transform 0.3s, box-shadow 0.3s; /* Transition effects for hover */
+  }
 
-/* Apply hover effect */
-.single-product:hover {
-  transform: translateY(-5px);
-  box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.2);
-}
-	  </style>
-	  
+  /* Apply hover effect */
+  .single-product:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.2);
+  }
+</style>
 
-<%- include("../layouts/header.ejs") %>
-<%- include("../layouts/userNav.ejs") %>
+<%- include("../layouts/header.ejs") %> <%- include("../layouts/userNav.ejs") %>
 
-	<!-- start banner Area -->
-	<section class="banner-area">
-		<div class="container">
-			<div class="row fullscreen align-items-center justify-content-start">
-				<div class="col-lg-12">
-					<div class="active-banner-slider owl-carousel">
-						<!-- single-slide -->
-						<div class="row single-slide align-items-center d-flex">
-							<div class="col-lg-5 col-md-6">
-								<div class="banner-content">
-									<h1>Nike New <br>Collection!</h1>
-									<p> Hurry and grab your favorite pieces before they're gone! This exclusive offer won't 
-										  last forever, so make sure you're ahead of the game and shop now! </p>
-									<div class="add-bag d-flex align-items-center">
-										<a class="add-btn" href=""><span class="lnr lnr-cross"></span></a>
-										<span class="add-text text-uppercase">Add to Bag</span>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-7">
-								<div class="banner-img">
-									<img class="img-fluid" src="img/banner/banner-img.png" alt="">
-								</div>
-							</div>
-						</div>
-						<!-- single-slide -->
-						
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- End banner Area -->
+<!-- start banner Area -->
+<section class="banner-area">
+  <div class="container">
+    <div class="row fullscreen align-items-center justify-content-start">
+      <div class="col-lg-12">
+        <div class="active-banner-slider owl-carousel">
+          <!-- single-slide -->
+          <div class="row single-slide align-items-center d-flex">
+            <div class="col-lg-5 col-md-6">
+              <div class="banner-content">
+                <h1>Nike New <br />Collection!</h1>
+                <p></p>
+                <div class="add-bag d-flex align-items-center">
+                  <a class="add-btn" href=""
+                    ><span class="lnr lnr-cross"></span
+                  ></a>
+                  <span class="add-text text-uppercase">Add to Bag</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7">
+              <div class="banner-img">
+                <img class="img-fluid" src="img/banner/banner-img.png" alt="" />
+              </div>
+            </div>
+          </div>
+          <!-- single-slide -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End banner Area -->
 
-	<!-- start features Area -->
-	<section class="features-area section_gap">
-		<div class="container">
-			<div class="row features-inner">
-				<!-- single features -->
-				<div class="col-lg-3 col-md-6 col-sm-6">
-					<div class="single-features">
-						<div class="f-icon">
-							<img src="img/features/f-icon1.png" alt="">
-						</div>
-						<h6>Free Delivery</h6>
-						<p>Free Shipping on all order</p>
-					</div>
-				</div>
-				<!-- single features -->
-				<div class="col-lg-3 col-md-6 col-sm-6">
-					<div class="single-features">
-						<div class="f-icon">
-							<img src="img/features/f-icon2.png" alt="">
-						</div>
-						<h6>Return Policy</h6>
-						<p>Free Shipping on all order</p>
-					</div>
-				</div>
-				<!-- single features -->
-				<div class="col-lg-3 col-md-6 col-sm-6">
-					<div class="single-features">
-						<div class="f-icon">
-							<img src="img/features/f-icon3.png" alt="">
-						</div>
-						<h6>24/7 Support</h6>
-						<p>Free Shipping on all order</p>
-					</div>
-				</div>
-				<!-- single features -->
-				<div class="col-lg-3 col-md-6 col-sm-6">
-					<div class="single-features">
-						<div class="f-icon">
-							<img src="img/features/f-icon4.png" alt="">
-						</div>
-						<h6>Secure Payment</h6>
-						<p>Free Shipping on all order</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- end features Area -->
+<!-- start features Area -->
+<section class="features-area section_gap">
+  <div class="container">
+    <div class="row features-inner">
+      <!-- single features -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="single-features">
+          <div class="f-icon">
+            <img src="img/features/f-icon1.png" alt="" />
+          </div>
+          <h6>Free Delivery</h6>
+          <p>Free Shipping on all order</p>
+        </div>
+      </div>
+      <!-- single features -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="single-features">
+          <div class="f-icon">
+            <img src="img/features/f-icon2.png" alt="" />
+          </div>
+          <h6>Return Policy</h6>
+          <p>Free Shipping on all order</p>
+        </div>
+      </div>
+      <!-- single features -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="single-features">
+          <div class="f-icon">
+            <img src="img/features/f-icon3.png" alt="" />
+          </div>
+          <h6>24/7 Support</h6>
+          <p>Free Shipping on all order</p>
+        </div>
+      </div>
+      <!-- single features -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="single-features">
+          <div class="f-icon">
+            <img src="img/features/f-icon4.png" alt="" />
+          </div>
+          <h6>Secure Payment</h6>
+          <p>Free Shipping on all order</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end features Area -->
 
-	<!-- Start category Area -->
-	<!-- <section class="category-area">
+<!-- Start category Area -->
+<!-- <section class="category-area">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-8 col-md-12">
@@ -169,14 +167,14 @@
 			</div>
 		</div>
 	</section> -->
-	<!-- End category Area -->
+<!-- End category Area -->
 
-	<!-- start product Area -->
-	<section class="owl-carousel active-product-area section_gap"> 
-		<!-- single product slide -->
-		 <div class="single-product-slider">
-			<div class="container">
-				<div class="row justify-content-center">
+<!-- start product Area -->
+<section class="owl-carousel active-product-area section_gap">
+  <!-- single product slide -->
+  <div class="single-product-slider">
+    <div class="container">
+      <!-- <div class="row justify-content-center">
 					<div class="col-lg-6 text-center">
 						<div class="section-title">
 							<h1>Latest Products</h1>
@@ -185,94 +183,96 @@
 								magna aliqua.</p>
 						</div>
 					</div>
-				</div> 
-				<div class="row">
-					<!-- single product -->
-					<% for (let product of products) { %> <% if (product.category.status === true) { %>
-						
-					<div class="col-lg-3 col-md-6">
-						<div class="single-product">
-							<a href="/singleProduct?id=<%= product._id%>"><img class="img-fluid" src="/uncroppedImages/<%= product.image[0] %>
-								"alt="<%= product.image[0] %>"></a>
-						
-							<div class="product-details">
-								<h6><%= product.name %></h6>
-								<div class="price">
-									<h6>₹<%= product.price %></h6>
-									<!-- <h6 class="l-through">$210.00</h6> -->
-								</div>
-								<!-- <div class="details">
+				</div>  -->
+      <div class="row">
+        <!-- single product -->
+        <% for (let product of products) { %> <% if (product.category.status ===
+        true) { %>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="single-product">
+            <a href="/singleProduct?id=<%= product._id%>"
+              ><img
+                class="img-fluid"
+                src="/uncroppedImages/<%= product.image[0] %>
+								"
+                alt="<%= product.image[0] %>"
+            /></a>
+
+            <div class="product-details">
+              <h6><%= product.name %></h6>
+              <div class="price">
+                <h6>₹<%= product.price %></h6>
+                <!-- <h6 class="l-through">$210.00</h6> -->
+              </div>
+              <!-- <div class="details">
 									<p style="color: black;"><%= product.description%></p>
 									
 								</div> -->
-								<div class="prd-bottom">
+              <div class="prd-bottom">
+                <a
+                  href="#"
+                  onclick="addToCart('<%= product._id %>', 1 ,'<%=product.price %>','<%=product.quantity %>')"
+                  class="social-info"
+                >
+                  <span class="ti-bag"></span>
+                  <p class="hover-text">Cart</p>
+                </a>
 
-									<a href="#" onclick="addToCart('<%= product._id %>', 1 ,'<%=product.price %>','<%=product.quantity %>')" class="social-info">
-										<span class="ti-bag"></span>
-										<p class="hover-text">Cart</p>
-									</a>
-									
-									<a href="" class="social-info">
-										<span class="lnr lnr-heart"></span>
-										<p class="hover-text">Wishlist</p>
-									</a>
-									
-								</div>
-							</div>
-						</div>
-					</div>
-					<% } %> <% } %>
-				
-					
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- end product Area -->
+                <a href="" class="social-info">
+                  <span class="lnr lnr-heart"></span>
+                  <p class="hover-text">Wishlist</p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% } %> <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end product Area -->
 
-	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-	<script>
-		
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
   const user = "<%=user_id%>";
-  
-  const addToCart = async (productId, quantity, singlePrice,totalStock) => {
-	  try {
-		//   event.stopPropagation();
-		  event.preventDefault();
-		//   const totalStock = document.getElementById(`product-${productId}`).value
-          if (user) {
-            const productData = await axios.post("/addToCart", {
-              productId,
-              quantity,
-              singlePrice,
-              totalStock
-            });
-            // if(productData.data.count){
-            //       document.getElementById("cartCount").innerHTML=`<span class="icon-shopping_cart" ></span>${productData.data.count}`
-            //       swal("Added to cart", "", "success");
-            // }   
-            if(productData.data.message){
-                swal("Added to cart", "", "success");
-              }
-              
-              if(productData.data.cartMessage){
-                swal("Cart quantity reaches the limit");
-              }
-            return productData;
-          } else {
-            swal({
-              title: "Please Login And Explore Our Products",
-            }).then(()=>{
-              window.location.href = "/login";
-            });
-            
-          }
-        } catch (error) {
-          console.log(error.message);
-        }}
-	</script>
-	<%- include("../layouts/footer.ejs") %>
-	<%- include("../layouts/userFooter.ejs") %>
+ 
+  const addToCart = async (productId, quantity, singlePrice, totalStock) => {
+    event.preventDefault();
+    try {
+      if (user) {
+        const productData = await axios.post("/addToCart", {
+          productId,
+          quantity,
+          singlePrice,
+          totalStock,
+        });
 
+        console.log("Response Data:", productData.data); // Log the response data
 
+        if (productData.data.count) {
+			document.getElementById("cartCount").innerHTML=`<span class="icon-shopping_cart" ></span>${productData.data.count}`
+
+        }
+
+        if (productData.data.message === "Product added to cart") {
+          swal("Added to cart", "", "success");
+        } else if (productData.data.cart_message) {
+          swal("Added to cart", "", "success");
+        }
+      } else {
+        swal({
+          title: "Please Login And Explore Our Products",
+        }).then(() => {
+          window.location.href = "/login";
+        });
+      }
+    } catch (error) {
+      console.log("Error:", error.message);
+    }
+  };
+</script>
+<%- include("../layouts/footer.ejs") %> <%- include("../layouts/userFooter.ejs")
+%>

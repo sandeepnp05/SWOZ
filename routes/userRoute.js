@@ -27,6 +27,8 @@ user_route.get('/shop',userController.loadShop)
 user_route.get('/otpLogin',userController.loadOtp)
 user_route.post('/otpLogin',userController.verifyOtp)
 user_route.get('/single-product',userController.loadProduct)
+
+
 user_route.get('/forget',auth.isLogout,userController.loadForget)
 user_route.get('/otpForget',auth.isLogout,userController.loadVerifyForget)
 user_route.post('/otpForget',auth.isLogout,userController.verifyForgetEmail)
@@ -48,6 +50,8 @@ user_route.post('/addToCart',cartController.addToCart)
 user_route.patch('/updateCart/:productId',auth.isLogin,cartController.updateCart)
 user_route.put('/deleteCart',auth.isLogin,cartController.deleteCart)
 
+user_route.get('/wishList',auth.isLogin,cartController.wishlistLoad)
+
 user_route.get('/checkout',auth.isLogin,orderController.loadCheckout) 
 user_route.post('/orderAddress',auth.isLogin,orderController.orderAddress) 
 user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder) 
@@ -55,5 +59,6 @@ user_route.get('/orderConfirm',auth.isLogin,orderController.orderConfirm)
 user_route.get('/orderedList',auth.isLogin,orderController.orderedList) 
 user_route.get('/orderedProduct',auth.isLogin,orderController.orderedProductDetails) 
 user_route.patch('/cancelOrder',auth.isLogin,orderController.cancelOrder)
+user_route.post('/verifyPayment',auth.isLogin,orderController.onlineVerifyPayment)
 
 module.exports =  user_route

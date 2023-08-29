@@ -1,7 +1,12 @@
 const User = require("../models/userModel");
 const Products = require("../models/productModel");
+const Razorpay = require("razorpay");
 const Category = require("../models/categoryModel");
 const Order = require("../models/orderModel");
+var instance = new Razorpay({ 
+  key_id: process.env.YOUR_KEY_ID,
+  key_secret: process.env.YOUR_KEY_SECRET,
+});
 
 const { addressForm } = require("./userController");
 
@@ -10,8 +15,10 @@ const { addressForm } = require("./userController");
  const loadCheckout = async (req, res) => {
    try {
     const {user_id} = req.session;
-    const userOrder = await User.findOne({_id:req.session.user_id}).populate("cart.productId")
+    
+    const userOrder = await User.findOne({_id:user_id}).populate("cart.productId")
      res.render("checkout",{userOrder}); 
+     
    } catch (err) { 
      console.log(err.message); 
    }
@@ -81,6 +88,9 @@ const { addressForm } = require("./userController");
         expectedDelivery: expectedDeliveryDate.toDateString(),
       });
       await order.save();
+      let totalAmount = order.total;
+      let orderId = order._id;
+      console.log(orderId);
       
       if (status == "Placed") {
         
@@ -95,7 +105,16 @@ const { addressForm } = require("./userController");
           { $set: { cart: [], grandTotal: 0 } }
         );
         res.json({ codSuccess: true });
-      } 
+      } else {
+        var options = {
+          amount: totalAmount * 100,
+          currency: "INR",
+          receipt: "" + orderId,
+        };
+        instance.orders.create(options, function (err, order) {
+          res.json({ order });
+        });
+      }
     } catch (error) {
       res.render("500");
       console.log(error.message); 
@@ -105,7 +124,14 @@ const { addressForm } = require("./userController");
     try {
       const { user_id } = req.session;
       const order = await Order.findOne({ user:user_id }).sort({ createdAt: -1 });
-      res.render("orderSuccess", { order }); 
+      let cartCount = 0;
+      if (user_id) {
+        const userData = await User.findOne({ _id: user_id }).populate("cart.productId");
+        cartCount = userData.cart.length;
+      }
+      res.render("orderSuccess", { order,cartCount }); 
+      console.log('success',order);
+
     } catch (error) {
       res.render("500");
       console.log(error.message);
@@ -164,8 +190,56 @@ const { addressForm } = require("./userController");
       res.render("500");
     }
   };
+  const onlineVerifyPayment = async (req, res) => {
+    try {
+      console.log('onlineVerifyPayment called');
+      const { user_id } = req.session;
+      console.log('User ID:', user_id);
+      let userData = await User.findById({ _id: user_id });
+      console.log('User Data:', userData);
+      const details = req.body;
+      console.log('Request Body:', details);
+      const crypto = require("crypto"); 
+      let hmac = crypto.createHmac("sha256", process.env.YOUR_KEY_SECRET);
+      hmac.update(
+        details.payment.razorpay_order_id +
+          "|" +
+          details.payment.razorpay_payment_id
+      );
+      hmac = hmac.digest("hex");
+      console.log('Calculated HMAC:', hmac);
+      if (hmac === details.payment.razorpay_signature) {
+        await Order.findByIdAndUpdate(
+          { _id: details.order.receipt },
+          { $set: { paymentId: details.payment.razorpay_payment_id } }
+        );
+        await Order.findByIdAndUpdate(
+          { _id: details.order.receipt },
+          { $set: { status: "Placed" } }
+        );
+        for (const cartItem of userData.cart) {
+          await Products.updateOne(
+            { _id: cartItem.productId },
+            { $inc: { quantity: -cartItem.quantity } }
+          );
+        }
+        await User.updateOne(
+          { _id: user_id },
+          { $set: { cart: [], grandTotal: 0 } }
+        );
+        res.json({ success: true });
+      } else {
+        await Order.deleteOne({ _id: details.order.receipt });
+        res.json({ success: false });
+      }
+    } catch (error) {
+      console.log(error.message);
+      res.json({ success: false });
+    }
+  };
   
  module.exports = {
+    onlineVerifyPayment,
     loadCheckout,
     orderAddress,
     placeOrder,

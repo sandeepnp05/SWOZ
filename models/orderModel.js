@@ -31,7 +31,7 @@ const orderSchema = new mongoose.Schema({
    },
    method:{
     type:String,
-    enum:["COD"],
+    enum:["COD","ONLINE"],
     required:true,
    },
    date:{

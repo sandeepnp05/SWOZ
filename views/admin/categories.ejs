@@ -36,6 +36,9 @@
                                         <button class="btn btn-primary">Create category</button>
                                     </div>
                                 </form>
+                                <% if (message) { %>
+                                    <span style="color: green;"><%= message %></span>
+                                <% } %>
                                 <a href="#" style="color: rgb(205, 43, 21); margin-top: 13px;"><%= message %></a>
 
                             </div>
