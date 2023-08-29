@@ -90,7 +90,6 @@ const { addressForm } = require("./userController");
       await order.save();
       let totalAmount = order.total;
       let orderId = order._id;
-      console.log(orderId);
       
       if (status == "Placed") {
         
@@ -130,7 +129,6 @@ const { addressForm } = require("./userController");
         cartCount = userData.cart.length;
       }
       res.render("orderSuccess", { order,cartCount }); 
-      console.log('success',order);
 
     } catch (error) {
       res.render("500");
@@ -157,7 +155,6 @@ const { addressForm } = require("./userController");
         "products.productId"
         );
         
-        console.log(order);
 
       
       res.render("orderedProducts", { order });
@@ -192,13 +189,9 @@ const { addressForm } = require("./userController");
   };
   const onlineVerifyPayment = async (req, res) => {
     try {
-      console.log('onlineVerifyPayment called');
       const { user_id } = req.session;
-      console.log('User ID:', user_id);
       let userData = await User.findById({ _id: user_id });
-      console.log('User Data:', userData);
       const details = req.body;
-      console.log('Request Body:', details);
       const crypto = require("crypto"); 
       let hmac = crypto.createHmac("sha256", process.env.YOUR_KEY_SECRET);
       hmac.update(
@@ -207,7 +200,6 @@ const { addressForm } = require("./userController");
           details.payment.razorpay_payment_id
       );
       hmac = hmac.digest("hex");
-      console.log('Calculated HMAC:', hmac);
       if (hmac === details.payment.razorpay_signature) {
         await Order.findByIdAndUpdate(
           { _id: details.order.receipt },

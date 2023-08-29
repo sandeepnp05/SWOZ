@@ -48,6 +48,8 @@ const dashboardLoad = async (req, res) => {
     { $match: { status: { $ne: ["Pending", "Returned"] } } },
     { $group: { _id: null, revenue: { $sum: "$total" } } },
   ]);
+  const monthly = monthlyEarning[0].earning
+  console.log(monthly);
   const totalRevenue = revenue[0].revenue;
 
   try {
@@ -61,7 +63,7 @@ const dashboardLoad = async (req, res) => {
       totalOrder,
       countProduct,
       countCategory,
-      monthlyEarning
+      monthly
     });
   } catch (error) {
     console.log(error);
