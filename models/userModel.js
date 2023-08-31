@@ -81,11 +81,25 @@ const userSchema = new mongoose.Schema({
         }
 
     ],
+    wishlist: [
+        {
+          productId: {
+            type: ObjectId,
+            ref: "Products",
+            required: true,
+          },
+          date: {
+            type: Date,
+          },
+        },
+      ],
     grandTotal: {
         type: Number,
         default: 0,
-      }
-})
+      },
+      
+},{timestamps:true}
+);
 
 
 module.exports = mongoose.model('User', userSchema);

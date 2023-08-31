@@ -1,11 +1,16 @@
 <%- include("../layouts/header.ejs") %> <%- include("../layouts/userNav.ejs") %>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+/>
+
 <section class="banner-area organic-breadcrumb">
   <div class="container">
     <div
       class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end"
     >
       <div class="col-first">
-        <h1>Cart</h1>
+        <h1>Wishlist</h1>
         <nav class="d-flex align-items-center">
           <a href="/index">Home<span class="lnr lnr-arrow-right"></span></a>
           <a href="/category">Wishlist</a>
@@ -16,10 +21,12 @@
 </section>
 <!-- End Banner Area -->
 
-<!--================Cart Area =================-->
+<!--================Wishlist Area =================-->
 <section class="cart_area">
   <div class="container">
     <div class="cart_inner">
+      <% if (wishlist.length>0) {%>
+
       <div class="table-responsive">
         <table class="table">
           <thead>
@@ -27,60 +34,54 @@
               <th scope="col"></th>
               <th scope="col">Product</th>
               <th scope="col">Price</th>
-              <th scope="col">Stock</th>
+              <th scope="col"></th>
               <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
-            <!-- Loop through userCart array -->
-            <tr class="text-center">
+            <!-- Loop through wishlist array -->
+            <% wishlist.forEach((product)=>{ %>
+            <tr class="text-center" id="deleteId-<%=product._id %>">
               <td class="product-remove">
-                <a
-                  href=""
-                  onclick="deleteHandleCart('product_id')"
-                  class="product-remove"
-                >
+                <a href="" onclick="deleteWishlist('<%=product._id%>')">
                   <span class="fas fa-trash"></span>
                 </a>
               </td>
               <td>
                 <div class="media">
+                  <% if (product.productId.image.length > 0) { %>
                   <div class="d-flex">
                     <img
-                      src="/uncroppedImages/product_image"
+                      src="/uncroppedImages/<%= product.productId.image[0] %>"
                       alt="Product Image"
                     />
                   </div>
+                  <% } %>
                   <div class="media-body">
                     <p class="product-name" style="color: black">
-                      Product Name
+                      <%= product.productId.name %>
                     </p>
                   </div>
                 </div>
               </td>
               <td class="product-price">
-                <h5>Product Price</h5>
+                <h5> ₹<%= product.productId.price %></h5>
               </td>
-
-              <td class="quantity">
-                <div class="form-control text-center quantity-input" data-product="product_id" data-price="product_price" data-stock-quantity="product_stock_quantity">
-                    
-                </div>
-            </td>
-            
 
               <td class="total">
                 <button class="btn btn-primary">
                   <a
-                    href="/addTocart"
+                    href=""
+                    onclick="addToCart('<%=product.productId._id%>',1,'<%= product.productId.price%>')"
                     style="color: white; text-decoration: none"
                     >Add To cart</a
                   >
                 </button>
               </td>
             </tr>
-            <!-- End loop -->
 
+            <!-- End loop -->
+            <% })%> <%}else{ %>
             <!-- Empty cart message -->
             <div class="empty-cart" id="empty-cart">
               <div class="empty-cart-content">
@@ -104,6 +105,7 @@
                 </div>
               </td>
             </tr>
+            <%}%>
           </tbody>
         </table>
       </div>
@@ -111,5 +113,94 @@
   </div>
 </section>
 <!--================End Cart Area =================-->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <%- include("../layouts/footer.ejs") %> <%-
 include("../layouts/userFooter.ejs")%>
+<script>
+  const user = "<%=user_id%>";
+  const addToCart = async (productId, quantity, singlePrice, totalStock) => {
+    console.log("addToCart function called"); // Debugging line
+    event.preventDefault();
+    try {
+      if (user) {
+        console.log("User is authenticated"); // Debugging line
+        const productData = await axios.post("/addToCart", {
+          productId,
+          quantity,
+          singlePrice,
+          totalStock,
+        });
+
+        console.log("Response Data:", productData.data); // Log the response data
+
+        if (productData.data.count) {
+          document.getElementById(
+            "cartCount"
+          ).innerHTML = `<span class="icon-shopping_cart" ></span>${productData.data.count}`;
+        }
+
+        if (productData.data.message === "Product added to cart") {
+          swal("Added to cart", "", "success");
+        } else if (productData.data.cart_message) {
+          swal("Added to cart", "", "success");
+        }
+      } else {
+        console.log("User not authenticated"); // Debugging line
+        swal({
+          title: "Please Login And Explore Our Products",
+        }).then(() => {
+          window.location.href = "/login";
+        });
+      }
+    } catch (error) {
+      console.log("Error:", error.message);
+    }
+  };
+
+
+  const deleteWishlist = async (wishlistId) => {
+    try {
+      console.log("wichlistId", wishlistId);
+      event.preventDefault();
+      swal({
+        title: "Delete wishlist product",
+        text: "Are you sure you want to delete?",
+        icon: "warning",
+        buttons: ["Cancel", "OK"],
+        dangerMode: true,
+      }).then(async (willDelete) => {
+        if (willDelete) {
+          // User clicked "OK" button, perform the delete action
+          const deleteItem = await axios.patch("/deleteWishlist", {
+            wishlistId,
+          });
+          if (deleteItem.data.success) {
+            const elementToRemove = document.getElementById(
+              `deleteId-${wishlistId}`
+            );
+            elementToRemove.parentNode.removeChild(elementToRemove);
+          }
+          const table = document.getElementById("wishlist-table");
+          const emptyWishlistDiv = document.getElementById("empty-wishlist");
+
+          if (deleteItem.data.length === 0) {
+            document.getElementById(
+              "wishlistCount"
+            ).innerHTML = `<span><i class="ion-ios-heart"></i></span>${deleteItem.data.length}`;
+            table.style.display = "none";
+            emptyWishlistDiv.style.display = "block";
+          }
+          const { length } = deleteItem.data;
+          if (length) {
+            document.getElementById(
+              "wishlistCount"
+            ).innerHTML = `<span><i class="ion-ios-heart"></i></span>${length}`;
+          }
+        }
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+</script>

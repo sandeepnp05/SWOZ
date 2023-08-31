@@ -3,6 +3,8 @@ const Category = require("../models/categoryModel");
 
 const fs = require("fs");
 const path = require("path");
+const sharp = require("sharp");
+
 
 const productAddPage = async (req, res) => {
     try {
@@ -49,6 +51,10 @@ const productAddPage = async (req, res) => {
             req.files[i].filename
           );
           imageArr.push(req.files[i].filename);
+          await sharp(req.files[i].path)
+          .resize({ width: 250, height: 250 })
+          .toFile(filePath);
+        imageArr.push(req.files[i].filename);
         }
       }
       const product = new Products({
@@ -88,6 +94,11 @@ const productAddPage = async (req, res) => {
             req.files[i].filename
           );
           imageArr.push(req.files[i].filename);
+          
+          await sharp(req.files[i].path)
+          .resize({ width: 250, height: 250 })
+          .toFile(filePath);
+        imageArr.push(req.files[i].filename);
         }
         }
         if (req.files.length) {

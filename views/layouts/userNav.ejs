@@ -11,9 +11,11 @@
     top: -8px;
     right: -12px;
 }
+/* Add spacing between icons */
+.nav-item a {
+  margin-right: 10px; /* Adjust the spacing as needed */
+}
 </style>
-
-
 
 </style>
 <header class="header_area sticky-header">
@@ -105,18 +107,22 @@
           <ul class="nav navbar-nav navbar-right">
            
             <li class="nav-item">
-              <a href="/wishList" class="wishlist"
-                ><span class="ti-heart"></span
-              ></a>
-            </li>
-            <li class="nav-item">
+              <a href="/wishList" class="wishlist">
+                <span class="ti-heart"></span>
+              </a>
               <a href="/cart" class="cart">
-                <i class="ti-shopping-cart"></i>
-                <span  id="cartCount"
-                onchange="cartCount('<%= session.cartCount %>')"
-                class="nav-shop__circle"><%= session.cartCount %></span>
+                <i class="ti-bag"></i>
+                <span id="cartCount">
+                  <% if (cartCount > 0) { %>
+                    <%= cartCount %>
+                  <% } %>
+                </span>
               </a>
             </li>
+            
+            
+            
+
             </li>
             <!-- <li class="nav-item">
 								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>

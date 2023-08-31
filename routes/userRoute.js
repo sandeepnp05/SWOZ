@@ -3,6 +3,7 @@ const user_route = express()
 const userController = require('../controllers/userController')
 const cartController = require('../controllers/cartController')
 const orderController = require('../controllers/orderController')
+const wishlistController = require('../controllers/wishlistController')
 
 const auth = require('../middleware/userAuth')
 const nocache = require('nocache')
@@ -46,11 +47,14 @@ user_route.put('/deleteAddress',auth.isLogin,userController.deleteAddress)
 user_route.post('/updateAddress',auth.isLogin,userController.updateAddress)
 
 user_route.get('/cart',auth.isLogin,cartController.loadCart)
+
 user_route.post('/addToCart',cartController.addToCart)
 user_route.patch('/updateCart/:productId',auth.isLogin,cartController.updateCart)
 user_route.put('/deleteCart',auth.isLogin,cartController.deleteCart)
 
-user_route.get('/wishList',auth.isLogin,cartController.wishlistLoad)
+user_route.get('/wishList',auth.isLogin,wishlistController.loadWishlist)
+user_route.put('/wishList',auth.isLogin,wishlistController.addWishlist)
+user_route.patch('/deleteWishlist',auth.isLogin,wishlistController.deleteWishlistProduct)
 
 user_route.get('/checkout',auth.isLogin,orderController.loadCheckout) 
 user_route.post('/orderAddress',auth.isLogin,orderController.orderAddress) 

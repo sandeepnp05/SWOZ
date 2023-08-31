@@ -12,6 +12,77 @@ const path = require("path");
 dotenv.config();
 
 const dashboardLoad = async (req, res) => {
+
+  let usersData = [];
+  let sales = [];
+
+  // Calculate the starting date of the current year
+  let currentSalesYear = new Date(new Date().getFullYear(), 0, 1);
+
+  // Aggregate user registration data by month
+  let usersByYear = await User.aggregate([
+    { $match: { createdAt: { $gte: currentSalesYear }, is_blocked: { $ne: true } } },
+    {
+      $group: {
+        _id: { $dateToString: { format: "%m", date: "$createdAt" } },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]).exec();
+  // Fill in missing months with zero counts
+  for (let i = 1; i <= 12; i++) {
+    let result = true;
+    for (let j = 0; j < usersByYear.length; j++) {
+      result = false;
+      if (usersByYear[j]._id == i) {
+        usersData.push(usersByYear[j]);
+        break;
+      } else {
+        result = true;
+      }
+    }
+    if (result) usersData.push({ _id: i, count: 0});
+  }
+  // Extract user counts for rendering
+  let userData = usersData.map(user => user.count);
+
+  // Aggregate sales data by month
+  let salesByYear = await Order.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: currentSalesYear },
+        orderStatus: { $ne: "Cancelled" },
+      },
+    },
+    {
+      $group: {
+        _id: { $dateToString: { format: "%m", date: "$createdAt" } },
+        total: { $sum: "$grandTotal" },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]).exec();;
+
+  // Fill in missing months with zero sales
+  for (let i = 1; i <= 12; i++) {
+    let result = true;
+    for (let j = 0; j < salesByYear.length; j++) {
+      result = false;
+      if (salesByYear[j]._id == i) {
+        sales.push(salesByYear[j]);
+        break;
+      } else {
+        result = true;
+      }
+    }
+    if (result) sales.push({ _id: i, total: 0, count: 0 });
+  }
+
+  // Extract sales totals for rendering
+  let salesData = sales.map(sale => sale.total);
+
   const totalOrder = await Order.countDocuments({
     status: { $nin: ["Pending", "Returned", "Placed"] },
   });
@@ -48,9 +119,9 @@ const dashboardLoad = async (req, res) => {
     { $match: { status: { $ne: ["Pending", "Returned"] } } },
     { $group: { _id: null, revenue: { $sum: "$total" } } },
   ]);
-  const monthly = monthlyEarning[0].earning
-  console.log(monthly);
-  const totalRevenue = revenue[0].revenue;
+
+  const monthly = monthlyEarning.length > 0 ? monthlyEarning[0].earning : 0;
+  const totalRevenue = revenue.length > 0 ? revenue[0].revenue : 0;
 
   try {
     res.render("dashboard", {
@@ -63,7 +134,8 @@ const dashboardLoad = async (req, res) => {
       totalOrder,
       countProduct,
       countCategory,
-      monthly
+      monthly,
+      userData
     });
   } catch (error) {
     console.log(error);
@@ -168,13 +240,13 @@ const changeStatus = async (req, res, next) => {
 };
 
 module.exports = {
-  dashboardLoad,
-  adminLoad,
-  adminVerifyLogin,
   logout,
   userList,
-  blockUser,
   orderList,
+  adminLoad,
+  blockUser,
   orderDetails,
   changeStatus,
+  dashboardLoad,
+  adminVerifyLogin,
 };

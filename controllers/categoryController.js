@@ -23,7 +23,7 @@ const categories = async (req, res) => {
           description: category_description,
         });
         await newCategory.save();
-        req.session.message = "Category added successfully";
+        req.session.message = "";
       } else {
         req.session.message = "This category is already defined";
       }

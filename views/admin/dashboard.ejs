@@ -3,7 +3,10 @@
 <%- include("../layouts/adminSidebar.ejs") %>
 <main class="main-wrap">
   <%- include("../layouts/adminNav.ejs") %>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+  />
   <section class="content-main">
     <div class="content-header">
       <div>
@@ -21,7 +24,8 @@
         <div class="card card-body mb-4">
           <article class="icontext">
             <span class="icon icon-sm rounded-circle bg-primary-light"
-              ><i style="color: rgb(9, 125, 9);" class="fa fa-inr"></i></span>
+              ><i style="color: rgb(9, 125, 9)" class="fa fa-inr"></i
+            ></span>
             <div class="text">
               <h6 class="mb-1 card-title">Revenue</h6>
               <span><%= totalRevenue %></span>
@@ -39,7 +43,9 @@
             <div class="text">
               <h6 class="mb-1 card-title">Pending Orders</h6>
               <span><%=placedCount%></span>
-              <span class="text-sm"> Pending orders to be delivered soon. </span>
+              <span class="text-sm">
+                Pending orders to be delivered soon.
+              </span>
             </div>
           </article>
         </div>
@@ -65,11 +71,9 @@
               ><i class="text-info material-icons md-shopping_basket"></i
             ></span>
             <div class="text">
-                
               <h6 class="mb-1 card-title">Monthly Earning</h6>
               <span>₹<%= monthly %></span>
               <span class="text-sm"> Based in your local time. </span>
-              
             </div>
           </article>
         </div>
@@ -79,14 +83,15 @@
     <!-- chart section -->
 
     <div class="card mb-4">
-      <div id="chart"></div>
+      <h4>Users</h4>
+      <div id="myChart"></div>
     </div>
     <div class="col-lg-6">
-        <h4>Orders</h4>
-        <div class="card mb-4">
+      <h4>Orders</h4>
+      <div class="card mb-4">
         <div id="pieChart"></div>
       </div>
-      </div>
+    </div>
 
     <!-- End of chart section -->
 
@@ -202,90 +207,108 @@
     </div>
   </footer>
 </main>
+
+
+<input type="hidden" value="<%= userData[0]%>" id="Jan" />
+<input type="hidden" value="<%= userData[1]%>" id="Feb" />
+<input type="hidden" value="<%= userData[2]%>" id="Mar" />
+<input type="hidden" value="<%= userData[3]%>" id="Apr" />
+<input type="hidden" value="<%= userData[4]%>" id="May" />
+<input type="hidden" value="<%= userData[5]%>" id="Jun" />
+<input type="hidden" value="<%= userData[6]%>" id="Jul" />
+<input type="hidden" value="<%= userData[7]%>" id="Aug" />
+<input type="hidden" value="<%= userData[8]%>" id="Sep" />
+<input type="hidden" value="<%= userData[9]%>" id="Oct" />
+<input type="hidden" value="<%= userData[10]%>" id="Nov" />
+<input type="hidden" value="<%= userData[11]%>" id="Dec" />
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"
-  integrity="sha512-7U4rRB8aGAHGVad3u2jiC7GA5/1YhQcQjxKeaVms/bT66i3LVBMRcBI9KwABNWnxOSwulkuSXxZLGuyfvo7V1A=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-></script>
+<% console.log('aug',userData[7]); %>
+
 <script>
-  let cancelledCount = parseInt("<%=cancelledCount%>");
-  let placedCount = parseInt("<%=placedCount%>");
-  let deliveredCount = parseInt("<%=deliveredCount%>");
-  let pendingCount = parseInt("<%=pendingCount%>");
-  console.log("dele",deliveredCount);
-  console.log("placed",placedCount);
-  console.log("cancelled",cancelledCount);
-  console.log("pending",pendingCount);
+  let cancelledCount = parseInt("<%=cancelledCount%>".trim(), 10);
+  let placedCount = parseInt("<%=placedCount%>".trim(), 10);
+  let deliveredCount = parseInt("<%=deliveredCount%>".trim(), 10);
+  let pendingCount = parseInt("<%=pendingCount%>".trim(), 10);
 
-  var areaChart = {
-    series: [
-      {
-        name: "series1",
-        data: [],
-    },
-      {
-        name: "series2",
-        data: [11, 32, 45, 32, 34, 52, 41],
-      },
-    ],
-    chart: {
-      height: 350,
-      type: "area",
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: "smooth",
-    },
-    xaxis: {
-      type: "datetime",
-      categories: [
-      '2023-08-01', '2023-08-02', '2023-08-03'
-      ],
-    },
-    tooltip: {
-      x: {
-        format: "dd/MM/yy HH:mm",
-      },
-    },
-  };
+  let Jan = document.getElementById('Jan').value
+    let Feb = document.getElementById('Feb').value
+    let Mar = document.getElementById('Mar').value
+    let Apr = document.getElementById('Apr').value
+    let May = document.getElementById('May').value
+    let Jun = document.getElementById('Jun').value
+    let Jul = document.getElementById('Jul').value
+    let Aug = document.getElementById('Aug').value
+    let Sep = document.getElementById('Sep').value
+    let Oct = document.getElementById('Oct').value
+    let Nov = document.getElementById('Nov').value
+    let Dec = document.getElementById('Dec').value
 
-  var chart = new ApexCharts(document.querySelector("#chart"), areaChart);
-  chart.render();
-
-//   pieChart
-var pieChart = {
-          series: [placedCount, deliveredCount, cancelledCount,pendingCount],
+  var options = {
+          series: [{
+            name: "Users",
+            data: [Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+        }],
           chart: {
-          type: 'polarArea',
-          width:400,
-        },
-        labels:[
-        "Placed", "Delivered", "Cancelled","Pending"
-        ], 
-        stroke: {
-          colors: ['#fff']
-        },
-        fill: {
-          opacity: 0.8
-        },
-        responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200
-            },
-            legend: {
-              position: 'bottom'
-            }
+          height: 350,
+          type: 'line',
+          zoom: {
+            enabled: false
           }
-        }]
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'straight'
+        },
+        title: {
+          text: 'User Join per Month',
+          align: 'left'
+        },
+        grid: {
+          row: {
+            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+            opacity: 0.5
+          },
+        },
+        xaxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+        }
         };
 
-        var chart = new ApexCharts(document.querySelector("#pieChart"), pieChart);
+        var chart = new ApexCharts(document.querySelector("#myChart"), options);
         chart.render();
+
+  //   pieChart
+  var pieChart = {
+    series: [placedCount, deliveredCount, cancelledCount, pendingCount],
+    chart: {
+      type: "donut",
+      width: 400,
+    },
+    labels: ["Placed", "Delivered", "Cancelled", "Pending"],
+    stroke: {
+      colors: ["#fff"],
+    },
+    fill: {
+      opacity: 0.8,
+    },
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200,
+          },
+          legend: {
+            position: "bottom",
+          },
+        },
+      },
+    ],
+  };
+
+  var chart = new ApexCharts(document.querySelector("#pieChart"), pieChart);
+  chart.render();
 </script>
 <%- include("../layouts/adminFooter.ejs") %>

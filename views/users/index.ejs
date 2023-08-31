@@ -219,7 +219,11 @@
                   <p class="hover-text">Cart</p>
                 </a>
 
-                <a href="" class="social-info">
+                <a
+                  href=""
+                  onclick="addToWishlist('<%=product._id%>')"
+                  class="social-info"
+                >
                   <span class="lnr lnr-heart"></span>
                   <p class="hover-text">Wishlist</p>
                 </a>
@@ -238,7 +242,7 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
   const user = "<%=user_id%>";
- 
+
   const addToCart = async (productId, quantity, singlePrice, totalStock) => {
     event.preventDefault();
     try {
@@ -253,8 +257,9 @@
         console.log("Response Data:", productData.data); // Log the response data
 
         if (productData.data.count) {
-			document.getElementById("cartCount").innerHTML=`<span class="icon-shopping_cart" ></span>${productData.data.count}`
-
+          document.getElementById(
+            "cartCount"
+          ).innerHTML = `<span class="icon-shopping_cart" ></span>${productData.data.count}`;
         }
 
         if (productData.data.message === "Product added to cart") {
@@ -273,17 +278,32 @@
       console.log("Error:", error.message);
     }
   };
- 
-  const Wishlist = async(productId){
+  const addToWishlist = async (productId) => {
     try {
-     event.preventDefault()
-     if (user) {
-      
-     }
+      event.preventDefault();
+      if (user) {
+        const wishlistData = await axios.put("/wishlist", { productId });
+        swal("Added to wishlist", "", "success");
+        if (wishlistData.data.success === false) {
+          swal("Product already exist in the wishlist");
+        }
+        const { count } = wishlistData.data;
+        if (count || count === 0) {
+          document.getElementById(
+            "wishlistCount"
+          ).innerHTML = `<span><i class="ion-ios-heart"></i></span>${count}`;
+        }
+      } else {
+        swal({
+          title: "Please Login And Explore Our Products",
+        }).then(() => {
+          window.location.href = "/login";
+        });
+      }
     } catch (error) {
-      
+      console.log(error.message);
     }
-  }
+  };
 </script>
 <%- include("../layouts/footer.ejs") %> <%- include("../layouts/userFooter.ejs")
 %>

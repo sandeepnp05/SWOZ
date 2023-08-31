@@ -1,11 +1,10 @@
 const User = require("../models/userModel");
 const Products = require("../models/productModel");
-const Category = require("../models/categoryModel")
+const Category = require("../models/categoryModel");
 const bcrypt = require("bcrypt");
 
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
-
 
 const randomString = require("randomstring");
 
@@ -44,7 +43,7 @@ const sendEmail = async (email) => {
         pass: process.env.email_password,
       },
     });
- 
+
     const options = {
       from: process.env.email_user,
       to: email,
@@ -69,7 +68,7 @@ const sendEmail = async (email) => {
             </div>
           </div>
         </div>
-      `
+      `,
     };
     transporter.sendMail(options, (error, info) => {
       if (error) {
@@ -99,7 +98,7 @@ const verifyOtp = async (req, res) => {
 
       if (findUserAndUpdate) {
         req.session.user_id = findUserAndUpdate._id;
-        res.redirect("/index");
+        res.redirect("/login");
       } else {
         res.render("otpLogin", {
           errMessage: "Failed to verify. Please try again later.",
@@ -108,13 +107,14 @@ const verifyOtp = async (req, res) => {
     } else {
       res.render("otpLogin", {
         errMessage: "Invalid otp. Please check your otp.",
-      });
+      }); 
     }
   } catch (error) {
     console.log(error.message);
     res.render("otpLogin", {
       errMessage: "An error occurred. Please try again later.",
-    });le.log
+    });
+    le.log;
   }
 };
 
@@ -180,7 +180,7 @@ const verifyLogin = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    const userData = await User.findOne({ email: email }); 
+    const userData = await User.findOne({ email: email });
 
     if (userData) {
       const passMatch = await bcrypt.compare(password, userData.password);
@@ -201,34 +201,26 @@ const verifyLogin = async (req, res) => {
     } else {
       res.render("login", { message: "Email or Password Incorrect" });
     }
-    
-    
-    
-    
-    
-    
   } catch (err) {
     console.log(err.message);
   }
 };
 
 // Load the home page with products data.
- 
-const loadHome = async (req, res) => { 
+
+const loadHome = async (req, res) => {
   try {
-    const {user_id} = req.session;
+    const { user_id } = req.session;
     const userSession = req.session.user_id ? req.session.user_id : "";
-    const products = await Products.find({ list: true }).populate("category")
+    const products = await Products.find({ list: true }).populate("category");
 
-    
-
-      res.render("index", {
-        products,user_id
-      });
-    
+    res.render("index", {
+      products,
+      user_id,
+    });
   } catch (err) {
     console.log("Error:", err.message);
-    res.status(500).send("Error fetching products"); 
+    res.status(500).send("Error fetching products");
   }
 };
 
@@ -242,7 +234,6 @@ const logout = async (req, res) => {
     console.log(err.message);
   }
 };
-
 
 // Redirect the user to the login page.
 
@@ -273,36 +264,33 @@ const loadContact = async (req, res) => {
 //     console.log(err.message);
 //   }
 // };
-const loadShop = async (req, res) => { 
+const loadShop = async (req, res) => {
   try {
     const { user_id } = req.session;
-    const { cat, search } = req.query;
+    const { cat, search } = req.query; 
     console.log(search);
     const userSession = req.session.user_id ? req.session.user_id : "";
-    
+
     let productsQuery = { list: true };
 
     if (cat) {
       productsQuery.category = cat;
     }
     if (search) {
-      productsQuery.name  = { $regex: search, $options: "i" }
-      
+      productsQuery.name = { $regex: search, $options: "i" };
     }
 
     const products = await Products.find(productsQuery).populate("category");
-    
-    
+
     const category = await Category.find({ status: true });
-    
+
     res.render("shop", {
       cat: cat,
       products,
       user_id,
       category,
-      search
+      search,
     });
-    
   } catch (err) {
     console.log("Error:", err.message);
     res.status(500).send("Error fetching products");
@@ -319,8 +307,6 @@ const loadOtp = async (req, res) => {
   }
 };
 
-
-
 // Render the single product page.
 
 const loadProduct = async (req, res) => {
@@ -331,12 +317,7 @@ const loadProduct = async (req, res) => {
   }
 };
 
-
-
-
-
 // Render the order confirmation page.
-
 
 const loadConfirmation = async (req, res) => {
   try {
@@ -346,21 +327,12 @@ const loadConfirmation = async (req, res) => {
   }
 };
 
-// Render the wishlist page.verif
-
-const loadWishlist = async (req, res) => {
-  try {
-    res.render("wishlist");
-  } catch (err) {
-    console.log(err.message);
-  }
-};
 
 // Render the forget password page.
 
 const loadForget = async (req, res) => {
   try {
-    res.render("forget",{message:''});
+    res.render("forget", { message: "" });
   } catch (error) {
     console.log(error.message);
   }
@@ -368,55 +340,54 @@ const loadForget = async (req, res) => {
 
 // Render the OTP verification for forget password page
 
-const loadVerifyForget = async (req,res)=>{
+const loadVerifyForget = async (req, res) => {
   try {
-
-    res.render('otpForget',{message:''})
+    res.render("otpForget", { message: "" });
   } catch (err) {
     console.log(err.message);
   }
-}
+};
 
 // Verify the user's email for forget password.
 
-const verifyForgetEmail = async(req,res)=>{
+const verifyForgetEmail = async (req, res) => {
   try {
-    const {email} = req.body;
-   req.session.forEmail= req.body.email 
-   
-    const userData =  await User.findOne({email:email});
-    if (userData){
-      if(userData.is_verified){
-        if(userData.is_blocked === false){
-          const otp = await sendEmail(email)
-            req.session.forOtp = otp;
-            res.render("otpForget", {
-              succMessage: "Enter otp to verify your email",
-              formessage: "true",
-              email,
-            });
-        }else{
-          res.render('forget',{message:"User is blodked!."})
+    const { email } = req.body;
+    req.session.forEmail = req.body.email;
+
+    const userData = await User.findOne({ email: email });
+    if (userData) {
+      if (userData.is_verified) {
+        if (userData.is_blocked === false) {
+          const otp = await sendEmail(email);
+          req.session.forOtp = otp;
+          res.render("otpForget", {
+            succMessage: "Enter otp to verify your email",
+            formessage: "true",
+            email,
+          });
+        } else {
+          res.render("forget", { message: "User is blodked!." });
         }
-      }else{
-        res.render('forget',{message:'User email is not verified!..'})
+      } else {
+        res.render("forget", { message: "User email is not verified!.." });
       }
-    }else{
+    } else {
       // message = 'User not found'
-      res.render('forget',{message:'User is not found'})
+      res.render("forget", { message: "User is not found" });
     }
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 // Verify otp of forget mail
-const verifyForgetOtp = async(req,res)=>{
+const verifyForgetOtp = async (req, res) => {
   try {
     const recievedOtp = req.body.otp;
-    let {forget} = req.body;
+    let { forget } = req.body;
     const { email } = req.body;
     if (req.session.forOtp == recievedOtp) {
-      res.redirect("/resetPassword?email=" + encodeURIComponent(email))
+      res.redirect("/resetPassword?email=" + encodeURIComponent(email));
     } else {
       res.render("otpForget", {
         errMessage: "Invalid otp. Please check your otp",
@@ -428,19 +399,19 @@ const verifyForgetOtp = async(req,res)=>{
       errMessage: "An error occurred. Please try again later.",
     });
   }
-}
+};
 const resetPassword = async (req, res) => {
   try {
     const { email } = req.query;
-    res.render('resetPassword', { email }); 
+    res.render("resetPassword", { email });
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
-const newPassword = async(req,res)=>{
+const newPassword = async (req, res) => {
   try {
-    const {password} = req.body;
+    const { password } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
     await User.updateOne(
       { email: req.session.forEmail },
@@ -451,71 +422,78 @@ const newPassword = async(req,res)=>{
     console.log(error.message);
   }
 };
-const loadForgetResetSuccess = async (req,res)=>{
+const loadForgetResetSuccess = async (req, res) => {
   try {
-    res.render('forgetResetSuccess')
-  } catch (error) { 
-    console.log(error.message);
-  }
-}
-
-const loadSingleProduct = async(req,res)=>{
-  try {
-    const {id} = req.query;
-    const user_id = req.session.user_id;
-    const singleProduct = await Products.findById({_id:id}).populate("category");
-    console.log(singleProduct);
-    res.render('singleProduct',{singleProduct,user_id}) 
+    res.render("forgetResetSuccess");
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
-const userProfile = async (req, res) => { 
+const loadSingleProduct = async (req, res) => {
   try {
-    const userData = await User.findById(req.session.user_id) 
+    const { id } = req.query;
+    const user_id = req.session.user_id;
+    const singleProduct = await Products.findById({ _id: id }).populate(
+      "category"
+    );
+    console.log(singleProduct);
+    res.render("singleProduct", { singleProduct, user_id });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const userProfile = async (req, res) => {
+  try {
+    const userData = await User.findById(req.session.user_id);
     const email = req.session.user;
     const addAddressDetails = await User.findOne(
       { email: email },
       { address: 1 }
-      );
+    );
     if (!userData) {
-     
-      return res.status(404).render('error', { message: 'User data not found' });
+      return res
+        .status(404)
+        .render("error", { message: "User data not found" });
     }
 
-    res.render("userProfile", { userData:userData,addAddressDetails:addAddressDetails });
+    res.render("userProfile", {
+      userData: userData,
+      addAddressDetails: addAddressDetails,
+    });
   } catch (err) {
     console.log(err.message);
-    
-    res.status(500).render('error', { message: 'Internal server error' }); 
+
+    res.status(500).render("error", { message: "Internal server error" });
   }
 };
 
-
-const updateProfile = async(req,res)=>{
+const updateProfile = async (req, res) => {
   try {
-    const {firstname,lastname,phone} = req.body
-    await User.updateOne({_id:req.session.user_id},
-      {$set:{firstname:firstname,lastname:lastname,phone:phone}});
-      res.redirect('/userProfile')
+    const { firstname, lastname, phone } = req.body;
+    await User.updateOne(
+      { _id: req.session.user_id },
+      { $set: { firstname: firstname, lastname: lastname, phone: phone } }
+    );
+    res.redirect("/userProfile");
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
-const addressForm = async(req,res)=>{
+const addressForm = async (req, res) => {
   try {
-    const {userId,addressId} = req.query
-  //  const userid= req.session.user_id
-   
-    const addAddressDetails = await User.findOne({_id:userId});
-    
-    res.render('addressForm',{addAddressDetails})
+    const { userId, addressId } = req.query;
+    //  const userid= req.session.user_id
+
+    const addAddressDetails = await User.findOne({ _id: userId });
+
+    res.render("addressForm", { addAddressDetails });
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 const updateAddress = async (req, res) => {
   try {
     const {
@@ -545,37 +523,47 @@ const updateAddress = async (req, res) => {
         },
       }
     );
-    
-      res.redirect("/userprofile");
-    
+
+    res.redirect("/userprofile");
   } catch (error) {
     console.log(error.message);
   }
 };
-const addAddress = async(req,res) => {
+const addAddress = async (req, res) => {
   try {
     const email = req.session.user;
-    const {firstname,lastname,city,district,state,mobile,pincode,housename} = req.body;
+    const {
+      firstname,
+      lastname,
+      city,
+      district,
+      state,
+      mobile,
+      pincode,
+      housename,
+    } = req.body;
     await User.updateOne(
-      {email:email},{
-        $push:{address:{
-          firstname:firstname,
-          lastname: lastname,
-          housename:housename, 
-          city:city,
-          district:district,
-          state: state,
-          mobile:mobile,
-          pincode:pincode
+      { email: email },
+      {
+        $push: {
+          address: {
+            firstname: firstname,
+            lastname: lastname,
+            housename: housename,
+            city: city,
+            district: district,
+            state: state,
+            mobile: mobile,
+            pincode: pincode,
+          },
         },
-       },
       }
     );
-    res.redirect('/userProfile')
+    res.redirect("/userProfile");
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 const deleteAddress = async (req, res) => {
   try {
     const user = req.session.user_id;
@@ -591,36 +579,33 @@ const deleteAddress = async (req, res) => {
   }
 };
 
-
 module.exports = {
-  loadRegister,
-  insertUser,
-  loginLoad,
-  verifyLogin,
-  loadHome,
   logout,
-  redirectUser,
-  loadContact, 
-  loadShop, 
   loadOtp,
-  loadProduct,
-  sendEmail, 
-  loadConfirmation,
+  loadHome,
+  loadShop,
+  sendEmail,
   verifyOtp,
-  loadWishlist,
+  loginLoad,
+  insertUser,
   loadForget,
-  userProfile,
-  loadVerifyForget,   
-  resetPassword,
-  newPassword,
-  loadForgetResetSuccess,
-  verifyForgetEmail,
-  verifyForgetOtp,
-  loadSingleProduct, 
-  updateProfile,
   addAddress,
+  loadContact,
+  userProfile,
   addressForm,
-  deleteAddress,
+  loadProduct,
+  newPassword,
+  verifyLogin,
+  redirectUser,
+  loadRegister,
   updateAddress,
-
+  deleteAddress,
+  resetPassword,
+  updateProfile,
+  verifyForgetOtp,
+  loadConfirmation,
+  loadVerifyForget,
+  verifyForgetEmail,
+  loadSingleProduct,
+  loadForgetResetSuccess,
 };

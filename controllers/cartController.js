@@ -126,7 +126,5 @@ loadCart,
 addToCart,
 updateCart,
 deleteCart,
-
 wishlistLoad
-
 };

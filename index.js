@@ -8,6 +8,7 @@ config.mongooConnect()
 const localSession = require('./middleware/userAuth');
 const express = require('express');
 const app = express()
+const { cartCount } = require('./middleware/cartCount');
 
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
@@ -19,6 +20,8 @@ app.use(session({
 app.use(express.static(__dirname + "/public/user"));
 app.use(express.static(__dirname + "/public/admin"));
 app.use(express.static(__dirname + "/public"));
+
+app.use(cartCount);
 
 app.use(localSession.commonSection);
 
