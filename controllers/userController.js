@@ -6,6 +6,10 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
 
+const fs = require("fs");
+const path = require("path");
+const sharp = require("sharp");
+
 const randomString = require("randomstring");
 
 dotenv.config();
@@ -107,7 +111,7 @@ const verifyOtp = async (req, res) => {
     } else {
       res.render("otpLogin", {
         errMessage: "Invalid otp. Please check your otp.",
-      }); 
+      });
     }
   } catch (error) {
     console.log(error.message);
@@ -256,33 +260,50 @@ const loadContact = async (req, res) => {
 };
 
 // Render the category page.
-
-// const loadShop = async (req, res) => {
-//   try {
-//     res.render("shop",{activePage:'shop'});
-//   } catch (err) {
-//     console.log(err.message);
-//   }
-// };
+function getPageLink(pageNumber, cat, search) {
+  const baseLink = "/shop?page=" + pageNumber;
+  const catParam = cat ? "&cat=" + cat : "";
+  const searchParam = search ? "&search=" + search : "";
+  return baseLink + catParam + searchParam;
+}
 const loadShop = async (req, res) => {
   try {
     const { user_id } = req.session;
-    const { cat, search } = req.query; 
-    console.log(search);
+    const { cat, search,sort} = req.query;
+    const PRODUCTS_PER_PAGE = 4;
+    let page = Number(req.query.page);
+
     const userSession = req.session.user_id ? req.session.user_id : "";
 
     let productsQuery = { list: true };
-
+    if (isNaN(page) || page < 1) {
+      page = 1;
+    }
     if (cat) {
       productsQuery.category = cat;
     }
     if (search) {
       productsQuery.name = { $regex: search, $options: "i" };
     }
-
-    const products = await Products.find(productsQuery).populate("category");
+    const productCount = await Products.find(productsQuery).count();
+    const sortOptions = {};
+     if (sort==='priceAsc') {
+       sortOptions.price = 1
+     }
+     if (sort === 'priceDsc') {
+      sortOptions.price =-1
+     }
+    const products = await Products.find(productsQuery)
+      .sort(sortOptions)
+      .skip((page - 1) * PRODUCTS_PER_PAGE)
+      .limit(PRODUCTS_PER_PAGE)
+      .populate("category");
+    // console.log('products',products);
+    console.log("productCount", productCount);
 
     const category = await Category.find({ status: true });
+    const startingNo = (page - 1) * PRODUCTS_PER_PAGE + 1;
+    const endingNo = startingNo + PRODUCTS_PER_PAGE - 1;
 
     res.render("shop", {
       cat: cat,
@@ -290,6 +311,15 @@ const loadShop = async (req, res) => {
       user_id,
       category,
       search,
+      currentPage: page,
+      hasNextPage: page * PRODUCTS_PER_PAGE < productCount,
+      hasPrevPage: page > 1,
+      nextPage: page + 1,
+      prevPage: page - 1,
+      lastPage: Math.ceil(productCount / PRODUCTS_PER_PAGE),
+      startingNo: startingNo,
+      endingNo: endingNo,
+      getPageLink: getPageLink,
     });
   } catch (err) {
     console.log("Error:", err.message);
@@ -303,6 +333,7 @@ const loadOtp = async (req, res) => {
   try {
     res.render("otpLogin", { message: `Email has been sent to your mail` });
   } catch (err) {
+    console.error("Error fetching products:", err);
     console.log(err.message);
   }
 };
@@ -326,7 +357,6 @@ const loadConfirmation = async (req, res) => {
     console.log(err.message);
   }
 };
-
 
 // Render the forget password page.
 
@@ -472,9 +502,14 @@ const userProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const { firstname, lastname, phone } = req.body;
+    console.log(req.body);
+    const image = req.file.filename;
+    console.log(image);
+
     await User.updateOne(
       { _id: req.session.user_id },
-      { $set: { firstname: firstname, lastname: lastname, phone: phone } }
+      { $set: { firstname, lastname, phone, image } },
+      { upsert: true } // Add this option to perform an upsert
     );
     res.redirect("/userProfile");
   } catch (error) {

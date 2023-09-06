@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
 const Category = require("../models/categoryModel");
+const Coupon = require("../models/couponModel");
 const randomstring = require("randomstring");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");

@@ -47,7 +47,7 @@ const productAddPage = async (req, res) => {
         for (let i = 0; i < req.files.length; i++) {
           const filePath = path.join(
             __dirname,
-            "../public/images",
+            "../public/uncroppedImages",
             req.files[i].filename
           );
           imageArr.push(req.files[i].filename);
@@ -75,7 +75,6 @@ const productAddPage = async (req, res) => {
   };
   const productUpdated = async (req, res) => {
     try {
-    
       const {
         product_id,
         product_name,
@@ -86,21 +85,28 @@ const productAddPage = async (req, res) => {
         product_brand,
       } = req.body;
       const imageArr = [];
+  
       if (req.files && req.files.length > 0) {
         for (let i = 0; i < req.files.length; i++) {
-          const filePath = path.join(
+          const inputFilePath = req.files[i].path;
+          const outputFileName = `${product_id}_${i}.jpg`; // Generate a unique output file name
+          const outputFilePath = path.join(
             __dirname,
-            "../public/uncroppedImages",
-            req.files[i].filename
+            '../public/uncroppedImages',
+            outputFileName
           );
-          imageArr.push(req.files[i].filename);
-          
-          await sharp(req.files[i].path)
-          .resize({ width: 250, height: 250 })
-          .toFile(filePath);
-        imageArr.push(req.files[i].filename);
+  
+          imageArr.push(outputFileName);
+  
+          await sharp(inputFilePath)
+            .resize({ width: 1000, height:800 })
+            .toFile(outputFilePath);
+  
+          // Remove the input file if necessary
+          fs.unlinkSync(inputFilePath);
         }
-        }
+      }
+  
         if (req.files.length) {
           const updated = await Products.updateOne(
             { _id: product_id },
@@ -137,8 +143,8 @@ const productAddPage = async (req, res) => {
       
     } catch (error) {
       console.log(error.message);
-     
-      res.status(500).send("An error occurred.");
+      console.error('Error:', error);
+      res.status(500).send("An error occur red.");
     }
   };
   const unlistProduct = async(req,res)=>{
@@ -158,20 +164,26 @@ const productAddPage = async (req, res) => {
   }
   const deleteImage = async (req, res) => {
     try {
-      const productId = req.query.productId; // Corrected: Use req.query.productId
+      const productId = req.query.productId;
       const imageName = req.body.image;
-      fs.unlink(path.join(__dirname, "../public/uncroppedImages/", imageName), () => {});
-      const productDeleted = await Products.findOneAndUpdate(
-        { _id: productId },
-        { $pull: { image: imageName } }
-      );
-  
-      res.json({ success: true });
+      fs.unlink(path.join(__dirname, "../public/uncroppedImages", imageName), (err) => {
+        if (err) {
+          console.error(err); // Log the error
+          res.status(500).json({ success: false, message: "An error occurred." });
+        } else {
+          const productDeleted = Products.findOneAndUpdate(
+            { _id: productId },
+            { $pull: { image: imageName } }
+          );
+          res.json({ success: true });
+        }
+      });
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
       res.status(500).json({ success: false, message: "An error occurred." });
     }
   };
+  
   
 
   module.exports ={
