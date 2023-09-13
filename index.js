@@ -20,7 +20,7 @@ app.use(session({
 app.use(express.static(__dirname + "/public/user"));
 app.use(express.static(__dirname + "/public/admin"));
 app.use(express.static(__dirname + "/public"));
-
+ 
 app.use(cartCount);
 
 app.use(localSession.commonSection);

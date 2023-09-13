@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const Products = require("../models/productModel");
 const Category = require("../models/categoryModel");
+const Coupon = require("../models/couponModel");
    
 // Render the cart page. 
  

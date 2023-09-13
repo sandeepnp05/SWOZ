@@ -225,6 +225,7 @@ const orderDetails = async (req, res) => {
     const orderData = await Order.findById({ _id: id })
       .populate("user.user")
       .populate("products.productId");
+      console.log(orderData);
     res.render("orderDetails", { orderData });
   } catch (error) {
     console.log(error.message);

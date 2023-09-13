@@ -260,11 +260,12 @@ const loadContact = async (req, res) => {
 };
 
 // Render the category page.
-function getPageLink(pageNumber, cat, search) {
+function getPageLink(pageNumber, cat, search,sort) {
   const baseLink = "/shop?page=" + pageNumber;
   const catParam = cat ? "&cat=" + cat : "";
   const searchParam = search ? "&search=" + search : "";
-  return baseLink + catParam + searchParam;
+  const sortParam = sort ? '&sort=' + sort : '';
+  return baseLink + catParam + searchParam+sortParam;
 }
 const loadShop = async (req, res) => {
   try {
@@ -276,6 +277,7 @@ const loadShop = async (req, res) => {
     const userSession = req.session.user_id ? req.session.user_id : "";
 
     let productsQuery = { list: true };
+    
     if (isNaN(page) || page < 1) {
       page = 1;
     }
@@ -298,8 +300,6 @@ const loadShop = async (req, res) => {
       .skip((page - 1) * PRODUCTS_PER_PAGE)
       .limit(PRODUCTS_PER_PAGE)
       .populate("category");
-    // console.log('products',products);
-    console.log("productCount", productCount);
 
     const category = await Category.find({ status: true });
     const startingNo = (page - 1) * PRODUCTS_PER_PAGE + 1;
@@ -308,6 +308,7 @@ const loadShop = async (req, res) => {
     res.render("shop", {
       cat: cat,
       products,
+      sort,
       user_id,
       category,
       search,
@@ -326,6 +327,64 @@ const loadShop = async (req, res) => {
     res.status(500).send("Error fetching products");
   }
 };
+// const loadShop = async (req, res) => {
+//   try {
+//     const { user_id } = req.session;
+//     const { cat, search,sort} = req.query;
+//     const PRODUCTS_PER_PAGE = 4;
+//     let page = Number(req.query.page);
+
+//     const userSession = req.session.user_id ? req.session.user_id : "";
+
+//     let productsQuery = { list: true };
+//     if (isNaN(page) || page < 1) {
+//       page = 1;
+//     }
+//     if (cat) {
+//       productsQuery.category = cat;
+//     }
+//     if (search) {
+//       productsQuery.name = { $regex: search, $options: "i" };
+//     }
+//     const productCount = await Products.find(productsQuery).count();
+//     const sortOptions = {};
+//      if (sort==='priceAsc') {
+//        sortOptions.price = 1
+//      }
+//      if (sort === 'priceDsc') {
+//       sortOptions.price =-1
+//      }
+//     const products = await Products.find(productsQuery)
+//       .sort(sortOptions)
+//       .skip((page - 1) * PRODUCTS_PER_PAGE)
+//       .limit(PRODUCTS_PER_PAGE)
+//       .populate("category");
+
+//     const category = await Category.find({ status: true });
+//     const startingNo = (page - 1) * PRODUCTS_PER_PAGE + 1;
+//     const endingNo = startingNo + PRODUCTS_PER_PAGE - 1;
+
+//     res.render("shop", {
+//       cat: cat,
+//       products,
+//       user_id,
+//       category,
+//       search,
+//       currentPage: page,
+//       hasNextPage: page * PRODUCTS_PER_PAGE < productCount,
+//       hasPrevPage: page > 1,
+//       nextPage: page + 1,
+//       prevPage: page - 1,
+//       lastPage: Math.ceil(productCount / PRODUCTS_PER_PAGE),
+//       startingNo: startingNo,
+//       endingNo: endingNo,
+//       getPageLink: getPageLink,
+//     });
+//   } catch (err) {
+//     console.log("Error:", err.message);
+//     res.status(500).send("Error fetching products");
+//   }
+// };
 
 // Render the OTP verification page.
 
@@ -333,7 +392,6 @@ const loadOtp = async (req, res) => {
   try {
     res.render("otpLogin", { message: `Email has been sent to your mail` });
   } catch (err) {
-    console.error("Error fetching products:", err);
     console.log(err.message);
   }
 };
@@ -467,7 +525,6 @@ const loadSingleProduct = async (req, res) => {
     const singleProduct = await Products.findById({ _id: id }).populate(
       "category"
     );
-    console.log(singleProduct);
     res.render("singleProduct", { singleProduct, user_id });
   } catch (error) {
     console.log(error.message);
@@ -502,9 +559,7 @@ const userProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const { firstname, lastname, phone } = req.body;
-    console.log(req.body);
     const image = req.file.filename;
-    console.log(image);
 
     await User.updateOne(
       { _id: req.session.user_id },
@@ -613,7 +668,13 @@ const deleteAddress = async (req, res) => {
     res.status(500).json({ success: false, error: error.message }); // Send an error response if deletion fails
   }
 };
-
+const walletHistory = async(req,res)=>{
+  try {
+    
+    res.render('walletHistory')
+  } catch (error) {
+  }
+}
 module.exports = {
   logout,
   loadOtp,
@@ -643,4 +704,5 @@ module.exports = {
   verifyForgetEmail,
   loadSingleProduct,
   loadForgetResetSuccess,
+  walletHistory
 };

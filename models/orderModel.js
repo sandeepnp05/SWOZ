@@ -7,6 +7,11 @@ const orderSchema = new mongoose.Schema({
     ref : 'User',
     required: true,
   },
+   order_Id:{
+    type:Number,
+    requierd:true,
+   },
+   
   products:[
     {
         productId:{
@@ -21,6 +26,10 @@ const orderSchema = new mongoose.Schema({
         }
     }
   ],
+  shipAddress:{
+    type:String,
+    required:true
+  },
   total:{
     type:Number,
     required:true
@@ -31,7 +40,7 @@ const orderSchema = new mongoose.Schema({
    },
    method:{
     type:String,
-    enum:["COD","ONLINE"],
+    enum:["COD","ONLINE","WALLET"],
     required:true,
    },
    date:{
