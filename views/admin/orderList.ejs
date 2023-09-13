@@ -38,6 +38,7 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
+                                        <th>NO</th>
                                         <th>#ID</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
@@ -48,10 +49,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% if (orderData.length > 0) {
-                                        orderData.forEach(order => { %>
+                                    <% if (orderData.length > 0) {%>
+                                        <%let count =1 %>
+                                        <% orderData.forEach(order => { %>
+                                            
                                             <tr id="status-<%= order._id %>">
-                                                <td><%= order._id %></td>
+                                                <td><%= count%></td>
+                                                <td><%= order.order_Id%></td>
                                                 <td><b><%= order.method %></b></td>
                                                 <td><%= order.user.email %></td>
                                                 <td><%= order.total %></td>
@@ -78,6 +82,7 @@
                                                     <!-- dropdown //end -->
                                                 </td>
                                             </tr>
+                                            <%count ++%>
                                         <% }); } %>
                                     
                                 

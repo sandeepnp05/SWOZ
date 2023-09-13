@@ -1,0 +1,144 @@
+<%- include("../layouts/adminHead") %>
+<%- include("../layouts/adminSidebar.ejs") %>
+<%- include("../layouts/adminNav.ejs") %>
+<main class="main-wrap">
+
+   
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Product Offers</h2>
+                <p>Add, edit or delete a offer</p>
+            </div>
+            <div>
+                <input type="text" placeholder="Search Categories" class="form-control bg-white" />
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <form action="/admin/offer" method="POST">
+                            <div class="mb-4">
+                                <label for="coupon_code" class="form-label">Name</label>
+                                <input name="name" type="text" placeholder="Type here" class="form-control" id="name" />
+                            </div>
+                            <div class="mb-4">
+                                <label for="Coupon_limit" class="form-label">Percentage</label>
+                                <input name="percentage" type="text" placeholder="Type here" class="form-control" id="Coupon_limit" />
+                            </div>
+                            <div class="mb-4">
+                                <label for="Coupon_percentage" class="form-label">Starting Date</label>
+                                <input name="startingDate" type="date" class="form-control" id="startingDate" />
+                            </div>
+                            <div class="mb-4">
+                                <label for="expireDate" class="form-label">Expiry Date</label>
+                                <input
+                                type="date"
+                                class="form-control"
+                                id="expiryDate"
+                                name="expiryDate"
+                                required
+                                />
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                <textarea name="description" placeholder="Type here" class="form-control"></textarea>
+                            </div>
+                              
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Create offer</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    
+                    <div class="col-md-9">
+                        <div class="table-responsive">
+                            <table id="myTable" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            
+                                        </th>
+                                        <th>Name</th>
+                                        <th>Starting Date</th>
+                                        <th>Expiry Date</th>
+                                        <th>Percentage</th>
+                                        <th>Status</th>
+                                        <!-- <th class="text-center">Action</th> -->
+                                    </tr>
+                                </thead>
+                                <% offers.forEach((ofr)=>{%>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center">
+                                        </td>
+                                        <td><%= ofr.name %></td>
+                                        <td><b><%= ofr.startingDate.toLocaleDateString() %></b></td>
+                                        <td><%=ofr.expiryDate.toLocaleDateString() %></td> 
+                                        <td><%= ofr.percentage %></td> 
+                                        <td><%= ofr.status %></td>
+                                        <!-- <td>
+                                            <a
+                                             href="/admin/editCoupon?id=<%= ofr._id%>"
+                                              class="btn btn-sm btn-success rounded font-sm text-white mt-15"
+                                            >
+                                              Edit
+                                            </a>
+                                            <button id="couponId<%= ofr._id%>"
+                                                onclick="listCoupon('<%= ofr._id%>')"
+                                                class="btn btn-sm btn-danger rounded font-sm mt-15"
+                                            >
+                                            <%  if (ofr.status === true) { %> Unlist <% } else { %>
+                                                List <% } %>
+                                            </button>
+                                          </td> -->
+                                          
+                                    </tr>
+                                    <!-- <%  }) %> -->
+                                  
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- .col// -->
+                </div>
+                <!-- .row // -->
+            </div>
+            <!-- card body .// -->
+        </div>
+        <!-- card .// -->
+    </section>
+    <!-- content-main end// -->
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                &copy; Nest - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">All rights reserved</div>
+            </div>
+        </div>
+    </footer>
+</main>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.min.css">
+</head>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.11.0/toastify.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.11.0/toastify.min.js"></script>
+
+
+
+<script>
+
+
+
+  </script>

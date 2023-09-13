@@ -42,6 +42,7 @@
 
           <form
             class="row login_form"
+            id="registrationForm"
             action="/register"
             method="post"
             onsubmit="return validateForm();"
@@ -131,6 +132,74 @@
   </div>
 </section>
 <!--================End Login Box Area =================-->
+<!-- Include the Toastify CSS and JS files -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <%- include("../layouts/footer.ejs") %> <%- include("../layouts/userFooter.ejs")
 %>
+<script>
+function validateForm() {
+  var firstname = document.getElementById("firstname").value;
+  var lastname = document.getElementById("lastname").value;
+  var email = document.getElementById("email").value;
+  var mobile = document.getElementById("mobile").value;
+  var password = document.getElementById("password").value;
+  var confirmPassword = document.getElementById("confirmPassword").value;
+
+  // Regular expressions for email validation and password validation
+  var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
+  // Initialize an error message variable
+  var errorMessage = "";
+
+  // Validate First Name
+  if (firstname.trim() === "") {
+    errorMessage += "First Name is required.\n";
+  }
+
+  // Validate Last Name
+  if (lastname.trim() === "") {
+    errorMessage += "Last Name is required.\n";
+  }
+
+  // Validate Email
+  if (!email.match(emailRegex)) {
+    errorMessage += "Invalid Email Address.\n";
+  }
+
+  // Validate Mobile
+  var mobileRegex = /^[0-9]{10}$/; // 10-digit mobile number
+  if (!mobile.match(mobileRegex)) {
+    errorMessage += "Mobile number should be 10 digits long and contain only numbers.\n";
+  }
+
+  // Validate Password
+  if (!password.match(passwordRegex)) {
+    errorMessage += "Password should be at least 8 characters long and include at least one number, one capital letter, and one lowercase letter.\n";
+  }
+
+  // Validate Confirm Password
+  if (password !== confirmPassword) {
+    errorMessage += "Passwords do not match.\n";
+  }
+
+  // Display error message using Toastify
+  if (errorMessage !== "") {
+    Toastify({
+      text: errorMessage,
+      duration: 5000, // Duration in milliseconds
+      gravity: "top", // Position: top, bottom, left, right
+      backgroundColor: "red",
+    }).showToast();
+    return false; // Prevent form submission
+  }
+
+  return true; // Form submission will proceed if there are no errors
+}
+
+
+
+  </script>
+  

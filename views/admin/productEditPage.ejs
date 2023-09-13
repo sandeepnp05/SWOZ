@@ -139,24 +139,30 @@
           </div>
           <div class="card-body">
             <div class="input-upload">
-              <a href=""><i ></i></a>
-              <% product.image.forEach((image) => { %>
-                <img id="product_img" src="/uncroppedImages/<%= image%>" alt="" />
+              <% product.image.forEach((image, index) => { %>
+                <a href=""><i ></i></a>
+                <img id="product_img_<%= index %>" src="/uncroppedImages/<%= image%>" alt="" />
                 <a onclick="deleteImage('<%= image %>','<%= product._id %>')">
                   <i style="color: red; position: relative; bottom: 147px; right:35px" class="icon material-icons md-cancel"></i>
                 </a>
               <% }); %>
-              
-                
-                <a ><i style="color: red; position: relative; bottom: 81px; right:33px" class="bi bi-x-circle-fill"></i></a>
-              <input
-                name="product_img"
-                class="form-control"
-                type="file"
-                multiple
-                
-                onchange="viewImage(event)"
-              />
+              <!-- Add a Refresh button -->
+<!-- Add a Refresh button within the product image section and pass the product ID -->
+<!-- Add a manual refresh link -->
+
+
+
+
+
+<a ><i style="color: red; position: relative; bottom: 81px; right:33px" class="bi bi-x-circle-fill"></i></a>
+<input
+name="product_img"
+class="form-control"
+type="file"
+multiple
+onchange="viewImage(event)"
+/>
+<a href="#" style="color: red;" onclick="refreshPage()">Remove</a>
             </div>
           </div>
         </div>
@@ -187,12 +193,24 @@ function deleteImage(imageName, productId) {
         console.log("Product ID:", productId);
         const response = await axios.post("/admin/deleteImage", {
           image: imageName,
-           productId: productId,
+          productId: productId,
         });
 
         if (response.data.success) {
-          // Image deleted successfully, you might want to update the UI accordingly
-          location.reload(); // Reload the page to reflect the changes
+          // Image deleted successfully
+          // Remove the Material Icon associated with the deleted image
+          const materialIcon = document.querySelector(`img[src="/uncroppedImages/${imageName}"] + a i`);
+          if (materialIcon) {
+            materialIcon.remove();
+          }
+
+          // Remove the deleted image element
+          const deletedImage = document.querySelector(`img[src="/uncroppedImages/${imageName}"]`);
+          if (deletedImage) {
+            deletedImage.remove();
+          }
+
+          swal("Success", "Image deleted successfully.", "success");
         } else {
           swal("Error", "Failed to delete the image.", "error");
         }
@@ -206,11 +224,40 @@ function deleteImage(imageName, productId) {
 
 
 
+
 function viewImage(event) {
-    document.getElementById("product_img").src = URL.createObjectURL(
-      event.target.files[0]
-    );
+  const fileInput = event.target;
+  const imageContainer = document.querySelector(".input-upload");
+
+  if (fileInput.files && fileInput.files.length > 0) {
+    for (let i = 0; i < fileInput.files.length; i++) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        // Create a new image element for each selected image
+        const newImage = document.createElement("img");
+        newImage.src = e.target.result;
+
+        // Append the new image element to the container
+        imageContainer.appendChild(newImage);
+      };
+      reader.readAsDataURL(fileInput.files[i]);
+    }
   }
+}
+
+function refreshPage() {
+  location.reload();
+}
+
+
+
+
+
+
+
+
+
+
 </script>
 <script>
   let product_name = document.getElementById("product_name");

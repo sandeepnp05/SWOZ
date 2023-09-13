@@ -11,6 +11,7 @@
           <table id="myTable" class="table table-hover text-center">
             <thead>
               <tr>
+                <th>NO</th>
                 <th>Product</th>
                 <th>Price</th>
                 <th>Category</th>
@@ -22,9 +23,14 @@
             </thead>
             <tbody>
               <!-- Table rows for products here -->
-              <% if (product && product.length > 0) { for (let i = 0; i <
-              product.length; i++) { %>
+              <% if (product && product.length > 0) {  %>
+                <% let count=1 %>
+                <%  for (let i = 0; i <product.length; i++) { %>
+              
               <tr>
+                <td>
+                  <%=count%>
+                </td>
                 <td width="25%">
                   <div class="left">
                     <img
@@ -48,8 +54,8 @@
                 </td>
                 <td>
                   <span class="badge rounded-pill alert-success"
-                    ><%= product[i].quantity %></span
-                  >
+                    ><%= product[i].quantity %></span>
+                  
                 </td>
                 <td>
                   <button
@@ -69,6 +75,7 @@
                     >Edit</a>
                   
                 </td>
+                <%count++%>
               </tr>
               <% } } %>
 

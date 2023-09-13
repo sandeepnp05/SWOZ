@@ -1,4 +1,6 @@
 <%- include("../layouts/header.ejs") %> <%- include("../layouts/userNav.ejs") %>
+
+
 <!-- Start Banner Area -->
 <section class="banner-area organic-breadcrumb">
   <div class="container">
@@ -15,14 +17,12 @@
     </div>
   </div>
 </section>
-<!-- End Banner Area -->
 
-<!--================Cart Area =================-->
+
 <section class="cart_area">
   <div class="container">
     <div class="cart_inner">
       <% if (userCart.length > 0) { %>
-
       <div class="table-responsive">
         <table class="table">
           <thead>
@@ -43,11 +43,9 @@
                   onclick="deleteHandleCart('<%=product._id%>')"
                   class="product-remove"
                 >
-                  <!-- <a href="#" onclick=";" re class="remove-link"> -->
                   <span class="fas fa-trash"></span>
                 </a>
               </td>
-
               <td>
                 <% if (product.productId.image.length > 0) { %>
                 <div class="media">
@@ -57,18 +55,17 @@
                       alt="Product Image"
                     />
                   </div>
-                  <% } %>
-                  <div class="media-body">
-                    <p class="product-name" style="color: black">
-                      <%= product.productId.name %>
-                    </p>
-                  </div>
+                </div>
+                <% } %>
+                <div class="media-body">
+                  <p class="product-name" style="color: black">
+                    <%= product.productId.name %>
+                  </p>
                 </div>
               </td>
               <td class="product-price">
                 <h5><%= product.productId.price %></h5>
               </td>
-
               <td class="quantity">
                 <div class="input-group input-group-sm">
                   <div class="input-group-prepend">
@@ -102,7 +99,6 @@
                   </div>
                 </div>
               </td>
-
               <td class="total" data-product="<%= product.productId._id %>">
                 <span>₹</span><%= (product.productId.price *
                 product.quantity).toFixed(2) %>
@@ -119,40 +115,29 @@
               </div>
             </div>
             <% } %>
-            <!-- <tr class="bottom_button">
-                                <td>
-                                    <a class="gray_btn" href="#">Update Cart</a>
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <div class="cupon_text d-flex align-items-center">
-                                        <input type="text" placeholder="Coupon Code">
-                                        <a class="primary-btn" href="#">Apply</a>
-                                        <a class="gray_btn" href="#">Close Coupon</a>
-                                    </div>
-                                </td>
-                            </tr> -->
-            <% if(userCart.length>0){ %>
             <tr>
               <td></td>
               <td></td>
               <td>
-                <h5>Grand total</h5>
-              </td>
-              <td>
-                <b>₹</b><span id="grandTotal"><%= userData.grandTotal %></span>
+                <h5>
+                  Grand total : <b> ₹ </b
+                  ><span id="grandTotal"><%= userData.grandTotal %></span>
+                </h5>
               </td>
             </tr>
+            <tr>
+              <!-- Add a button to trigger the modal -->
+
+              <!-- Add a button to trigger the coupon modal -->
+
+              <!-- The coupon modal container -->
+             
+
+            <% if (userCart.length > 0) { %>
 
             <tr class="out_button_area">
-              <td></td>
-              <td></td>
-              <td></td>
+              <td colspan="4"></td>
+              <!-- This colspan combines three empty cells -->
               <td>
                 <div class="checkout_btn_inner d-flex align-items-center">
                   <a class="gray_btn" href="/index">Continue Shopping</a>
@@ -162,9 +147,11 @@
                 </div>
               </td>
             </tr>
+
             <% } %>
           </tbody>
         </table>
+        <!-- Button to trigger the modal -->
       </div>
     </div>
   </div>
@@ -329,6 +316,8 @@
       console.log(error.message);
     }
   };
+
+ 
 </script>
 <!--================End Cart Area =================-->
 

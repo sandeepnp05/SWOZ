@@ -1,0 +1,164 @@
+<%- include("../layouts/adminHead") %>
+<%- include("../layouts/adminSidebar.ejs") %>
+<%- include("../layouts/adminNav.ejs") %>
+<main class="main-wrap">
+
+   
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Coupons</h2>
+                <p>Add, edit or delete a coupon</p>
+            </div>
+            <div>
+                <input type="text" placeholder="Search Categories" class="form-control bg-white" />
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <form action="/admin/coupon" method="POST">
+                            <div class="mb-4">
+                                <label for="coupon_code" class="form-label">Code</label>
+                                <input name="code" type="text" placeholder="Type here" class="form-control" id="coupon_code" />
+                            </div>
+                            <div class="mb-4">
+                                <label for="Coupon_percentage" class="form-label">Percentage</label>
+                                <input name="percentage" type="text" placeholder="Type here" class="form-control" id="Coupon_percentage" />
+                            </div>
+                            <div class="mb-4">
+                                <label for="Coupon_limit" class="form-label">Applicable limit</label>
+                                <input name="limit" type="text" placeholder="Type here" class="form-control" id="Coupon_limit" />
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                <textarea name="description" placeholder="Type here" class="form-control"></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label for="expireDate" class="form-label">Expiry Date</label>
+                                <input
+                                  type="date"
+                                  class="form-control"
+                                  id="expireDate"
+                                  name="expireDate"
+                                  required
+                                />
+                              </div>
+                              
+                            <div class="d-grid">
+                                <button class="btn btn-primary">Create coupon</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    
+                    <div class="col-md-9">
+                        <div class="table-responsive">
+                            <table id="myTable" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            
+                                        </th>
+                                        <th>Code</th>
+                                        <th>Description</th>
+                                        <th>Percentage</th>
+                                        <th>Applicable limit</th>
+                                        <th>Validity</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <% coupon.forEach((cpn)=>{%>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center">
+                                        </td>
+                                        <td><%= cpn.code %></td>
+                                        <td><b><%= cpn.description %></b></td>
+                                        <td><%= cpn.percentage %></td>
+                                        <td><%= cpn.limit %></td> 
+                                        <td><%=cpn.expiryDate.toLocaleDateString() %></td> 
+                                        <td>
+                                            <a
+                                             href="/admin/editCoupon?id=<%= cpn._id%>"
+                                              class="btn btn-sm btn-success rounded font-sm text-white mt-15"
+                                            >
+                                              Edit
+                                            </a>
+                                            <button id="couponId<%= cpn._id%>"
+                                                onclick="listCoupon('<%= cpn._id%>')"
+                                                class="btn btn-sm btn-danger rounded font-sm mt-15"
+                                            >
+                                            <%  if (cpn.status === true) { %> Unlist <% } else { %>
+                                                List <% } %>
+                                            </button>
+                                          </td>
+                                          
+                                    </tr>
+                                    <%  }) %>
+                                  
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- .col// -->
+                </div>
+                <!-- .row // -->
+            </div>
+            <!-- card body .// -->
+        </div>
+        <!-- card .// -->
+    </section>
+    <!-- content-main end// -->
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                &copy; Nest - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">All rights reserved</div>
+            </div>
+        </div>
+    </footer>
+</main>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.min.css">
+</head>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.11.0/toastify.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.11.0/toastify.min.js"></script>
+
+
+
+<script>
+
+
+const listCoupon = async(couponId) => {
+    try {
+        event.preventDefault();
+        const response = await axios.patch("/admin/listCoupon", { couponId });
+        const button = document.getElementById(`couponId${couponId}`);
+        
+        if (response.data.unlistSuccess) {
+            // Coupon was successfully unlisted
+            button.textContent = "List";
+        } else if (response.data.listSuccess) {
+            // Coupon was successfully listed
+            button.textContent = "Unlist";
+        } else {
+            // Handle any other response or error conditions here
+            console.error("Coupon listing/unlisting failed:", response);
+        }
+    } catch (error) {
+        // Handle Axios request error here
+        console.error("Axios request error:", error);
+    }
+};
+  </script>

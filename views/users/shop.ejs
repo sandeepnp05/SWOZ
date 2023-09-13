@@ -130,20 +130,42 @@
         height: 50px;
         width: 110px;
         background: #ff5833c5;
-
        }
+       .pagination_top{
+        margin-bottom: 40px
+       }
+       .price-filter a {
+    margin-top: 30px;
+    text-decoration: none; /* Remove underline from links */
+    display: inline-block; /* Make the links inline-block elements */
+    padding: 10px 20px; /* Add padding for spacing */
+    background-color: #ff5833c5; /* Background color for the buttons */
+    color: #fff; /* Text color for the buttons */
+    border: 1px solid #ff5833c5; /* Add a border for the buttons */
+    border-radius: 4px; /* Add rounded corners */
+    font-weight: bold; /* Make the text bold */
+    transition: background-color 0.3s, color 0.3s; /* Add a smooth transition effect */
+}
+
+.price-filter a:hover {
+    background-color: #0056b3; /* Background color on hover */
+    border-color: #0056b3; /* Border color on hover */
+}
+
+
+    
+    /* Add any other button styling as needed */
+
 
 @import url("https://fonts.googleapis.com/css2?family=Poppins:weight@100;200;300;400;500;600;700;800&display=swap");
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+V5ZA0gHQf5v4+Qz+Idm/PDHeCeIbbVYUew+OrCXaRkfj" crossorigin="anonymous">
 
-  
 
 <!-- start product Area -->
 <section class="owl-carousel active-product-area section_gap">
 	<div class="single-product-slider">
 	  <div class="container">
-		<div class="row justify-content-center">
 		  <div class="col-md-10 mb-5 text-center">
 			<ul class="product-category">
 			  <li><a <% if (!cat) { %>class="active"<% } %> href="/shop">All</a></li>
@@ -151,9 +173,13 @@
 				<li><a <% if (item._id.equals(cat)) {%>class="active"<%}%> href="/shop?cat=<%=item._id%>"><%=item.name%></a></li>
 			  <% }) %>
 			</ul>
+      <div class="price-filter">
+        <a href="/shop?cat=<%=cat %>&search=<%= search %>&sort=priceAsc">Price Low to High</a>
+        <a href="/shop?cat=<%=cat %>&search=<%= search %>&sort=priceDsc">Price High to Low</a>
+    </div>
 		  </div>
 		</div>
-  
+   
 		<!-- Add the search field below the filter field -->
 		<form action="/shop"> <!-- Replace with your actual submit route -->
       <div class="row height d-flex justify-content-center">
@@ -164,11 +190,16 @@
             <input type="hidden" name="cat" value="<%= cat %>" id="cat"/>
             <button type="submit" class="btn btn-primary">Search</button>
           </div>
+          
+        
         </div>
       </div>
     </form>
+ 
+   
     
-	  </div>
+    
+	  
 		 
 		  
       <div class="row">
@@ -214,6 +245,39 @@
           </div>
         </div>
         <% } %> <% } %>
+        <% if (products.length > 0) { %>
+          <div class="justify-content-center">
+          <div class="pagination_top">
+  <div class="pagination">
+    <a href="<%= getPageLink(currentPage - 1) %>" class="prev-arrow <% if (currentPage === 1) { %>disabled<% } %>">
+      <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
+    </a>
+    <% if (currentPage !== 1) { %>
+      <a href="<%= getPageLink(1) %>&cat=<%= cat %>&search=<%= search %>&sort=<%=sort%>">1</a>
+    <% } %>
+    <% if (currentPage > 2) { %>
+      <a href="<%= getPageLink(prevPage) %>&cat=<%= cat %>&search=<%= search %>&sort=<%=sort%>"><%= prevPage %></a>
+    <% } %>
+    <a href="<%= getPageLink(currentPage) %>&cat=<%= cat %>&search=<%= search %>&sort=<%=sort%>" class="active"><%= currentPage %></a>
+    <% if (hasNextPage) { %>
+      <a href="<%= getPageLink(nextPage) %>&cat=<%= cat %>&search=<%= search %>&sort=<%=sort%>"><%= nextPage %></a>
+    <% } %>
+    <% if (nextPage !== lastPage && currentPage !== lastPage && lastPage !== 0) { %>
+      <a href="<%= getPageLink(lastPage) %>&cat=<%= cat %>&search=<%= search %>&sort=<%=sort%>"><%= lastPage %></a>
+    <% } %>
+    <a href="<%= getPageLink(currentPage + 1) %>&cat=<%= cat %>&search=<%= search %>&sort=<%=sort%>" class="next-arrow <% if (!hasNextPage) { %>disabled<% } %>">
+      <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+    </a>
+  </div>
+  </div>
+</div>
+
+
+<% } %>
+
+
+
+
       </div>
     </div>
   </div>
@@ -264,7 +328,7 @@
   };
 
 
-  const addToWishList = async(productId)
+
 </script>
 <%- include("../layouts/footer.ejs") %>
 <%- include("../layouts/userFooter.ejs")%>

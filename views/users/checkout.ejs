@@ -1,4 +1,8 @@
 <%- include("../layouts/header.ejs") %> <%- include("../layouts/userNav.ejs") %>
+<!-- Include Toastify CSS and JavaScript files -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.11.0/toastify.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.11.0/toastify.min.js"></script>
+
 <link
   href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
   rel="stylesheet"
@@ -7,6 +11,79 @@
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
 />
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css"
+/>
+<style>
+  /* Style the coupon button */
+  .coupon_btn {
+    display: flex;
+    align-items: center;
+    margin-left: 34px;
+    /* height: 100vh;  */
+  }
+
+  .coupon-button,.tp_btn{
+    padding: 10px -20px;
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+
+    /* Add drop shadow */
+    box-shadow: 0px 0px 5px #7d4de4; /* Adjust values as needed */
+  }
+  .tp_btn{
+    padding: -30px;
+  }
+
+  /* Change button style on hover */
+  .coupon-button:hover ,.tp_btn:hover{
+    background-color: #692dea; /* Hover background color */
+    color: #fff; /* Hover text color */
+  }
+
+  #couponModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(1, 0, 0, 0.742); /* Semi-transparent background */
+    z-index: 1000; /* Ensure the modal is above other content */
+    overflow: auto; /* Enable scrolling if content exceeds the viewport */
+  }
+
+  /* Center the modal content vertically and horizontally */
+  .modal .wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  /* Show the modal when it's open */
+  .modal.active {
+    display: block;
+  }
+
+  /* Add a close button for the modal */
+  .close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+    font-size: 24px;
+  }
+  .coupon-message{
+    margin-left: 250px;
+  }
+</style>
 <!-- Start Banner Area -->
 <section class="banner-area organic-breadcrumb">
   <div class="container">
@@ -26,18 +103,24 @@
 <!-- End Banner Area -->
 
 <!--================Checkout Area =================-->
-<form id="checkoutform">
-  <section class="checkout_area section_gap">
-    <div class="container">
+<section class="checkout_area section_gap">
+  <div class="container">
+    <p class="text-danger"></p>
       <div class="returning_customer"></div>
-      <!-- <div class="cupon_area">
-      <div class="check_title">
-        <h2>Have a coupon? <a href="#"></a></h2>
-      </div>
-      <input type="text" placeholder="Enter coupon code" style="width: 195px;" />
+      <div id="coupon-message" class="coupon-message"></div>
+      <div class="cupon_area">
+        <div class="coupon_btn">
+          <button id="openCouponModal" class="coupon-button">
+            Show available coupons
+          </button>
+ 
 
-      <a class="tp_btn" href="#">Apply Coupon</a>
-    </div> -->
+          <input type="text" placeholder="Enter coupon code" style="width: 195px;" name="couponCode" />
+          <button class="tp_btn"  id="apply_coupon_btn" onclick="applyCoupon()">Apply Coupon</button>
+        </div>
+        
+      </div>
+  <form id="checkoutform">
       <div class="billing_details">
         <div class="row">
           <div class="col-xl-7 ftco-animate">
@@ -53,45 +136,27 @@
                     >
                       Add Address
                     </button>
-                    <div>
-                      <hr />
+                    <div class="form-group">
+                      <label for="address">Select Address:</label>
                       <% userOrder.address.forEach((address, index)=> { %>
-                      <!-- User Order Addresses -->
-                      <div class="row d-flex align-items-center" id="addrId">
+                      <div class="address-container">
                         <input
                           type="radio"
                           name="address"
                           id="address<%= index %>"
-                          value="<%= address.firstname%>, <%= address.housename %>, <%= address.mobile %>, <%= address.city %>, <%= address.district %>, <%= address.state %>, <%= address.pincode %>"
+                          value="<%= address.firstname %>, <%= address.housename %>, <%= address.mobile %>, <%= address.city %>, <%= address.district %>, <%= address.state %>, <%= address.pincode %>"
+                          <% if (index === 0) { %>checked<% } %>
                           required
                         />
-                        <div class="col-7">
-                          <label for="address<%= index %>" class="text-dark">
-                            <%= address.firstname %>, <%= address.housename %>,
-                            <%= address.mobile %>, <br />
-                            <%= address.city %>, <%= address.district %>, <%=
-                            address.state %><br />
-                            <%= address.pincode %>
-                          </label>
-                        </div>
-                        <!-- <div class="col-2">
-                        <div class="icon-container">
-                          <a href="/address?userId=&addressId=&check=3">
-                            <i class="fas fa-edit"></i>
-                          </a>
-                        </div>
-                        <div class="icon-container">
-                          <a href="" onclick="handleDeleteAddress('')">
-                            <i class="fas fa-trash"></i>
-                          </a>
-                        </div>
-                      </div> -->
-
-                        <hr />
+                        <label for="address<%= index %>">
+                          <%= address.firstname %>, <%= address.housename %>, <%= address.mobile %><br />
+                          <%= address.city %>, <%= address.district %>, <%= address.state %><br />
+                          <%= address.pincode %>
+                        </label>
                       </div>
                       <% }) %>
-                      <!-- End User Order Addresses -->
                     </div>
+                    
                   </div>
                 </div>
               </div>
@@ -120,12 +185,12 @@
                   <!-- <li>
                 <a href="#">Subtotal <span>$2160.00</span></a>
               </li> -->
-                  <!-- <li>
-                <a href="#">Shipping <span>Flat rate: $50.00</span></a>
-              </li> -->
                   <li>
-                    <a href="#"
-                      >Total <span>₹ <%= userOrder.grandTotal %></span></a
+                <a href="#">Discount <span id="coupon-discount">0</span></a>
+              </li>
+                  <li>
+                    <a href=""
+                      >Total <span id="changeGrandTotal">₹ <%= userOrder.grandTotal %></span></a
                     >
                   </li>
                 </ul>
@@ -173,11 +238,28 @@
                     don’t have a Razorpay account.
                   </p>
                 </div>
+                <div class="payment_item active">
+                  <div class="radion_btn">
+                    <input
+                      type="radio"
+                      id="f-option7"
+                      name="paymentMethod"
+                      value="WALLET"
+                    />
+                    <label for="f-option7">Wallet </label>
+                    
+                    <div class="check"></div>
+                  </div>
+                  <p style="color: rgb(102, 101, 101)">
+                    Use Wallet
+                  </p>
+                </div>
                 <!-- <div class="creat_account">
                     <input type="checkbox" id="f-option4" name="selector" />
                     <label for="f-option4">I’ve read and accept the </label>
                     <a href="#">terms & conditions*</a>
                   </div> -->
+                  <input type="hidden" id="changeGrandTotal2" value="" name="finalAmount">
                 <button class="primary-btn" type="submit">
                   Proceed to Payment
                 </button>
@@ -203,9 +285,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addressModalLabel">Add Address</h5>
-        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
-                    </button> -->
+                    </button>
       </div>
 
       <div class="modal-body">
@@ -293,6 +375,58 @@
     </div>
   </div>
 </div>
+<% if (coupon && coupon.length > 0) { %>
+ 
+
+
+
+<div id="couponModal" class="modal">
+  <!-- Add a close button for the coupon modal -->
+  <span class="close" id="closeCouponModal">&times;</span>
+
+  <div
+    class="wrapper d-flex justify-content-center align-items-center"
+  >
+    <div class="card">
+      <div class="cross-bg"></div>
+      <div class="content">
+        <div class="logo text-right">
+          <img src="https://i.imgur.com/w68MQc4.png" width="80" />
+        </div>
+        <% coupon.forEach(cpn => { %>
+        
+        <div class="text-center text-uppercase text-white off">
+          <span>Flat</span>
+          <h1 class="mt-0"></h1>
+        </div>
+        <div class="text-center text-white">
+          <span class="plus">Use code: <%= cpn.description %></span>
+        </div>
+        <div class="code text-center mt-4">
+          <span></span>
+        </div>
+        <div class="text-center text-uppercase text-white">
+          <h3 class="m-0"><%= cpn.percentage %>% OFF</h3>
+        </div>
+        <div class="px-5 mb-3">
+          <div class="code text-center mt-4">
+            <span>Use code: <%= cpn.code %></span>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+</div>
+<% } %>
+</tr>
+<tr class="bottom_button">
+<td colspan="3"></td>
+<!-- This colspan combines three empty cells -->
+
+</tr>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <!--================End Checkout Area =================-->
 <%- include("../layouts/footer.ejs") %> <%-
@@ -302,9 +436,9 @@ include("../layouts/userFooter.ejs")%>
     let address = $("input[name=address]:checked").val();
     let paymentMethod = $("input[name=paymentMethod]:checked").val();
     let grandTotal = parseInt($("input[name=grandTotal]").val());
-    console.log('Address:', address);
-    console.log('Payment Method:', paymentMethod);
-    console.log('Grand Total:', grandTotal);
+    let finalAmount = parseInt($("input[name=finalAmount]").val());
+
+    
     //   parseInt($('#grandTotal').text().trim());
     e.preventDefault();
     $.ajax({
@@ -314,6 +448,7 @@ include("../layouts/userFooter.ejs")%>
         address: address,
         paymentMethod: paymentMethod,
         grandTotal: grandTotal,
+        finalAmount:finalAmount
       },
       success: (response) => {
         if (response.codSuccess == true) {
@@ -373,5 +508,118 @@ include("../layouts/userFooter.ejs")%>
         }
       },
     });
+  }
+
+
+   // for coupon
+
+  // Add an event listener to open the coupon modal when the button is clicked
+  document
+    .getElementById("openCouponModal")
+    .addEventListener("click", function () {
+      document.getElementById("couponModal").classList.add("active");
+    });
+
+  // Add an event listener to close the coupon modal when the close button is clicked
+  document
+    .getElementById("closeCouponModal")
+    .addEventListener("click", function () {
+      document.getElementById("couponModal").classList.remove("active");
+    });
+
+
+    // select paymentMethode warning 
+    $("#checkoutform").submit((e) => {
+  let address = $("input[name=address]:checked").val();
+  let paymentMethod = $("input[name=paymentMethod]:checked").val();
+  let grandTotal = parseInt($("input[name=grandTotal]").val());
+
+  // Check if a payment option is selected
+  if (!paymentMethod) {
+    e.preventDefault(); // Prevent form submission
+    // Show a Toastify notification for not selecting a payment option
+    Toastify({
+  text: "Payment option not selected. Please choose a payment method.",
+  duration: 4000, // 4 seconds
+  close: true, // Display close button
+  gravity: "bottom", // Show notification at the bottom of the screen
+  position: "right", // Position it to the right of the screen
+  backgroundColor: "linear-gradient(to right, #ff6b6b, #ff5252)", // Background color with alpha transparency
+  stopOnFocus: true, // Close notification when it's clicked or focused
+  offset: {
+    x: 20, // Offset from the right edge
+    y: 20, // Offset from the bottom edge
+  },
+  onClick: function () {
+    // Define a custom click handler if needed
+    alert("Notification clicked!");
+  },
+}).showToast();
+
+  } else {
+    // Payment option is selected, continue with the checkout process
+    // ... Rest of your code for handling the checkout process
+  }
+});
+
+</script>
+
+<script>
+  function applyCoupon() {
+    
+    const couponCode = document.querySelector('input[name="couponCode"]').value;
+    const totalCartPrice = document.getElementById('grandTotal') // Corrected ID
+    const couponDiscount = document.getElementById('coupon-discount'); // Corrected ID
+    const changeGrandTotal = document.getElementById('changeGrandTotal'); // Corrected ID
+    const changeGrandTotal2 = document.getElementById('changeGrandTotal2'); // Corrected ID
+   
+
+    // You can add additional validation here if needed
+    if (couponCode) {
+      // Send an AJAX request to your server to apply the coupon
+      // Make sure to replace '/applyCoupon' with the actual URL on your server
+      $.ajax({
+        url: '/coupon', // Replace with your server endpoint
+        method: 'POST',
+        data: { couponCode: couponCode,total:totalCartPrice.value},
+        success: function (response) {
+          if (response.success) {
+
+            console.log('response',response.discounted);
+
+            // Coupon applied successfully
+            // const couponMessage = document.getElementById('coupon-message');
+
+            // couponMessage.innerHTML = '<p>Coupon applied</p>';
+
+            if (response.discounted) {
+              // Update the displayed prices
+              totalCartPrice.innerHTML = `₹ ${response.discounted.discountedTotal}`;
+              couponDiscount.innerHTML = `-₹ ${response.discounted.discountAmount}`;
+            changeGrandTotal.innerHTML = `₹ ${response.discounted.discountedTotal}`;
+            changeGrandTotal2.value=response.discounted.discountedTotal
+              
+
+            }
+
+            // You can also perform other actions here if needed
+          } else {
+            // Coupon application failed
+            const couponMessage = document.getElementById('coupon-message');
+
+            couponMessage.innerHTML = `<p class="text-danger">${response.message}</p>`;
+          }
+        },
+        error: function (error) {
+          // Handle errors if the AJAX request fails
+          console.error(error);
+        },
+      });
+    } else {
+      // Handle the case where the coupon code is empty
+      const couponMessage = document.getElementById('coupon-message');
+
+      couponMessage.innerHTML = '<p class="text-danger">Please enter a coupon code</p>';
+    }
   }
 </script>

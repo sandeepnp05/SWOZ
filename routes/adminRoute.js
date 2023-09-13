@@ -3,6 +3,8 @@ const admin_route = express();
 const adminController = require("../controllers/adminController");
 const categoryController = require("../controllers/categoryController");
 const productController = require("../controllers/productController");
+const couponController = require("../controllers/couponController");
+const offerController = require("../controllers/offerController");
 
 const nocache = require("nocache");
 const auth = require("../middleware/adminAuth");
@@ -81,6 +83,15 @@ admin_route.post(
 admin_route.get('/orderList',auth.isLogin,adminController.orderList)
 admin_route.get('/orderDetails',auth.isLogin,adminController.orderDetails)
 admin_route.patch('/changeStatus',auth.isLogin,adminController.changeStatus)
+
+admin_route.get('/coupon',auth.isLogin,couponController.loadCoupon)
+admin_route.post('/coupon',auth.isLogin,couponController.addCoupon)
+admin_route.patch('/listCoupon',auth.isLogin,couponController.listCoupon)
+admin_route.post('/editCoupon',auth.isLogin,couponController.updatedCoupon)
+admin_route.get('/editCoupon',auth.isLogin,couponController.editCoupon)
+
+admin_route.get('/offer',auth.isLogin,offerController.loadOffer)
+admin_route.post('/offer',auth.isLogin,offerController.addOffer)
 
 
 module.exports = admin_route;

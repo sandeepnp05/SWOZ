@@ -1,0 +1,131 @@
+<style>
+    .row{
+        margin-top: 150px;
+    }
+    @media(max-width:500px){
+        .table thead{
+            display: none;
+        }
+        .table .tbody .thead  .table tr .table th {
+            display: block;
+            width: 100%;
+        }
+        .table tr{
+            margin-bottom: 15px;
+        }
+        .table td{
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+        }
+        .table td::before{
+            content: attr(data-label);
+            position: absolute;
+            left: 0;
+            width: 50%;
+            padding-left: 15%;
+            font-size: 15px;
+            font-weight: bold;
+        }
+    }
+</style>
+<%- include("../layouts/header.ejs") %>
+<%- include("../layouts/userNav.ejs") %>
+    <section style="background-color: #eee">
+            <div class="row-table">
+                <div class="col-12 col-sm-6 col-md-8 col-lg-10 col-xl-12">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Orders</h5>
+                            <hr />
+                            <div class="table-responsive">
+                              
+                                    
+                              
+                                <table class="table table-bordered">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Order Id</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Orderd On</th>
+                                        <th scope="col">Expected Delivery</th>
+                                        <th scope="col">Payment Method</th>
+                                        <th scope="col">Total Amount</th>
+                                        <th scope="col">Orderd Items</th>
+                                        <th scope="col">Order Status</th>
+                                      </tr>
+                                    </thead>
+                                    <% let itemNumber = 1; %>
+                                    <% orderHistory.forEach(order => { %>
+                                    <tbody>
+                                      <tr>
+                                        <th scope="row"><%=itemNumber%></th>
+                                        <td><%=order.order_Id%></td>
+                                        <td><%=order.shipAddress%></td>
+                                        <td><%= new Date(order.date).toLocaleDateString('en-IN') %></td>
+                                        <td><%= new Date(order.expectedDelivery).toLocaleDateString('en-IN') %></td>
+                                        <td><%= order.method %></td>
+                                        <td>₹<%= order.total %></td>
+                                        <td> <a
+                                            href="/orderedProduct?id=<%= order._id %>"
+                                            class="btn btn-md btn-success"
+                                            >View Details</a
+                                          ></td>
+                                        <td><%=order.status %></td>
+                                      </tr>
+                                      <% itemNumber++; %>
+                                    </tbody>
+                                    <%   }); %>
+                                  </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+    <div id="cancelReason" class="modal mt-5" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancel Reason</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <label for="cancelTextArea">Enter the cancel reason:</label>
+                        <textarea id="cancelTextArea" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="returnReason" class="modal mt-5" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Return Reason</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <label for="returnTextArea">Enter the Return reason:</label>
+                        <textarea id="returnTextArea" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+ <%- include("../layouts/footer.ejs") %>
+<%- include("../layouts/userFooter.ejs") %>

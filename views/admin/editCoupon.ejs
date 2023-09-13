@@ -1,0 +1,94 @@
+
+<%- include("../layouts/adminHead") %>
+        <%- include("../layouts/adminSidebar.ejs") %>
+            <%- include("../layouts/adminNav.ejs") %>
+
+<section class="content-main">
+    <div class="content-header">
+      <div>
+        <h2 class="content-title card-title">Edit Coupon</h2>
+      </div>
+      <div>
+        <input
+          type="text"
+          placeholder="Search Categories"
+          class="form-control bg-white"
+        />
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4"></div>
+          <div class="col-md-4">
+            <form action="/admin/editCoupon" method="POST">
+              <input type="hidden" name="id" value="<%= coupon._id%>" />
+              <div class="mb-4">
+                <label for="code" class="form-label">Code</label>
+                <input
+                  type="text"
+                  id="code"
+                  placeholder="Code"
+                  class="form-control"
+                  value="<%=coupon.code  %>"
+                  name="code"
+                />
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Description</label>
+                <textarea
+                  placeholder="Description"
+                  value="<%=coupon.description  %>"
+                  class="form-control"
+                  name="description"
+                >
+            <%=coupon.description %>
+             </textarea
+                >
+              </div>
+              <div class="mb-4">
+                <label for="code" class="form-label">Percentage</label>
+                <input
+                  type="number"
+                  id="percentage"
+                  placeholder="Percecentage"
+                  class="form-control"
+                  value="<%=coupon.percentage%>"
+                  name="percentage"
+                />
+              </div>
+              <div class="mb-4">
+                <label for="Expire Date" class="form-label">Expire Date</label>
+                <input
+                  type="date"
+                  id="expiryDate"
+                  placeholder="Expire Date"
+                  class="form-control"
+                  min="0"
+                  value="<%=coupon.expiryDate%>"
+                  name="expiryDate"
+                />
+              </div>
+              <div class="mb-4">
+                <label for="code" class="form-label">Applicable Limit</label>
+                <input
+                  type="number"
+                  id="limit"
+                  placeholder="Applicable Limit"
+                  class="form-control"
+                  min="0"
+                  value="<%=coupon.limit %>"
+                  name="limit"
+                />
+              </div>
+              
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-4"></div>
+        </div>
+      </div>
+    </div>
+  </section>

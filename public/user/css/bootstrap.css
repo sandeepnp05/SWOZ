@@ -930,6 +930,10 @@ pre code {
     margin-left: 60px;
     margin-bottom: 115px
 }
+.row-table {
+    
+    margin-top: 160px;
+}
 
 .no-gutters {
     margin-right: 0;
@@ -4901,7 +4905,7 @@ input[type=submit].btn-block {
     background-color: #fff;
     background-clip: border-box;
     border: 1px solid rgba(0, 0, 0, .125);
-    border-radius: .25rem
+    border-radius: .15rem
 }
 
 .card>hr {

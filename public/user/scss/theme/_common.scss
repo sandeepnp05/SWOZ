@@ -1191,6 +1191,9 @@
 	margin-top: 10px;
 	border-left: 1px solid #eee;
 	border-radius: 0px;
+	border: 1px solid #333333; /* You can adjust the border color and thickness as needed */
+	padding: 5px; /* Optional: Add some padding for spacing */
+	display: inline-block;
 	a {
 		width: 40px;
 		line-height: 40px;

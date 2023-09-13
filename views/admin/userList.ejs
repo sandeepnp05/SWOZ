@@ -40,6 +40,7 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
+                                        <th>NO</th>
                                         <th>User</th>
                                         <th>Email</th>
                                         <th>Phone</th>
@@ -49,8 +50,10 @@
                                 </thead>
                                 <tbody>
                                     <% if (users.length > 0) { %>
+                                        <% let count=1%>
                                         <% for (let i = 0; i < users.length; i++) { %>
                                             <tr>
+                                                <td><%= count%></td>
                                                 <td width="40%">
                                                     <a href="#" class="itemside">
                                                         <div class="left">
@@ -76,6 +79,7 @@
                                                     <% } %>
                                                 </td>
                                             </tr>
+                                            <% count++%>
                                         <% } %>
                                     <% } %> 
                                 </tbody>
