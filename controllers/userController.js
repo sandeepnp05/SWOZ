@@ -89,20 +89,22 @@ const sendEmail = async (email) => {
 };
 
 // Verify the OTP entered by the user for email verification.
-
+ 
 const verifyOtp = async (req, res) => {
-  try {
+  try { 
     const receivedOtp = req.body.otp;
-
-    if (receivedOtp === req.session.otp) {
+ 
+    if (receivedOtp === req.session.otp) { 
       const findUserAndUpdate = await User.findOneAndUpdate(
         { email: req.session.tempEmail },
         { $set: { is_verified: true } }
-      );
-
+      ); 
+        console.log(findUserAndUpdate._id,"idddddddddd");
       if (findUserAndUpdate) {
-        req.session.user_id = findUserAndUpdate._id;
-        res.redirect("/login");
+        
+
+        res.redirect('/login')
+        
       } else {
         res.render("otpLogin", {
           errMessage: "Failed to verify. Please try again later.",
@@ -135,27 +137,27 @@ const insertUser = async (req, res) => {
     } else {
       if (password !== confirmPassword) {
         res.render("register", { message: "Passwords do not match" });
-        return;
-      }
-
-      const spassword = await securePassword(password);
-      const user = new User({
-        firstname: firstname,
-        lastname: lastname,
-        email: email,
-        phone: mobile,
-        password: spassword,
-      });
-
-      const userData = await user.save();
-      if (userData) {
-        const otp = await sendEmail(email);
-
-        req.session.tempEmail = email;
-        req.session.otp = otp;
-        res.redirect("/otpLogin");
-      } else {
-        res.render("register", { message: "Your registration failed" });
+        
+      }else{
+        const spassword = await securePassword(password);
+        const user = new User({
+          firstname: firstname,
+          lastname: lastname,
+          email: email,
+          phone: mobile,
+          password: spassword,
+        });
+  
+        const userData = await user.save();
+        if (userData) {
+          const otp = await sendEmail(email);
+  
+          req.session.tempEmail = email;
+          req.session.otp = otp;
+          res.redirect("/otpLogin");
+        } else {
+          res.render("register", { message: "Your registration failed" });
+        }
       }
     }
   } catch (error) {
