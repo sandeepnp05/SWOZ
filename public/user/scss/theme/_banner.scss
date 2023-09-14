@@ -9,7 +9,7 @@
 	}
 	@media (max-width: 767px) {
 		background: none;
-		@include gradient(90deg, $primary-color 0%, $primary-color2 100%);
+		@include gradient(90deg, $primary-color 0%, $primary-color2 10%);
 	}
 	}
 	.active-banner-slider {
@@ -62,7 +62,7 @@
 			display: none;
 		}
 	}
-}
+
 .add-bag {
 	margin-top: 30px;
 	.add-btn {
