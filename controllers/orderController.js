@@ -5,6 +5,12 @@ const Category = require("../models/categoryModel");
 const Order = require("../models/orderModel");
 const Coupon = require("../models/couponModel");
 const couponHelper = require("../helpers/coupon_helper");
+const puppeteer = require("puppeteer");
+const path = require("path");
+const fs = require("fs");
+const ejs = require("ejs");
+
+
 var instance = new Razorpay({
   key_id: process.env.YOUR_KEY_ID,
   key_secret: process.env.YOUR_KEY_SECRET,
@@ -82,7 +88,6 @@ const placeOrder = async (req, res) => {
     const moment = require("moment");
     req.session.couponApplied = false;
     req.session.discountAmount = 0;
-    console.log('Address:', address);
 if (isNaN(grandTotal) && !isNaN(finalAmount)) {
   grandTotal = parseFloat(finalAmount);
 }
@@ -180,7 +185,6 @@ if (isNaN(grandTotal) && !isNaN(finalAmount)) {
 const applyCoupon = async (req, res) => {
   try {
     const { couponCode, total } = req.body;
-    console.log(total, couponCode); // Debug: Check if you are getting the expected values
 
     const user = req.session.user_id;
 
@@ -350,6 +354,43 @@ const onlineVerifyPayment = async (req, res) => {
     res.json({ success: false });
   }
 };
+const loadInvoice = async (req,res) => {
+  try {
+    const {orderId} = req.query;
+    const {user_id} = req.session;
+    const userData = await User.findOne({_id:user_id})
+    console.log(userData,"jkldfskkkkkkkkkkkkkkkkkkkkk");
+    
+    const orderData = await Order.findOne({_id:orderId}).populate('products.productId')
+    console.log(orderData,"jkldfskkkkkkkkkkkkkkkkkkkkk");
+    const date = new Date()
+    const data = {
+      user:userData,
+      order:orderData,
+      date
+    }
+
+
+    const filepathName = path.resolve(__dirname, '../views/users/invoice.ejs');
+    const html = fs.readFileSync(filepathName).toString();
+    const ejsData = ejs.render(html, data);
+    const browser = await puppeteer.launch({ headless: "new" });
+    const page = await browser.newPage();
+    await page.setContent(ejsData, { waitUntil: "networkidle0" });
+    const pdfBytes = await page.pdf({ format: "Letter" }); 
+    
+    await browser.close();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename= orderInvoice_swoz.pdf"
+    );
+    res.send(pdfBytes);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 module.exports = {
   onlineVerifyPayment,
@@ -361,4 +402,5 @@ module.exports = {
   orderedProductDetails,
   cancelOrder,
   applyCoupon,
+  loadInvoice
 };

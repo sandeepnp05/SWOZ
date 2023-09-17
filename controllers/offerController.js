@@ -12,9 +12,7 @@ const addOffer = async (req, res) => {
     try {
         const { search, page } = req.query;
         const { startingDate, expiryDate, percentage } = req.body;
-        console.log(startingDate, expiryDate, percentage);
         const name = req.body.name;
-        console.log(name, ':name');
         const offerExist = await Offer.findOne({ name: name }); // Use a different variable name here
         if (offerExist) {
             // req.flash('err','Offer already exists!!!')

@@ -2,7 +2,7 @@
 <%- include("../layouts/header.ejs") %>
 <%- include("../layouts/userNav.ejs") %>
 
-<div class="card-container" style="margin-top: 100px;">
+<!-- <div class="card-container" style="margin-top: 100px;">
   <% order.products.forEach((product) => { %>
     <div class="card my-5 mx-4 text-center" style="width: 18rem; display: inline-block;">
       <img class="card-img-top" src="/uncroppedImages/<%= product.productId.image[0] %>" alt="Card image cap">
@@ -19,10 +19,205 @@
       </div>
     </div>
   <% }) %>
+</div> -->
+<style>
+  /* Add this CSS to your stylesheet or in a <style> tag in your HTML document */
+  
+  .order-table, .product-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+  }
+
+  .order-table th, .product-table th {
+      background-color: #f2f2f2;
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+  }
+
+  .order-table td, .product-table td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+  }
+
+ 
+
+  .empty-order-list {
+      text-align: center;
+      margin: 20px 0;
+      padding: 20px;
+      border: 5px solid #666262;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: large;
+      color: #080707;
+  }
+
+  .empty-order-list p {
+      margin: 10px 0;
+  }
+  .order-details{
+    margin-top: 140px;
+  }
+ 
+  .card-img-top {
+    display: block; /* Make sure the image is a block-level element */
+    margin: 0 auto; /* Center-align the image horizontally */
+  }
+  .product-table td ,.product-table th {
+    text-align: center; /* Center-align text within cells */
+    vertical-align: middle
+  }
+
+  .product-table img {
+    display: block; /* Make sure the image is a block-level element */
+    margin: 0 auto; /* Center-align the image horizontally */
+  }
+/* Style the custom button */
+.custom-return {
+    background-color: #ff5733; /* Change the background color */
+    color: white; /* Change the text color */
+    border: none; /* Remove the border */
+    padding: 10px 20px; /* Adjust padding */
+    border-radius: 8px; /* Add border radius */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.custom-return:hover {
+    background-color: #d56650; /* Change the background color on hover */
+}
+.custom-invoice {
+    background-color: #2f8f2a; /* Change the background color */
+    color: white; /* Change the text color */
+    border: none; /* Remove the border */
+    padding: 10px 20px; /* Adjust padding */
+    border-radius: 8px; /* Add border radius */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.custom-invoice:hover {
+    background-color: #1f9839; /* Change the background color on hover */
+}
+</style>
+</head>
+<body>
+<!-- Your HTML body content here -->
+
+<section class="hero-wrap hero-bread" style="background-image: url('/productImages/bg_6.jpg'); height: 3px;">
+  <div class="container">
+      <div class="row no-gutters slider-text align-items-center justify-content-center">
+          <div class="col-md-9 ftco-animate text-center">
+              <h1 class="mb-0 bread"></h1>
+          </div>
+      </div>
+  </div>
+</section>
+
+<!-- Conditional rendering based on orderlist length -->
+<!-- Use plain JavaScript for conditionals and loops -->
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="order-details">
+              <!-- JavaScript loop for orders -->
+              <!-- Replace with dynamic data if needed -->
+              <!-- Example: for (let order of orderlist) { ... } -->
+              <div class="card mt-4" style="font-weight: 700;">
+                  <div class="card-header d-flex justify-content-between" style="background-color: rgb(102, 102, 102); color: #fff;">
+                      <div><strong>Order ID: <%= order.order_Id %></strong></div>
+                      <div><strong>Date: <%= new Date(order.date).toLocaleDateString('en-IN') %></strong></div>
+                  </div>
+                  <div class="card-body">
+                      <p>Total Amount: ₹<%=order.total  %></p>
+                      <p>Payment Method: <%= order.method %></p>
+                      
+                      
+                      <p id="order-status-Order123">Order status: <%= order.status %></p>
+                      <% if (order.status == "Placed"||order.status=="Pending") {%>
+                        <% const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; %>
+                      <p id="order-status-Order123">Expected Delivery: <%= new Date(order.expectedDelivery).toLocaleDateString('en-IN',options) %></p>
+                      <%  } else{%>
+                        <p id="order-status">Expected Delivery: </p>
+
+                        <% }%>
+                      <p id="order-status-Order123">Shiping Address: <%= order.shipAddress %></p>
+                      <h3></h3>
+                      <table class="table table-bordered product-table">
+                          <thead>
+                              <tr>
+                                  <th>Products</th>
+                                  <th>Name</th>
+                                  <th>Price</th>
+                                  <th>Quantity</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <!-- JavaScript loop for products within an order -->
+                              <!-- Replace with dynamic data if needed -->
+                              <!-- Example: for (let product of order.products) { ... } -->
+                              <% order.products.forEach((product) => { %>
+                              <tr>
+                                  <td class="p-0">
+                                      <img style="width:100px; height: auto;border-radius: 0;" src="/uncroppedImages/<%= product.productId.image[0] %>" alt="">
+                                      <!-- <img class="card-img-top" src="/uncroppedImages/<%= product.productId.image[0] %>" alt="Card image cap"> -->
+                                  </td>
+                                  <td class="p-0"><%= product.productId.name %></td>
+                                  <td class="p-0">₹<%= product.productId.price %></td>
+                                  <td class="p-0"><%= product.quantity %></td>
+                              </tr>
+                              <% }) %>
+                             
+                              <!-- End of JavaScript loop for products -->
+                          </tbody>
+                      </table>
+                  </div>
+                  <div class="card-footer" style="display: inline-flex; justify-content: space-between;">
+                    <button class="btn btn-primary custom-invoice" value="/invoice?orderId=<%= order._id %>">
+                        <a href="/invoice?orderId=<%= order._id %>" style="text-decoration: none; color: white;">Download Invoice</a>
+                    </button>
+                    <% if (order.status === "Delivered") { %>
+                        <button class="btn btn-primary custom-return" value="/orderCancel?orderId=<%= order._id %>">Return</button>
+                    <% } else if (order.status === "Cancelled") { %>
+                        <button class="btn btn-primary custom-return">Cancelled</button>
+                    <% } else { %>
+                        <button id="cancelbtn-<%= order._id%>" class="btn btn-primary custom-return" value="/orderCancel?orderId=<%= order._id %>" onclick="orderCancel('<%= order._id %>')">Cancel</button>
+                    <% } %>
+                </div>
+                
+              </div>
+              <!-- End of JavaScript loop for orders -->
+          </div>
+      </div>
+  </div>
 </div>
+</body>
+<%- include("../layouts/footer.ejs") %>
+<%- include("../layouts/userFooter.ejs") %>
+
 
     
-    
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  async function orderCancel(orderId){
+    try {
+      console.log(orderId);
+      console.log('orderCancel function called');
+    console.log('Sending AJAX request for order cancellation')
+      const status = "Cancelled"
+      const cancel = await axios.patch("/cancelOrder",{orderId,status})
+
+      if (cancel.data.success){
+                const order_status = document.getElementById(`cancelbtn-${orderId}`)
+                order_status.innerHTML = status
+            }
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+</script>
 
 
 

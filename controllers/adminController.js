@@ -225,7 +225,6 @@ const orderDetails = async (req, res) => {
     const orderData = await Order.findById({ _id: id })
       .populate("user.user")
       .populate("products.productId");
-      console.log(orderData);
     res.render("orderDetails", { orderData });
   } catch (error) {
     console.log(error.message);
@@ -241,6 +240,106 @@ const changeStatus = async (req, res, next) => {
   }
 };
 
+const salesReport = async (req,res,next)=>{
+  try {
+    const totalAmount = await Order.aggregate([
+      { $unwind: '$products' },
+      { $match: { status: 'Placed' } }, 
+      { $group: { _id: null, total: { $sum: '$total' } } },
+      { $project: { total: 1, _id: 0 } }
+    ])
+    const totalSold = await Order.aggregate([
+      { $unwind: '$products' },
+      { $match: { status: 'Placed' } }, 
+      { $group: { _id: null, total: { $sum: '$products.quantity' } } },
+      { $project: { total: 1, _id: 0 } }
+    ])
+    
+    const product = await Order.find({ status: 'Delivered' }).populate('products.productId').populate('user');
+
+   
+    res.render('salesReport',{ 
+      totalAmount,
+      totalSold,
+      product
+    })
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+const sortSalesReport = async(req,res)=>{
+  try {
+    let fromDate = req.body.fromDate ? new Date(req.body.fromDate) : null;
+    fromDate.setHours(0,0,0,0);
+    console.log('fromDate',fromDate);
+    let toDate = req.body.toDate ? new Date(req.body.toDate) : null;
+    toDate.setHours(23, 59, 59, 999);
+    console.log('toDate',toDate);
+
+    const currentDate = new Date();
+
+    if (fromDate && toDate) {
+      if (toDate < fromDate) {
+        const temp = fromDate;
+        fromDate = toDate;
+        toDate = temp;
+      }
+    } else if (fromDate) {
+      toDate = currentDate;
+    } else if (toDate) {
+      fromDate = currentDate;
+    }
+
+    var matchStage = {
+      
+      'status': 'Delivered'
+    };
+
+    const totalAmount = await Order.aggregate([  {
+      $match: {
+
+      
+        expectedDelivery: { $gte: fromDate, $lte: toDate },
+      },
+    },
+      { $unwind: '$products' },
+      { $match: matchStage }, // This is where you would put your additional matching criteria if needed
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$total' }
+        }
+      }
+    ]);
+
+    const totalSold = await Order.aggregate([
+      {
+        $match: {
+
+        
+          expectedDelivery: { $gte: fromDate, $lte: toDate },
+        },
+      },
+      { $unwind: '$products' },
+      { $match: matchStage },
+      { $group: { _id: null, total: { $sum: '$products.quantity' } } },
+      { $project: { total: 1, _id: 0 } },
+    ]);
+ 
+    const product = await Order.find({ expectedDelivery: { $gte: fromDate, $lte: toDate },status: 'Delivered' }).populate('products.productId').populate('user')
+      console.log( totalAmount,'totalAmount');
+      console.log( totalSold,'totalSold');
+      console.log( product,'product');
+      res.render('salesReport', {
+        totalAmount,
+        totalSold,
+        product,
+      })
+  } catch (error) {
+    console.log(error)
+  }
+}
 module.exports = {
   logout,
   userList,
@@ -251,4 +350,6 @@ module.exports = {
   changeStatus,
   dashboardLoad,
   adminVerifyLogin,
+  salesReport,
+  sortSalesReport
 };

@@ -142,7 +142,6 @@ const productAddPage = async (req, res) => {
         }
       
     } catch (error) {
-      console.log(error.message);
       console.error('Error:', error);
       res.status(500).send("An error occur red.");
     }

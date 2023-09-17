@@ -93,6 +93,10 @@ admin_route.get('/editCoupon',auth.isLogin,couponController.editCoupon)
 admin_route.get('/offer',auth.isLogin,offerController.loadOffer)
 admin_route.post('/offer',auth.isLogin,offerController.addOffer)
 
+admin_route.get('/salesReport',auth.isLogin,adminController.salesReport)
+
+admin_route.post('/salesReport',auth.isLogin,adminController.sortSalesReport)
+
 
 module.exports = admin_route;
 
