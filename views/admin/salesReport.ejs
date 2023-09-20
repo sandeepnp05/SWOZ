@@ -272,6 +272,7 @@
     padding: 8px 16px;
   }
 </style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
  <!-- DataTables JS -->
  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
@@ -291,7 +292,7 @@
     } else {
       console.log('jQuery is NOT loaded.');
     }
-
+console.log(jQuery.fn)
     // Initialize DataTable only if jQuery and DataTables are loaded
     if (typeof jQuery !== 'undefined' && typeof jQuery.fn.DataTable !== 'undefined') {
       $('#example').DataTable({

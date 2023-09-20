@@ -54,11 +54,15 @@ hr {
         <div class="card mb-4">
           <div class="card-body text-center">
            
-            <img class="img-fluid" src="/uncroppedImages/<%=userData.image%>"
-              alt="avatar"
-              class="rounded-circle img-fluid"
-              style="width: 150px"
-            />
+            <img
+            class="img-fluid rounded-circle"
+            src="/uncroppedImages/<%= userData.image %>"
+            alt="User Profile Image"
+            style="width: 150px; height: 190px"
+            onerror="this.src='https://www.w3schools.com/howto/img_avatar.png'"
+          />
+          
+
             <h5 class="my-3"><%=userData.firstname%> <%=userData.lastname%></h5>
             <!-- <h6>Wallet amount: User Wallet Amount</h6> -->
           </div>

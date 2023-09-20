@@ -99,7 +99,6 @@ const verifyOtp = async (req, res) => {
         { email: req.session.tempEmail },
         { $set: { is_verified: true } }
       ); 
-        console.log(findUserAndUpdate._id,"idddddddddd");
       if (findUserAndUpdate) {
         
 
