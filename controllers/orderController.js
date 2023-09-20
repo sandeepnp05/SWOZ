@@ -359,10 +359,8 @@ const loadInvoice = async (req,res) => {
     const {orderId} = req.query;
     const {user_id} = req.session;
     const userData = await User.findOne({_id:user_id})
-    console.log(userData,"jkldfskkkkkkkkkkkkkkkkkkkkk");
     
     const orderData = await Order.findOne({_id:orderId}).populate('products.productId')
-    console.log(orderData,"jkldfskkkkkkkkkkkkkkkkkkkkk");
     const date = new Date()
     const data = {
       user:userData,
