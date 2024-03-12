@@ -70,5 +70,4 @@ user_route.post('/coupon',auth.isLogin,orderController.applyCoupon)
 user_route.get('/walletHistory',auth.isLogin,userController.walletHistory)
 
 user_route.get('/invoice',orderController.loadInvoice)
-
 module.exports =  user_route

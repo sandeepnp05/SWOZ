@@ -676,6 +676,7 @@ const walletHistory = async(req,res)=>{
   } catch (error) {
   }
 }
+
 module.exports = {
   logout,
   loadOtp,
