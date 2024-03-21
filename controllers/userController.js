@@ -417,7 +417,7 @@ const loadConfirmation = async (req, res) => {
   }
 };
 
-// Render the forget password page.
+
 
 const loadForget = async (req, res) => {
   try {
@@ -427,7 +427,7 @@ const loadForget = async (req, res) => {
   }
 };
 
-// Render the OTP verification for forget password page
+
 
 const loadVerifyForget = async (req, res) => {
   try {
@@ -437,7 +437,7 @@ const loadVerifyForget = async (req, res) => {
   }
 };
 
-// Verify the user's email for forget password.
+
 
 const verifyForgetEmail = async (req, res) => {
   try {
@@ -462,7 +462,7 @@ const verifyForgetEmail = async (req, res) => {
         res.render("forget", { message: "User email is not verified!.." });
       }
     } else {
-      // message = 'User not found'
+     
       res.render("forget", { message: "User is not found" });
     }
   } catch (error) {
@@ -663,10 +663,10 @@ const deleteAddress = async (req, res) => {
       { _id: user },
       { $pull: { address: { _id: addressId } } }
     );
-    res.json({ success: true }); // Send a response indicating successful deletion
+    res.json({ success: true }); 
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ success: false, error: error.message }); // Send an error response if deletion fails
+    res.status(500).json({ success: false, error: error.message }); 
   }
 };
 const walletHistory = async(req,res)=>{

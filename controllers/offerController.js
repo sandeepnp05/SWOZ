@@ -13,12 +13,12 @@ const addOffer = async (req, res) => {
         const { search, page } = req.query;
         const { startingDate, expiryDate, percentage } = req.body;
         const name = req.body.name;
-        const offerExist = await Offer.findOne({ name: name }); // Use a different variable name here
+        const offerExist = await Offer.findOne({ name: name });
         if (offerExist) {
-            // req.flash('err','Offer already exists!!!')
+         
             res.redirect('/admin/offer');
         } else {
-            const newOffer = new Offer({ // Use a different variable name here
+            const newOffer = new Offer({ 
                 name: name,
                 startingDate: startingDate,
                 expiryDate: expiryDate,
