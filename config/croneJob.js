@@ -4,7 +4,7 @@ const cron = require('node-cron');
 
 const https = require('https');
 
-const job = cron.schedule('*/20 * * * *', () => {
+const job = cron.schedule('*/10 * * * *', () => {
     console.log('Pinging server to keep it alive...');
     
     const options = {
