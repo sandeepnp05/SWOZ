@@ -159,7 +159,7 @@ const adminVerifyLogin = async (req, res) => {
         res.redirect("/admin/dashboard");
       } else {
         res.render("adminLogin", { errMessage: "Password is incorrect" });
-      }
+      } 
     } else {
       res.render("adminLogin", { errMessage: "Email is incorrect" });
     }
