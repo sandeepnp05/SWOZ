@@ -1,6 +1,4 @@
-const mongoose = require('mongoose')
-
-
+// index.js
 
 const session = require('express-session')
 const config = require('./config/config')
@@ -36,3 +34,6 @@ app.use('/admin',adminRoute)
 app.listen(3000 , () => {
     console.log('server running http://localhost:3000/');
 })
+
+// Start the cron job
+const job = require('./config/croneJob');
